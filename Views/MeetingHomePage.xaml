@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="SipCoreMobile.Views.MeetingHomePage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:controls="clr-namespace:SipCoreMobile.Controls"
+             xmlns:api="clr-namespace:SipCoreMobile.Models.Api"
+             xmlns:vm="clr-namespace:SipCoreMobile.ViewModels"
+             x:DataType="vm:MeetingsViewModel"
+             BackgroundColor="{StaticResource SIPCoreBackground}"
+             Shell.NavBarIsVisible="False">
+
+    <Grid Padding="18" RowDefinitions="Auto,Auto,Auto,Auto,*">
+
+        <VerticalStackLayout Grid.Row="0" Spacing="2">
+            <Label Text="SIPCore Meetings" FontSize="24" FontAttributes="Bold" TextColor="{StaticResource SIPCoreDarkBlue}" />
+            <Label Text="Secure voice meetings powered by your SIPCore phone system."
+                   FontSize="14" TextColor="{StaticResource SIPCoreTextSecondary}" />
+        </VerticalStackLayout>
+
+        <HorizontalStackLayout Grid.Row="1" Spacing="10" Margin="0,18,0,0">
+            <Button Text="New Meeting" Clicked="OnCreateMeetingClicked"
+                    BackgroundColor="{StaticResource SIPCorePrimary}" TextColor="White" CornerRadius="14" />
+            <Button Text="Refresh" Clicked="OnRefreshClicked"
+                    BackgroundColor="Transparent" TextColor="{StaticResource SIPCorePrimary}"
+                    BorderColor="{StaticResource SIPCorePrimary}" BorderWidth="1" CornerRadius="14" />
+        </HorizontalStackLayout>
+
+        <SearchBar x:Name="SearchBox" Grid.Row="2" Placeholder="Search meetings" Margin="0,14,0,0" TextChanged="OnSearchTextChanged" />
+
+        <controls:EmptyMeetingCard x:Name="EmptyState" Grid.Row="4" Margin="0,14,0,0" VerticalOptions="Start" IsVisible="False" />
+
+        <CollectionView x:Name="MeetingsList" Grid.Row="4" Margin="0,14,0,0">
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout Orientation="Vertical" ItemSpacing="12" />
+            </CollectionView.ItemsLayout>
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="api:SipCoreMeetingDto">
+                    <controls:MeetingCard Meeting="{Binding .}" MeetingTapped="OnMeetingTapped" JoinTapped="OnJoinTapped" />
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+    </Grid>
+</ContentPage>

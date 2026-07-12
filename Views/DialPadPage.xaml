@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="SipCoreMobile.Views.DialPadPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:controls="clr-namespace:SipCoreMobile.Controls"
+             xmlns:vm="clr-namespace:SipCoreMobile.ViewModels"
+             x:DataType="vm:AppStateViewModel"
+             BackgroundColor="{StaticResource SIPCoreBackground}"
+             Shell.NavBarIsVisible="False">
+
+    <Grid RowDefinitions="Auto,Auto,*,Auto,Auto">
+
+        <controls:SipCoreHeader Grid.Row="0" DrawerRequested="OnDrawerRequested" />
+
+        <Label x:Name="NumberDisplay" Grid.Row="1"
+               Text=""
+               HorizontalTextAlignment="Center"
+               FontSize="36" FontAttributes="Bold"
+               TextColor="{StaticResource SIPCorePrimary}"
+               HeightRequest="48"
+               Margin="0,12,0,0"
+               LineBreakMode="NoWrap" />
+
+        <!-- Keypad -->
+        <VerticalStackLayout Grid.Row="2" VerticalOptions="Center" Padding="28,0" Spacing="10">
+            <Grid ColumnDefinitions="*,*,*" ColumnSpacing="10">
+                <controls:DialpadKey Grid.Column="0" Digit="1" Letters="" Tapped="OnKeyTapped" LongPressed="OnKeyLongPressed" />
+                <controls:DialpadKey Grid.Column="1" Digit="2" Letters="ABC" Tapped="OnKeyTapped" LongPressed="OnKeyLongPressed" />
+                <controls:DialpadKey Grid.Column="2" Digit="3" Letters="DEF" Tapped="OnKeyTapped" LongPressed="OnKeyLongPressed" />
+            </Grid>
+            <Grid ColumnDefinitions="*,*,*" ColumnSpacing="10">
+                <controls:DialpadKey Grid.Column="0" Digit="4" Letters="GHI" Tapped="OnKeyTapped" LongPressed="OnKeyLongPressed" />
+                <controls:DialpadKey Grid.Column="1" Digit="5" Letters="JKL" Tapped="OnKeyTapped" LongPressed="OnKeyLongPressed" />
+                <controls:DialpadKey Grid.Column="2" Digit="6" Letters="MNO" Tapped="OnKeyTapped" LongPressed="OnKeyLongPressed" />
+            </Grid>
+            <Grid ColumnDefinitions="*,*,*" ColumnSpacing="10">
+                <controls:DialpadKey Grid.Column="0" Digit="7" Letters="PQRS" Tapped="OnKeyTapped" LongPressed="OnKeyLongPressed" />
+                <controls:DialpadKey Grid.Column="1" Digit="8" Letters="TUV" Tapped="OnKeyTapped" LongPressed="OnKeyLongPressed" />
+                <controls:DialpadKey Grid.Column="2" Digit="9" Letters="WXYZ" Tapped="OnKeyTapped" LongPressed="OnKeyLongPressed" />
+            </Grid>
+            <Grid ColumnDefinitions="*,*,*" ColumnSpacing="10">
+                <controls:DialpadKey Grid.Column="0" Digit="*" Letters="" Tapped="OnKeyTapped" LongPressed="OnKeyLongPressed" />
+                <controls:DialpadKey Grid.Column="1" Digit="0" Letters="+" Tapped="OnKeyTapped" LongPressed="OnKeyLongPressed" />
+                <controls:DialpadKey Grid.Column="2" Digit="#" Letters="" Tapped="OnKeyTapped" LongPressed="OnKeyLongPressed" />
+            </Grid>
+        </VerticalStackLayout>
+
+        <!-- Call / video / backspace row -->
+        <Grid Grid.Row="3" ColumnDefinitions="*,*,*" Padding="30,8" VerticalOptions="Center">
+            <VerticalStackLayout Grid.Column="0" HorizontalOptions="Center" Spacing="2">
+                <ImageButton Source="video_icon.png" WidthRequest="32" HeightRequest="32" BackgroundColor="Transparent"
+                             Clicked="OnVideoTapped" />
+                <Label Text="Soon" FontSize="10" TextColor="{StaticResource SIPCorePrimary}" FontAttributes="Bold" HorizontalOptions="Center" />
+            </VerticalStackLayout>
+
+            <Border Grid.Column="1" StrokeShape="RoundRectangle 39" WidthRequest="78" HeightRequest="78"
+                    BackgroundColor="{StaticResource SIPCorePrimary}" HorizontalOptions="Center">
+                <Image Source="call_icon.png" WidthRequest="36" HeightRequest="36" />
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnCallTapped" />
+                </Border.GestureRecognizers>
+            </Border>
+
+            <ImageButton Grid.Column="2" Source="backspace_icon.png" WidthRequest="32" HeightRequest="32"
+                         BackgroundColor="Transparent" HorizontalOptions="Center"
+                         Clicked="OnBackspaceTapped" />
+        </Grid>
+
+        <controls:BottomNavBar Grid.Row="4" SelectedScreen="DialPad"
+                                ContactsTapped="OnContactsTapped"
+                                MessagesTapped="OnMessagesTapped"
+                                HistoryTapped="OnHistoryTapped" />
+
+    </Grid>
+</ContentPage>

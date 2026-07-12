@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView x:Class="SipCoreMobile.Controls.MeetingCard"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:controls="clr-namespace:SipCoreMobile.Controls">
+
+    <Border StrokeShape="RoundRectangle 20" BackgroundColor="White" Padding="16">
+        <Border.Shadow>
+            <Shadow Brush="Black" Opacity="0.06" Radius="4" Offset="0,2" />
+        </Border.Shadow>
+        <Border.GestureRecognizers>
+            <TapGestureRecognizer Tapped="OnCardTapped" />
+        </Border.GestureRecognizers>
+
+        <VerticalStackLayout Spacing="14">
+            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                <Border Grid.Column="0" StrokeShape="RoundRectangle 21" BackgroundColor="#1F0057B8" WidthRequest="42" HeightRequest="42">
+                    <Label Text="&#xF03D;" FontFamily="MaterialIcons" TextColor="{StaticResource SIPCorePrimary}"
+                           HorizontalOptions="Center" VerticalOptions="Center" />
+                </Border>
+
+                <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
+                    <Label x:Name="TitleLabel" TextColor="{StaticResource SIPCoreDarkBlue}" FontAttributes="Bold" FontSize="16" />
+                    <Label x:Name="ConferenceLabel" TextColor="{StaticResource SIPCoreTextSecondary}" FontSize="13" />
+                    <Label x:Name="HostLabel" TextColor="{StaticResource SIPCoreTextSecondary}" FontSize="12" IsVisible="False" />
+                </VerticalStackLayout>
+
+                <controls:MeetingStatusBadge x:Name="StatusBadge" Grid.Column="2" VerticalOptions="Start" />
+            </Grid>
+
+            <Button Text="Join Meeting" Clicked="OnJoinClicked"
+                    BackgroundColor="{StaticResource SIPCorePrimary}" TextColor="White" CornerRadius="14" />
+        </VerticalStackLayout>
+    </Border>
+</ContentView>

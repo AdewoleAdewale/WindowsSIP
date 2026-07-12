@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView x:Class="SipCoreMobile.Controls.CallControlButton"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <VerticalStackLayout Spacing="8" HorizontalOptions="Center">
+        <Border x:Name="IconBackground" StrokeShape="RoundRectangle 34" WidthRequest="68" HeightRequest="68" BackgroundColor="#26FFFFFF">
+            <Label x:Name="IconLabel" TextColor="White" FontFamily="MaterialIcons" FontSize="30"
+                   HorizontalOptions="Center" VerticalOptions="Center" />
+            <Border.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnTapped" />
+            </Border.GestureRecognizers>
+        </Border>
+        <Label x:Name="LabelText" TextColor="White" FontSize="13" HorizontalOptions="Center" />
+    </VerticalStackLayout>
+</ContentView>

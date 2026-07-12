@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Port of SipCoreHeader() from SIPCoreApp.kt. The animated arrow hint was commented out
+     in the original (dead code) and is not ported. -->
+<ContentView x:Class="SipCoreMobile.Controls.SipCoreHeader"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <HorizontalStackLayout BackgroundColor="{StaticResource SIPCoreCard}" Padding="20,14" Spacing="10">
+        <Image Source="sipcore_logo.png" WidthRequest="42" HeightRequest="42">
+            <Image.Clip>
+                <EllipseGeometry Center="21,21" RadiusX="21" RadiusY="21" />
+            </Image.Clip>
+            <Image.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnLogoTapped" />
+            </Image.GestureRecognizers>
+        </Image>
+    </HorizontalStackLayout>
+</ContentView>

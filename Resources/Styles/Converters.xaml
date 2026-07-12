@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- Merge into App.xaml's <Application.Resources> (as a MergedDictionary, or copy the
+     entries directly) so `{StaticResource ...}` converter references in the converted
+     XAML pages resolve. -->
+<ResourceDictionary xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                     xmlns:conv="clr-namespace:SipCoreMobile.Converters">
+
+    <conv:InverseBoolConverter x:Key="InverseBoolConverter" />
+    <conv:LoginButtonTextConverter x:Key="LoginButtonTextConverter" />
+    <conv:DurationFormatConverter x:Key="DurationFormatConverter" />
+    <conv:DisplayNamePartConverter x:Key="DisplayNamePartConverter" />
+    <conv:ExtensionPartConverter x:Key="ExtensionPartConverter" />
+    <conv:StringNotEmptyConverter x:Key="StringNotEmptyConverter" />
+    <conv:FirstLetterUpperConverter x:Key="FirstLetterUpperConverter" />
+    <conv:IntGreaterThanZeroConverter x:Key="IntGreaterThanZeroConverter" />
+    <conv:LastTwoCharsConverter x:Key="LastTwoCharsConverter" />
+    <conv:MessageTimeConverter x:Key="MessageTimeConverter" />
+    <conv:StatusTicksConverter x:Key="StatusTicksConverter" />
+
+</ResourceDictionary>

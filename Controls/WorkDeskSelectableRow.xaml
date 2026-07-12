@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView x:Class="SipCoreMobile.Controls.WorkDeskSelectableRow"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <Border x:Name="RowBorder" StrokeShape="RoundRectangle 16" Padding="14" BackgroundColor="#14FFFFFF">
+        <Border.GestureRecognizers>
+            <TapGestureRecognizer Tapped="OnTapped" />
+        </Border.GestureRecognizers>
+        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+            <Label x:Name="IconLabel" Grid.Column="0" FontFamily="MaterialIcons" FontSize="20" TextColor="White" VerticalOptions="Center" />
+            <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                <Label x:Name="TitleLabel" TextColor="White" FontAttributes="Bold" />
+                <Label x:Name="SubtitleLabel" TextColor="#99FFFFFF" FontSize="12" />
+            </VerticalStackLayout>
+            <Label x:Name="CheckIcon" Grid.Column="2" Text="&#xF00C;" FontFamily="MaterialIcons"
+                   TextColor="{StaticResource SIPCorePrimary}" VerticalOptions="Center" IsVisible="False" />
+        </Grid>
+    </Border>
+</ContentView>

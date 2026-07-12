@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="SipCoreMobile.Views.MeetingCreatePage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:controls="clr-namespace:SipCoreMobile.Controls"
+             xmlns:models="clr-namespace:SipCoreMobile.Models"
+             xmlns:vm="clr-namespace:SipCoreMobile.ViewModels"
+             x:DataType="vm:MeetingsViewModel"
+             BackgroundColor="{StaticResource SIPCoreBackground}"
+             Shell.NavBarIsVisible="False">
+
+    <Grid Padding="18" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,*,Auto">
+
+        <VerticalStackLayout Grid.Row="0" Spacing="2">
+            <Label Text="Create Meeting" FontSize="24" FontAttributes="Bold" TextColor="{StaticResource SIPCoreDarkBlue}" />
+            <Label Text="Set up a SIPCore conference room for your team."
+                   FontSize="14" TextColor="{StaticResource SIPCoreTextSecondary}" />
+        </VerticalStackLayout>
+
+        <Entry x:Name="TitleEntry" Grid.Row="1" Placeholder="Meeting title" Margin="0,16,0,0" />
+        <Editor x:Name="DescriptionEditor" Grid.Row="2" Placeholder="Description" HeightRequest="80" Margin="0,10,0,0" />
+
+        <VerticalStackLayout Grid.Row="3" Margin="0,12,0,0">
+            <controls:MeetingOptionRow x:Name="InstantOption" Title="Start immediately"
+                                        Subtitle="The meeting becomes live after creation." CheckedChanged="OnInstantChanged" />
+            <controls:MeetingOptionRow x:Name="RecordedOption" Title="Record meeting"
+                                        Subtitle="Enable recording on the conference room." CheckedChanged="OnRecordedChanged" />
+        </VerticalStackLayout>
+
+        <Grid Grid.Row="4" ColumnDefinitions="*,Auto" Margin="0,2,0,0">
+            <Label Grid.Column="0" Text="Invite participants" FontAttributes="Bold" FontSize="16" TextColor="{StaticResource SIPCoreDarkBlue}" />
+            <Label x:Name="SelectedCountLabel" Grid.Column="1" FontSize="12" TextColor="{StaticResource SIPCoreTextSecondary}" />
+        </Grid>
+
+        <SearchBar x:Name="ParticipantSearchBox" Grid.Row="5" Placeholder="Search participants" Margin="0,8,0,0" TextChanged="OnParticipantSearchChanged" />
+
+        <controls:EmptyMeetingCard x:Name="EmptyParticipants" Grid.Row="6" Title="No participants found"
+                                    Body="Try another name or extension." VerticalOptions="Start" Margin="0,10,0,0" IsVisible="False" />
+
+        <CollectionView x:Name="ParticipantsList" Grid.Row="6" Margin="0,10,0,0">
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout Orientation="Vertical" ItemSpacing="8" />
+            </CollectionView.ItemsLayout>
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:ContactUi">
+                    <Border StrokeShape="RoundRectangle 16" BackgroundColor="White" Padding="12">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <VerticalStackLayout Grid.Column="0" VerticalOptions="Center">
+                                <Label Text="{Binding DisplayName}" TextColor="{StaticResource SIPCoreDarkBlue}" FontAttributes="Bold" />
+                                <Label Text="{Binding Extension}" FontSize="12" TextColor="{StaticResource SIPCoreTextSecondary}" />
+                            </VerticalStackLayout>
+                            <CheckBox Grid.Column="1" VerticalOptions="Center"
+                                      CheckedChanged="OnParticipantCheckedChanged" BindingContext="{Binding .}" />
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <Grid Grid.Row="7" ColumnDefinitions="*,*" ColumnSpacing="10" Margin="0,12,0,0">
+            <Button Grid.Column="0" Text="Cancel" Clicked="OnCancelClicked"
+                    BackgroundColor="Transparent" TextColor="{StaticResource SIPCorePrimary}"
+                    BorderColor="{StaticResource SIPCorePrimary}" BorderWidth="1" CornerRadius="14" />
+            <Button Grid.Column="1" Text="Create" Clicked="OnCreateClicked"
+                    BackgroundColor="{StaticResource SIPCorePrimary}" TextColor="White" CornerRadius="14" />
+        </Grid>
+
+    </Grid>
+</ContentPage>

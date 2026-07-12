@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView x:Class="SipCoreMobile.Controls.WorkDeskTaskCard"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <Border StrokeShape="RoundRectangle 24" BackgroundColor="#14FFFFFF" Padding="16">
+        <Border.GestureRecognizers>
+            <TapGestureRecognizer Tapped="OnCardTapped" />
+        </Border.GestureRecognizers>
+
+        <VerticalStackLayout Spacing="10">
+            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                <Border x:Name="IconBg" Grid.Column="0" StrokeShape="RoundRectangle 23" WidthRequest="46" HeightRequest="46">
+                    <Label Text="&#xF0AE;" FontFamily="MaterialIcons" x:Name="IconLabel" HorizontalOptions="Center" VerticalOptions="Center" />
+                </Border>
+
+                <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="1">
+                    <Label x:Name="TitleLabel" TextColor="White" FontAttributes="Bold" FontSize="16" LineBreakMode="TailTruncation" />
+                    <Label x:Name="CreatorLabel" TextColor="#99FFFFFF" FontSize="12" />
+                    <Label x:Name="CreatorCompanyLabel" TextColor="#6BFFFFFF" FontSize="11" IsVisible="False" />
+                </VerticalStackLayout>
+
+                <ImageButton Grid.Column="2" x:Name="EditButton" Source="edit_icon.png" WidthRequest="20" HeightRequest="20"
+                             BackgroundColor="Transparent" IsVisible="False" Clicked="OnEditClicked" />
+            </Grid>
+
+            <HorizontalStackLayout Spacing="8">
+                <Border x:Name="StatusChip" StrokeShape="RoundRectangle 50" Padding="10,4">
+                    <Label x:Name="StatusLabel" FontSize="11" FontAttributes="Bold" />
+                </Border>
+                <Border x:Name="PriorityChip" StrokeShape="RoundRectangle 50" Padding="10,4">
+                    <Label x:Name="PriorityLabel" FontSize="11" FontAttributes="Bold" />
+                </Border>
+            </HorizontalStackLayout>
+
+            <ProgressBar x:Name="ProgressIndicator" HeightRequest="5" />
+
+            <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="10">
+                <VerticalStackLayout Grid.Column="0">
+                    <Label x:Name="TeamLeadLabel" FontSize="12" TextColor="#B8FFFFFF" />
+                    <Label x:Name="TeamLeadCompanyLabel" FontSize="11" TextColor="#6BFFFFFF" IsVisible="False" />
+                </VerticalStackLayout>
+                <Label Grid.Column="1" x:Name="CommentsCountLabel" FontSize="12" TextColor="#99FFFFFF" VerticalOptions="Center" />
+                <Label Grid.Column="2" x:Name="AttachmentsCountLabel" FontSize="12" TextColor="#99FFFFFF" VerticalOptions="Center" />
+            </Grid>
+        </VerticalStackLayout>
+    </Border>
+</ContentView>

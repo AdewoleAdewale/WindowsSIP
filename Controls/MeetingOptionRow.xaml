@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView x:Class="SipCoreMobile.Controls.MeetingOptionRow"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <Border StrokeShape="RoundRectangle 16" BackgroundColor="White" Padding="12" Margin="0,0,0,8">
+        <Grid ColumnDefinitions="Auto,*">
+            <CheckBox x:Name="Checkbox" Grid.Column="0" VerticalOptions="Center" CheckedChanged="OnCheckedChanged" />
+            <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Margin="8,0,0,0">
+                <Label x:Name="TitleLabel" TextColor="{StaticResource SIPCoreDarkBlue}" FontAttributes="Bold" />
+                <Label x:Name="SubtitleLabel" FontSize="12" TextColor="{StaticResource SIPCoreTextSecondary}" />
+            </VerticalStackLayout>
+        </Grid>
+    </Border>
+</ContentView>

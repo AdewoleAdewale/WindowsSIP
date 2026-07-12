@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="SipCoreMobile.Views.IncomingCallPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:SipCoreMobile.ViewModels"
+             xmlns:conv="clr-namespace:SipCoreMobile.Converters"
+             x:DataType="vm:AppStateViewModel"
+             BackgroundColor="{StaticResource SIPCoreDarkBlue}"
+             Shell.NavBarIsVisible="False">
+
+    <Grid RowDefinitions="Auto,*,Auto" Padding="24">
+
+        <VerticalStackLayout Grid.Row="0" Spacing="0" Margin="0,70,0,0" HorizontalOptions="Center">
+            <Label Text="Incoming Call" TextColor="#BFFFFFFF" FontSize="22" HorizontalOptions="Center" />
+        </VerticalStackLayout>
+
+        <VerticalStackLayout Grid.Row="1" VerticalOptions="Center" HorizontalOptions="Center" Spacing="6">
+            <Border StrokeShape="RoundRectangle 75" BackgroundColor="#1FFFFFFF"
+                    WidthRequest="150" HeightRequest="150" Margin="0,34,0,34">
+                <Image Source="sipcore_logo.png" WidthRequest="92" HeightRequest="92" Aspect="AspectFit"
+                       HorizontalOptions="Center" VerticalOptions="Center" />
+            </Border>
+
+            <Label Text="{Binding Caller, Converter={StaticResource DisplayNamePartConverter}}"
+                   TextColor="White" FontSize="34" FontAttributes="Bold"
+                   HorizontalTextAlignment="Center" MaxLines="2" LineBreakMode="TailTruncation" />
+
+            <Label Text="{Binding Caller, Converter={StaticResource ExtensionPartConverter}, StringFormat='({0})'}"
+                   TextColor="#D9FFFFFF" FontSize="22" HorizontalTextAlignment="Center"
+                   IsVisible="{Binding Caller, Converter={StaticResource StringNotEmptyConverter}}" />
+
+            <Label Text="SIPCore Audio Call" TextColor="#B3FFFFFF" FontSize="18" Margin="0,12,0,0" />
+        </VerticalStackLayout>
+
+        <Grid Grid.Row="2" ColumnDefinitions="*,*" Margin="0,0,0,60">
+            <VerticalStackLayout Grid.Column="0" HorizontalOptions="Center" Spacing="10">
+                <Border StrokeShape="RoundRectangle 46" WidthRequest="92" HeightRequest="92"
+                        BackgroundColor="{StaticResource SIPCoreDanger}">
+                    <Image Source="call_end_icon.png" WidthRequest="42" HeightRequest="42" />
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnRejectTapped" />
+                    </Border.GestureRecognizers>
+                </Border>
+                <Label Text="Decline" TextColor="White" FontSize="16" HorizontalOptions="Center" />
+            </VerticalStackLayout>
+
+            <VerticalStackLayout Grid.Column="1" HorizontalOptions="Center" Spacing="10">
+                <Border StrokeShape="RoundRectangle 46" WidthRequest="92" HeightRequest="92"
+                        BackgroundColor="{StaticResource SIPCoreSuccess}">
+                    <Image Source="call_icon.png" WidthRequest="42" HeightRequest="42" />
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnAnswerTapped" />
+                    </Border.GestureRecognizers>
+                </Border>
+                <Label Text="Answer" TextColor="White" FontSize="16" HorizontalOptions="Center" />
+            </VerticalStackLayout>
+        </Grid>
+
+    </Grid>
+</ContentPage>

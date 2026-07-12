@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  Port of SIPCoreDrawer()'s ModalDrawerSheet content. Original wrapped the whole app in a
+  ModalNavigationDrawer with this as drawerContent; here it's set as Shell.FlyoutContent in
+  AppShell.xaml with FlyoutBehavior="Flyout", which is the closest MAUI equivalent to an
+  always-available slide-out drawer.
+-->
+<ContentView x:Class="SipCoreMobile.Controls.SIPCoreDrawerContent"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:controls="clr-namespace:SipCoreMobile.Controls"
+             xmlns:vm="clr-namespace:SipCoreMobile.ViewModels"
+             x:DataType="vm:AppStateViewModel"
+             BackgroundColor="White">
+
+    <Grid RowDefinitions="Auto,Auto,*,Auto" Padding="0,28,0,18">
+
+        <!-- Header: logo + app name -->
+        <HorizontalStackLayout Grid.Row="0" Padding="20,0" Spacing="14">
+            <Border StrokeShape="RoundRectangle 35" BackgroundColor="White" WidthRequest="70" HeightRequest="70">
+                <Border.Shadow>
+                    <Shadow Brush="Black" Opacity="0.1" Radius="6" Offset="0,2" />
+                </Border.Shadow>
+                <Image Source="sipcore_logo.png" WidthRequest="54" HeightRequest="54" Aspect="AspectFit"
+                       HorizontalOptions="Center" VerticalOptions="Center" />
+            </Border>
+            <VerticalStackLayout VerticalOptions="Center" Spacing="2">
+                <Label Text="SIPCore" FontSize="24" FontAttributes="Bold" TextColor="{StaticResource SIPCoreDarkBlue}" />
+                <Label Text="Business Softphone" FontSize="13" TextColor="{StaticResource SIPCoreTextSecondary}" />
+            </VerticalStackLayout>
+        </HorizontalStackLayout>
+
+        <!-- Status card -->
+        <Border Grid.Row="1" StrokeShape="RoundRectangle 18" BackgroundColor="#F4F7FC" Padding="16" Margin="16,20,16,18">
+            <VerticalStackLayout Spacing="2">
+                <Label Text="Extension" FontSize="12" TextColor="{StaticResource SIPCoreTextSecondary}" />
+                <Label x:Name="ExtensionLabel" FontSize="20" FontAttributes="Bold" TextColor="{StaticResource SIPCoreDarkBlue}" />
+
+                <HorizontalStackLayout Spacing="8" Margin="0,10,0,0">
+                    <controls:StatusPulseDot x:Name="StatusDot" VerticalOptions="Center" />
+                    <Label x:Name="RegisteredLabel" FontSize="14" FontAttributes="Medium" />
+                </HorizontalStackLayout>
+
+                <Label x:Name="ExtraStatusLabel" FontSize="12" TextColor="{StaticResource SIPCoreTextSecondary}"
+                       Margin="0,6,0,0" IsVisible="False" />
+            </VerticalStackLayout>
+        </Border>
+
+        <!-- Menu items -->
+        <VerticalStackLayout Grid.Row="2" Padding="10,0" Spacing="2">
+            <controls:DrawerMenuItem x:Name="HomeItem" Icon="&#xF015;" Label="Home" Tapped="OnHomeTapped" />
+            <controls:DrawerMenuItem x:Name="GroupsItem" Icon="&#xF0C0;" Label="Groups" Tapped="OnGroupsTapped" />
+            <controls:DrawerMenuItem x:Name="EmailItem" Icon="&#xF0E0;" Label="Email" Tapped="OnEmailTapped" />
+            <controls:DrawerMenuItem x:Name="MeetingsItem" Icon="&#xF03D;" Label="Meetings" Tapped="OnMeetingsTapped" />
+            <controls:DrawerMenuItem x:Name="WorkDeskItem" Icon="&#xF0AE;" Label="WorkDesk" Tapped="OnWorkDeskTapped" />
+            <controls:DrawerMenuItem x:Name="ProfileItem" Icon="&#xF007;" Label="Profile" Tapped="OnProfileTapped" />
+            <controls:DrawerMenuItem x:Name="SettingsItem" Icon="&#xF013;" Label="Settings" Tapped="OnSettingsTapped" />
+        </VerticalStackLayout>
+
+        <!-- Logout -->
+        <VerticalStackLayout Grid.Row="3" Padding="10,0">
+            <BoxView HeightRequest="1" Color="{StaticResource SIPCoreBorder}" Margin="6,0,6,6" />
+            <controls:DrawerMenuItem Icon="&#xF08B;" Label="Logout" Tapped="OnLogoutTapped" />
+        </VerticalStackLayout>
+
+    </Grid>
+</ContentView>

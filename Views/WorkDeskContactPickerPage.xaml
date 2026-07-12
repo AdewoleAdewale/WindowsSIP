@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="SipCoreMobile.Views.WorkDeskContactPickerPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:views="clr-namespace:SipCoreMobile.Views"
+             BackgroundColor="{StaticResource SIPCoreBackground}">
+
+    <Grid RowDefinitions="Auto,*,Auto" Padding="16" RowSpacing="10">
+        <Label x:Name="TitleLabel" Grid.Row="0" FontSize="20" FontAttributes="Bold" TextColor="{StaticResource SIPCoreDarkBlue}" />
+
+        <CollectionView x:Name="ContactsList" Grid.Row="1">
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout Orientation="Vertical" ItemSpacing="8" />
+            </CollectionView.ItemsLayout>
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="views:ContactPickerRow">
+                    <Border StrokeShape="RoundRectangle 14" BackgroundColor="White" Padding="12">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnContactTapped" CommandParameter="{Binding .}" />
+                        </Border.GestureRecognizers>
+                        <Grid ColumnDefinitions="*,Auto">
+                            <VerticalStackLayout Grid.Column="0">
+                                <Label Text="{Binding DisplayLabel}" TextColor="{StaticResource SIPCoreTextPrimary}" FontAttributes="Bold" />
+                                <Label Text="{Binding Subtitle}" FontSize="12" TextColor="{StaticResource SIPCoreTextSecondary}" />
+                            </VerticalStackLayout>
+                            <Label Grid.Column="1" Text="✓" FontSize="18" TextColor="{StaticResource SIPCorePrimary}"
+                                   VerticalOptions="Center" IsVisible="{Binding IsSelected}" />
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <Button Grid.Row="2" Text="Done" Clicked="OnDoneClicked"
+                BackgroundColor="{StaticResource SIPCorePrimary}" TextColor="White" CornerRadius="14" />
+    </Grid>
+</ContentPage>

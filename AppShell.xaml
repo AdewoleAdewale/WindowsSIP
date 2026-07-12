@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="SipCoreMobile.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:SipCoreMobile"
+     xmlns:views="clr-namespace:SipCoreMobile.Views"
+  xmlns:controls="clr-namespace:SipCoreMobile.Controls"
+  FlyoutBehavior="Flyout"
+  Shell.NavBarIsVisible="False">
+
+    <Shell.FlyoutContent>
+        <controls:SIPCoreDrawerContent />
+    </Shell.FlyoutContent>
+
+    <ShellContent x:Name="LoginContent" Route="login" ContentTemplate="{DataTemplate views:LoginPage}" />
+    <ShellContent x:Name="HomeContent" Route="home" ContentTemplate="{DataTemplate views:HomePage}" />
+    <ShellContent x:Name="DialPadContent" Route="dialpad" ContentTemplate="{DataTemplate views:DialPadPage}" />
+    <ShellContent x:Name="IncomingCallContent" Route="incomingcall" ContentTemplate="{DataTemplate views:IncomingCallPage}" />
+    <ShellContent x:Name="ActiveCallContent" Route="activecall" ContentTemplate="{DataTemplate views:ActiveCallPage}" />
+    <ShellContent x:Name="ConversationsContent" Route="conversations" ContentTemplate="{DataTemplate views:ConversationsPage}" />
+    <ShellContent x:Name="CallHistoryContent" Route="callhistory" ContentTemplate="{DataTemplate views:CallHistoryPage}" />
+    <ShellContent x:Name="ContactsContent" Route="contacts" ContentTemplate="{DataTemplate views:ContactsPage}" />
+    <ShellContent x:Name="ProfileContent" Route="profile" ContentTemplate="{DataTemplate views:ProfilePage}" />
+    <ShellContent x:Name="GroupsContent" Route="groups" ContentTemplate="{DataTemplate views:GroupsPage}" />
+    <ShellContent x:Name="SettingsContent" Route="settings" ContentTemplate="{DataTemplate views:SettingsPage}" />
+    <ShellContent x:Name="MeetingHomeContent" Route="meetinghome" ContentTemplate="{DataTemplate views:MeetingHomePage}" />
+
+</Shell>
+

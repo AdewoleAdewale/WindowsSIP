@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  SIPCore design tokens — v2 ("Signal" palette).
+
+  This replaces the flat port of the original Kotlin SIPCoreColors with a deliberately
+  designed system for the Windows app. Every key name that existing pages already reference
+  (SIPCorePrimary, SIPCoreDarkBlue, SIPCoreBackground, SIPCoreCard, SIPCoreTextPrimary,
+  SIPCoreTextSecondary, SIPCoreBorder, SIPCoreSuccess, SIPCoreWarning, SIPCoreDanger) is kept,
+  so all existing pages inherit this palette with zero per-file edits. New tokens (SIPCoreInk,
+  SIPCoreSignal, the elevation/radius/spacing scales) are additive.
+
+  Design rationale:
+  - SIPCore is enterprise calling/collaboration software — the brief is precision and calm
+    trustworthiness, not a consumer/marketing look. A saturated "SaaS blue" reads correctly
+    here rather than as a generic default, because the audience (office workers, IT admins)
+    expects exactly that register.
+  - SIPCoreSignal (teal) is the one deliberate accent: it marks "live" state specifically —
+    active calls, online presence, live meetings — and appears nowhere else. One recognizable
+    signal color used consistently for "this is happening right now" is the throughline that
+    ties the calling, chat, and WorkDesk screens together as one product.
+  - SIPCoreInk replaces the flat #002E6D used on dark screens (active call, WorkDesk) with a
+    near-black navy that reads as premium/precise rather than "just a darker blue."
+-->
+<ResourceDictionary xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <!-- Core brand -->
+    <Color x:Key="SIPCorePrimary">#155EEF</Color>
+    <Color x:Key="SIPCorePrimaryDark">#0E42B3</Color>
+    <Color x:Key="SIPCorePrimaryLight">#EAF1FF</Color>
+    <Color x:Key="SIPCoreDarkBlue">#0B1E3D</Color>
+    <Color x:Key="SIPCoreInk">#0B1E3D</Color>
+
+    <!-- Signature accent — reserved exclusively for "live" states -->
+    <Color x:Key="SIPCoreSignal">#14B8A6</Color>
+    <Color x:Key="SIPCoreSignalDim">#1F14B8A6</Color>
+
+    <!-- Surfaces -->
+    <Color x:Key="SIPCoreBackground">#F7F8FC</Color>
+    <Color x:Key="SIPCoreCard">#FFFFFF</Color>
+    <Color x:Key="SIPCoreSurfaceDark">#14FFFFFF</Color>
+
+    <!-- Text -->
+    <Color x:Key="SIPCoreTextPrimary">#101828</Color>
+    <Color x:Key="SIPCoreTextSecondary">#667085</Color>
+    <Color x:Key="SIPCoreTextOnDark">#FFFFFF</Color>
+    <Color x:Key="SIPCoreTextOnDarkMuted">#99FFFFFF</Color>
+
+    <Color x:Key="SIPCoreBorder">#E4E7EC</Color>
+
+    <!-- Semantic -->
+    <Color x:Key="SIPCoreSuccess">#12B76A</Color>
+    <Color x:Key="SIPCoreWarning">#F79009</Color>
+    <Color x:Key="SIPCoreDanger">#F04438</Color>
+
+    <!-- Priority chip palette, from priorityChipStyle() -->
+    <Color x:Key="PriorityLowBackground">#E7F8F1</Color>
+    <Color x:Key="PriorityLowText">#0F8A58</Color>
+    <Color x:Key="PriorityNormalBackground">#EAF1FF</Color>
+    <!-- PriorityNormalText reuses SIPCorePrimary -->
+    <Color x:Key="PriorityHighBackground">#FEF0E6</Color>
+    <Color x:Key="PriorityHighText">#B54708</Color>
+    <Color x:Key="PriorityCriticalBackground">#FEECEB</Color>
+    <Color x:Key="PriorityCriticalText">#B42318</Color>
+    <Color x:Key="PriorityDefaultBackground">#EEF1F6</Color>
+    <!-- PriorityDefaultText reuses SIPCoreInk -->
+
+    <!-- Radius scale — use instead of ad hoc numbers in new/edited XAML -->
+    <x:Double x:Key="RadiusSm">10</x:Double>
+    <x:Double x:Key="RadiusMd">16</x:Double>
+    <x:Double x:Key="RadiusLg">22</x:Double>
+    <x:Double x:Key="RadiusXl">28</x:Double>
+
+    <!-- Spacing scale -->
+    <x:Double x:Key="SpaceXs">6</x:Double>
+    <x:Double x:Key="SpaceSm">10</x:Double>
+    <x:Double x:Key="SpaceMd">16</x:Double>
+    <x:Double x:Key="SpaceLg">24</x:Double>
+    <x:Double x:Key="SpaceXl">32</x:Double>
+
+    <!-- Legacy dimen names kept for pages that already reference them -->
+    <x:Double x:Key="SIPCorePagePadding">20</x:Double>
+    <x:Double x:Key="SIPCoreCardRadius">18</x:Double>
+    <x:Double x:Key="SIPCoreButtonRadius">16</x:Double>
+
+</ResourceDictionary>

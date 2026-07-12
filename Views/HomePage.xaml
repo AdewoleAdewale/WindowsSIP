@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Port of HomeScreen() from SIPCoreApp.kt. -->
+<ContentPage x:Class="SipCoreMobile.Views.HomePage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:controls="clr-namespace:SipCoreMobile.Controls"
+             xmlns:vm="clr-namespace:SipCoreMobile.ViewModels"
+             x:DataType="vm:AppStateViewModel"
+             BackgroundColor="{StaticResource SIPCoreBackground}"
+             Shell.NavBarIsVisible="False">
+
+    <Grid RowDefinitions="Auto,*,Auto">
+
+        <controls:SipCoreHeader Grid.Row="0" x:Name="Header" DrawerRequested="OnDrawerRequested" />
+
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="20,20,20,24" Spacing="20">
+
+                <VerticalStackLayout HorizontalOptions="Center" Spacing="8">
+                    <Border StrokeShape="RoundRectangle 65" BackgroundColor="White"
+                            WidthRequest="130" HeightRequest="130" HorizontalOptions="Center">
+                        <Border.Shadow>
+                            <Shadow Brush="Black" Opacity="0.15" Radius="10" Offset="0,4" />
+                        </Border.Shadow>
+                        <Image Source="sipcore_logo.png" WidthRequest="90" HeightRequest="90" Aspect="AspectFit" />
+                    </Border>
+
+                    <Label Text="Enterprise Secure Communications"
+                           TextColor="{StaticResource SIPCoreDarkBlue}"
+                           FontSize="22" FontAttributes="Bold"
+                           HorizontalTextAlignment="Center"
+                           Margin="0,18,0,0" />
+
+                    <Label Text="Secure calling, messaging and collaboration for modern enterprises."
+                           TextColor="{StaticResource SIPCoreTextSecondary}"
+                           FontSize="14"
+                           HorizontalTextAlignment="Center"
+                           Padding="12,0" />
+                </VerticalStackLayout>
+
+                <!-- WorkDesk entry card -->
+                <Border StrokeShape="RoundRectangle 24" BackgroundColor="{StaticResource SIPCorePrimary}" Padding="22">
+                    <Border.Shadow>
+                        <Shadow Brush="Black" Opacity="0.12" Radius="10" Offset="0,4" />
+                    </Border.Shadow>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnOpenWorkDeskTapped" />
+                    </Border.GestureRecognizers>
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="WorkDesk" TextColor="White" FontAttributes="Bold" FontSize="22" />
+                        <Label Text="Tasks, approvals, checklists and team collaboration"
+                               TextColor="#E6FFFFFF" FontSize="14" />
+                        <Label Text="Open Workspace →" TextColor="White" FontAttributes="Bold" FontSize="14" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Version / footer card -->
+                <Border StrokeShape="RoundRectangle 22" BackgroundColor="{StaticResource SIPCoreCard}" Padding="22">
+                    <Border.Shadow>
+                        <Shadow Brush="Black" Opacity="0.08" Radius="8" Offset="0,2" />
+                    </Border.Shadow>
+                    <VerticalStackLayout HorizontalOptions="Center" Spacing="10">
+                        <Label Text="Version 1.0.0" TextColor="{StaticResource SIPCorePrimary}"
+                               FontAttributes="Bold" FontSize="16" HorizontalOptions="Center" />
+                        <BoxView HeightRequest="1" Color="{StaticResource SIPCoreBorder}" HorizontalOptions="Fill" />
+                        <Label Text="https://sipcore.org" TextColor="{StaticResource SIPCorePrimary}"
+                               FontAttributes="Bold" FontSize="14" HorizontalOptions="Center" />
+                    </VerticalStackLayout>
+                </Border>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <controls:BottomNavBar Grid.Row="2" x:Name="BottomNav" SelectedScreen="Home"
+                                DialerTapped="OnDialerTapped"
+                                ContactsTapped="OnContactsTapped"
+                                MessagesTapped="OnMessagesTapped"
+                                HistoryTapped="OnHistoryTapped" />
+
+    </Grid>
+</ContentPage>

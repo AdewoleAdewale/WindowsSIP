@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="SipCoreMobile.Views.WorkDeskTeamPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:controls="clr-namespace:SipCoreMobile.Controls"
+             BackgroundColor="{StaticResource SIPCoreDarkBlue}"
+             Shell.NavBarIsVisible="False">
+
+    <ContentPage.Resources>
+        <DataTemplate x:Key="TeamHeaderTemplate" x:DataType="controls:ContactListRowItem">
+            <Label Text="{Binding HeaderText}" FontSize="14" FontAttributes="Bold" TextColor="#B8FFFFFF" Margin="0,10,0,2" />
+        </DataTemplate>
+
+        <DataTemplate x:Key="TeamRowTemplate" x:DataType="controls:ContactListRowItem">
+            <Border StrokeShape="RoundRectangle 20" BackgroundColor="#14FFFFFF" Padding="14">
+                <Grid ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="10">
+                    <Border Grid.Column="0" StrokeShape="RoundRectangle 21" WidthRequest="42" HeightRequest="42"
+                            BackgroundColor="{Binding StatusColor}" Opacity="0.25">
+                        <Label Text="{Binding Initial}" TextColor="White" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center" />
+                    </Border>
+
+                    <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                        <Label Text="{Binding DisplayName}" TextColor="White" FontAttributes="Bold" FontSize="14" />
+                        <Label Text="{Binding CompanySubtitle}" TextColor="#80FFFFFF" FontSize="11" IsVisible="{Binding ShowCompanySubtitle}" />
+                        <Label Text="{Binding StatusText}" TextColor="{Binding StatusColor}" FontSize="12" />
+                    </VerticalStackLayout>
+
+                    <ImageButton Grid.Column="2" Source="call_icon.png" WidthRequest="22" HeightRequest="22" BackgroundColor="Transparent"
+                                 IsVisible="{Binding Contact.CanCall}" Clicked="OnCallContactClicked" CommandParameter="{Binding Contact}" />
+                    <ImageButton Grid.Column="3" Source="chat_icon.png" WidthRequest="22" HeightRequest="22" BackgroundColor="Transparent"
+                                 IsVisible="{Binding Contact.CanMessage}" Clicked="OnMessageContactClicked" CommandParameter="{Binding Contact}" />
+                </Grid>
+            </Border>
+        </DataTemplate>
+
+        <controls:ContactRowTemplateSelector x:Key="TeamRowSelector" HeaderTemplate="{StaticResource TeamHeaderTemplate}" ContactTemplate="{StaticResource TeamRowTemplate}" />
+    </ContentPage.Resources>
+
+    <Grid Padding="18" RowDefinitions="Auto,*">
+        <HorizontalStackLayout Grid.Row="0" Spacing="12">
+            <Border StrokeShape="RoundRectangle 21" BackgroundColor="#1AFFFFFF" WidthRequest="42" HeightRequest="42">
+                <Label Text="&#xF060;" FontFamily="MaterialIcons" TextColor="White" FontSize="18" HorizontalOptions="Center" VerticalOptions="Center" />
+                <Border.GestureRecognizers><TapGestureRecognizer Tapped="OnBackTapped" /></Border.GestureRecognizers>
+            </Border>
+            <VerticalStackLayout VerticalOptions="Center">
+                <Label Text="WorkDesk Team" TextColor="White" FontSize="20" FontAttributes="Bold" />
+                <Label x:Name="SubtitleLabel" TextColor="#A6FFFFFF" FontSize="12" />
+            </VerticalStackLayout>
+        </HorizontalStackLayout>
+
+        <Grid Grid.Row="1" Margin="0,16,0,0">
+            <Label x:Name="EmptyLabel" Text="No WorkDesk contacts available." TextColor="#A6FFFFFF" IsVisible="False" Margin="0,20,0,0" />
+            <CollectionView x:Name="TeamList" ItemTemplate="{StaticResource TeamRowSelector}">
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Vertical" ItemSpacing="10" />
+                </CollectionView.ItemsLayout>
+            </CollectionView>
+        </Grid>
+    </Grid>
+</ContentPage>

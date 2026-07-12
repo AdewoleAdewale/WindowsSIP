@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView x:Class="SipCoreMobile.Controls.DtmfDialpad"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <Grid RowDefinitions="Auto,Auto,Auto,Auto" ColumnDefinitions="*,*,*" RowSpacing="12" ColumnSpacing="12">
+        <!-- Row 1 -->
+        <Border Grid.Row="0" Grid.Column="0" StrokeShape="RoundRectangle 31" WidthRequest="62" HeightRequest="62" BackgroundColor="#24FFFFFF">
+            <Label Text="1" TextColor="White" FontSize="26" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center" />
+            <Border.GestureRecognizers><TapGestureRecognizer Tapped="OnDigitTapped" CommandParameter="1" /></Border.GestureRecognizers>
+        </Border>
+        <Border Grid.Row="0" Grid.Column="1" StrokeShape="RoundRectangle 31" WidthRequest="62" HeightRequest="62" BackgroundColor="#24FFFFFF">
+            <Label Text="2" TextColor="White" FontSize="26" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center" />
+            <Border.GestureRecognizers><TapGestureRecognizer Tapped="OnDigitTapped" CommandParameter="2" /></Border.GestureRecognizers>
+        </Border>
+        <Border Grid.Row="0" Grid.Column="2" StrokeShape="RoundRectangle 31" WidthRequest="62" HeightRequest="62" BackgroundColor="#24FFFFFF">
+            <Label Text="3" TextColor="White" FontSize="26" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center" />
+            <Border.GestureRecognizers><TapGestureRecognizer Tapped="OnDigitTapped" CommandParameter="3" /></Border.GestureRecognizers>
+        </Border>
+
+        <!-- Row 2 -->
+        <Border Grid.Row="1" Grid.Column="0" StrokeShape="RoundRectangle 31" WidthRequest="62" HeightRequest="62" BackgroundColor="#24FFFFFF">
+            <Label Text="4" TextColor="White" FontSize="26" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center" />
+            <Border.GestureRecognizers><TapGestureRecognizer Tapped="OnDigitTapped" CommandParameter="4" /></Border.GestureRecognizers>
+        </Border>
+        <Border Grid.Row="1" Grid.Column="1" StrokeShape="RoundRectangle 31" WidthRequest="62" HeightRequest="62" BackgroundColor="#24FFFFFF">
+            <Label Text="5" TextColor="White" FontSize="26" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center" />
+            <Border.GestureRecognizers><TapGestureRecognizer Tapped="OnDigitTapped" CommandParameter="5" /></Border.GestureRecognizers>
+        </Border>
+        <Border Grid.Row="1" Grid.Column="2" StrokeShape="RoundRectangle 31" WidthRequest="62" HeightRequest="62" BackgroundColor="#24FFFFFF">
+            <Label Text="6" TextColor="White" FontSize="26" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center" />
+            <Border.GestureRecognizers><TapGestureRecognizer Tapped="OnDigitTapped" CommandParameter="6" /></Border.GestureRecognizers>
+        </Border>
+
+        <!-- Row 3 -->
+        <Border Grid.Row="2" Grid.Column="0" StrokeShape="RoundRectangle 31" WidthRequest="62" HeightRequest="62" BackgroundColor="#24FFFFFF">
+            <Label Text="7" TextColor="White" FontSize="26" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center" />
+            <Border.GestureRecognizers><TapGestureRecognizer Tapped="OnDigitTapped" CommandParameter="7" /></Border.GestureRecognizers>
+        </Border>
+        <Border Grid.Row="2" Grid.Column="1" StrokeShape="RoundRectangle 31" WidthRequest="62" HeightRequest="62" BackgroundColor="#24FFFFFF">
+            <Label Text="8" TextColor="White" FontSize="26" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center" />
+            <Border.GestureRecognizers><TapGestureRecognizer Tapped="OnDigitTapped" CommandParameter="8" /></Border.GestureRecognizers>
+        </Border>
+        <Border Grid.Row="2" Grid.Column="2" StrokeShape="RoundRectangle 31" WidthRequest="62" HeightRequest="62" BackgroundColor="#24FFFFFF">
+            <Label Text="9" TextColor="White" FontSize="26" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center" />
+            <Border.GestureRecognizers><TapGestureRecognizer Tapped="OnDigitTapped" CommandParameter="9" /></Border.GestureRecognizers>
+        </Border>
+
+        <!-- Row 4 -->
+        <Border Grid.Row="3" Grid.Column="0" StrokeShape="RoundRectangle 31" WidthRequest="62" HeightRequest="62" BackgroundColor="#24FFFFFF">
+            <Label Text="*" TextColor="White" FontSize="26" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center" />
+            <Border.GestureRecognizers><TapGestureRecognizer Tapped="OnDigitTapped" CommandParameter="*" /></Border.GestureRecognizers>
+        </Border>
+        <Border Grid.Row="3" Grid.Column="1" StrokeShape="RoundRectangle 31" WidthRequest="62" HeightRequest="62" BackgroundColor="#24FFFFFF">
+            <Label Text="0" TextColor="White" FontSize="26" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center" />
+            <Border.GestureRecognizers><TapGestureRecognizer Tapped="OnDigitTapped" CommandParameter="0" /></Border.GestureRecognizers>
+        </Border>
+        <Border Grid.Row="3" Grid.Column="2" StrokeShape="RoundRectangle 31" WidthRequest="62" HeightRequest="62" BackgroundColor="#24FFFFFF">
+            <Label Text="#" TextColor="White" FontSize="26" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center" />
+            <Border.GestureRecognizers><TapGestureRecognizer Tapped="OnDigitTapped" CommandParameter="#" /></Border.GestureRecognizers>
+        </Border>
+    </Grid>
+</ContentView>

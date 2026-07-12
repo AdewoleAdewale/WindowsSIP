@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="SipCoreMobile.Views.ContactsPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:controls="clr-namespace:SipCoreMobile.Controls"
+             xmlns:vm="clr-namespace:SipCoreMobile.ViewModels"
+             x:DataType="vm:AppStateViewModel"
+             BackgroundColor="{StaticResource SIPCoreBackground}"
+             Shell.NavBarIsVisible="False">
+
+    <ContentPage.Resources>
+        <DataTemplate x:Key="ContactHeaderTemplate" x:DataType="controls:ContactListRowItem">
+            <Label Text="{Binding HeaderText}" FontSize="15" FontAttributes="Bold"
+                   TextColor="{StaticResource SIPCoreTextSecondary}" Margin="0,8,0,2" />
+        </DataTemplate>
+
+        <DataTemplate x:Key="ContactRowTemplate" x:DataType="controls:ContactListRowItem">
+            <Border StrokeShape="RoundRectangle 20" BackgroundColor="White" Padding="18">
+                <Border.Shadow>
+                    <Shadow Brush="Black" Opacity="0.06" Radius="4" Offset="0,2" />
+                </Border.Shadow>
+
+                <Grid ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="12">
+                    <Border Grid.Column="0" StrokeShape="RoundRectangle 29" BackgroundColor="{StaticResource SIPCoreBorder}"
+                            WidthRequest="58" HeightRequest="58">
+                        <Label Text="{Binding Initial}" TextColor="{StaticResource SIPCoreTextPrimary}"
+                               FontAttributes="Bold" FontSize="24" HorizontalOptions="Center" VerticalOptions="Center" />
+                    </Border>
+
+                    <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
+                        <HorizontalStackLayout Spacing="8">
+                            <Label Text="{Binding DisplayName}" FontAttributes="Bold" FontSize="18"
+                                   TextColor="{StaticResource SIPCoreTextPrimary}" LineBreakMode="TailTruncation" />
+                            <Border StrokeShape="RoundRectangle 10" BackgroundColor="{StaticResource SIPCorePrimary}"
+                                    Padding="8,3" IsVisible="{Binding Contact.IsExternal}">
+                                <Label Text="External" FontSize="11" FontAttributes="Bold" TextColor="White" />
+                            </Border>
+                        </HorizontalStackLayout>
+
+                        <Label Text="{Binding CompanySubtitle}" FontSize="13" TextColor="{StaticResource SIPCoreTextSecondary}"
+                               IsVisible="{Binding ShowCompanySubtitle}" />
+
+                        <Label Text="{Binding StatusText}" TextColor="{Binding StatusColor}" FontSize="14" />
+                    </VerticalStackLayout>
+
+                    <ImageButton Grid.Column="2" Source="call_icon.png" WidthRequest="24" HeightRequest="24"
+                                 BackgroundColor="Transparent" IsVisible="{Binding Contact.CanCall}"
+                                 Clicked="OnCallContactClicked" CommandParameter="{Binding Contact}" />
+
+                    <ImageButton Grid.Column="3" Source="chat_icon.png" WidthRequest="24" HeightRequest="24"
+                                 BackgroundColor="Transparent" IsVisible="{Binding Contact.CanMessage}"
+                                 Clicked="OnMessageContactClicked" CommandParameter="{Binding Contact}" />
+                </Grid>
+            </Border>
+        </DataTemplate>
+
+        <controls:ContactRowTemplateSelector x:Key="ContactRowSelector"
+                                              HeaderTemplate="{StaticResource ContactHeaderTemplate}"
+                                              ContactTemplate="{StaticResource ContactRowTemplate}" />
+    </ContentPage.Resources>
+
+    <Grid RowDefinitions="Auto,Auto,Auto,*,Auto">
+
+        <controls:SipCoreHeader Grid.Row="0" DrawerRequested="OnDrawerRequested" />
+
+        <Grid Grid.Row="1" Padding="20,18,20,0" ColumnDefinitions="*,Auto">
+            <VerticalStackLayout Grid.Column="0">
+                <Label Text="Contacts" FontSize="34" FontAttributes="Bold" TextColor="{StaticResource SIPCoreTextPrimary}" />
+                <Label Text="Internal and related company contacts" TextColor="{StaticResource SIPCoreTextSecondary}" />
+            </VerticalStackLayout>
+
+            <Border Grid.Column="1" StrokeShape="RoundRectangle 27" BackgroundColor="{StaticResource SIPCorePrimary}"
+                    WidthRequest="54" HeightRequest="54" VerticalOptions="Start">
+                <Label Text="&#xF234;" FontFamily="MaterialIcons" TextColor="White" FontSize="22"
+                       HorizontalOptions="Center" VerticalOptions="Center" />
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnAddContactTapped" />
+                </Border.GestureRecognizers>
+            </Border>
+        </Grid>
+
+        <SearchBar Grid.Row="2" x:Name="SearchBox" Placeholder="Search contacts, extensions, companies..."
+                   Margin="20,20,20,0" TextChanged="OnSearchTextChanged" />
+
+        <Grid Grid.Row="3">
+            <CollectionView x:Name="ContactsList" Padding="20,20" ItemTemplate="{StaticResource ContactRowSelector}">
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Vertical" ItemSpacing="14" />
+                </CollectionView.ItemsLayout>
+            </CollectionView>
+
+            <Label x:Name="EmptyLabel" Text="No contacts found." TextColor="{StaticResource SIPCoreTextSecondary}"
+                   Margin="20,8" IsVisible="False" />
+        </Grid>
+
+        <controls:BottomNavBar Grid.Row="4" SelectedScreen="Contacts"
+                                DialerTapped="OnDialerTapped"
+                                MessagesTapped="OnMessagesTapped"
+                                HistoryTapped="OnHistoryTapped" />
+
+    </Grid>
+</ContentPage>

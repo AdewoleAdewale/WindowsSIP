@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="SipCoreMobile.Views.GroupChatPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:SipCoreMobile.Models"
+             xmlns:vm="clr-namespace:SipCoreMobile.ViewModels"
+             x:DataType="vm:GroupsViewModel"
+             BackgroundColor="{StaticResource SIPCoreBackground}"
+             Shell.NavBarIsVisible="False">
+
+    <Grid RowDefinitions="Auto,*,Auto">
+
+        <Grid Grid.Row="0" BackgroundColor="White" Padding="16,14" ColumnDefinitions="Auto,*">
+            <ImageButton Grid.Column="0" Source="back_icon.png" WidthRequest="26" HeightRequest="26"
+                         BackgroundColor="Transparent" Clicked="OnBackClicked" />
+            <VerticalStackLayout Grid.Column="1" Margin="12,0,0,0">
+                <Label x:Name="GroupNameLabel" FontSize="22" FontAttributes="Bold" TextColor="{StaticResource SIPCoreDarkBlue}" />
+                <Label x:Name="MemberCountLabel" TextColor="{StaticResource SIPCoreTextSecondary}" />
+            </VerticalStackLayout>
+        </Grid>
+
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="20" Spacing="10">
+                <Label Text="This group chat currently sends your message individually to all group members."
+                       TextColor="{StaticResource SIPCoreTextSecondary}" />
+
+                <CollectionView x:Name="MembersList" ItemsSource="{Binding SelectedGroupMembers}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:GroupMemberUi">
+                            <Label TextColor="{StaticResource SIPCoreTextPrimary}">
+                                <Label.FormattedText>
+                                    <FormattedString>
+                                        <Span Text="• " />
+                                        <Span Text="{Binding DisplayName}" />
+                                        <Span Text=" (" />
+                                        <Span Text="{Binding Extension}" />
+                                        <Span Text=")" />
+                                    </FormattedString>
+                                </Label.FormattedText>
+                            </Label>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <Grid Grid.Row="2" BackgroundColor="White" Padding="14" ColumnDefinitions="*,Auto" ColumnSpacing="10">
+            <Border Grid.Column="0" StrokeShape="RoundRectangle 28" BackgroundColor="{StaticResource SIPCoreBackground}" Padding="16,10">
+                <Entry x:Name="MessageEntry" Placeholder="Message group..." BackgroundColor="Transparent" />
+            </Border>
+
+            <Border Grid.Column="1" StrokeShape="RoundRectangle 28" BackgroundColor="{StaticResource SIPCorePrimary}"
+                    WidthRequest="56" HeightRequest="56">
+                <Label Text="&#xF1D8;" FontFamily="MaterialIcons" TextColor="White" FontSize="20"
+                       HorizontalOptions="Center" VerticalOptions="Center" />
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnSendTapped" />
+                </Border.GestureRecognizers>
+            </Border>
+        </Grid>
+
+    </Grid>
+</ContentPage>

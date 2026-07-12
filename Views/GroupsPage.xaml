@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="SipCoreMobile.Views.GroupsPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:controls="clr-namespace:SipCoreMobile.Controls"
+             xmlns:models="clr-namespace:SipCoreMobile.Models"
+             xmlns:vm="clr-namespace:SipCoreMobile.ViewModels"
+             x:DataType="vm:GroupsViewModel"
+             BackgroundColor="{StaticResource SIPCoreBackground}"
+             Shell.NavBarIsVisible="False">
+
+    <Grid RowDefinitions="Auto,Auto,*,Auto">
+
+        <controls:SipCoreHeader Grid.Row="0" DrawerRequested="OnDrawerRequested" />
+
+        <Grid Grid.Row="1" Padding="20,18,20,0" ColumnDefinitions="*,Auto">
+            <VerticalStackLayout Grid.Column="0">
+                <Label Text="Groups" FontSize="34" FontAttributes="Bold" TextColor="{StaticResource SIPCoreTextPrimary}" />
+                <Label Text="Create teams for calls and messaging" TextColor="{StaticResource SIPCoreTextSecondary}" />
+            </VerticalStackLayout>
+
+            <Border Grid.Column="1" StrokeShape="RoundRectangle 27" BackgroundColor="{StaticResource SIPCorePrimary}"
+                    WidthRequest="54" HeightRequest="54" VerticalOptions="Start">
+                <Label Text="&#xF067;" FontFamily="MaterialIcons" TextColor="White" FontSize="22"
+                       HorizontalOptions="Center" VerticalOptions="Center" />
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnCreateGroupTapped" />
+                </Border.GestureRecognizers>
+            </Border>
+        </Grid>
+
+        <Grid Grid.Row="2">
+            <CollectionView x:Name="GroupsList" Padding="20,20" ItemsSource="{Binding Groups}">
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Vertical" ItemSpacing="14" />
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:GroupUi">
+                        <Border StrokeShape="RoundRectangle 20" BackgroundColor="White" Padding="18">
+                            <Border.Shadow>
+                                <Shadow Brush="Black" Opacity="0.06" Radius="4" Offset="0,2" />
+                            </Border.Shadow>
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnGroupTapped" CommandParameter="{Binding .}" />
+                            </Border.GestureRecognizers>
+
+                            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="16">
+                                <Border Grid.Column="0" StrokeShape="RoundRectangle 29" BackgroundColor="#DCEBFF"
+                                        WidthRequest="58" HeightRequest="58">
+                                    <Label Text="&#xF0C0;" FontFamily="MaterialIcons" TextColor="{StaticResource SIPCorePrimary}"
+                                           FontSize="22" HorizontalOptions="Center" VerticalOptions="Center" />
+                                </Border>
+
+                                <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
+                                    <Label Text="{Binding Name}" FontSize="20" FontAttributes="Bold"
+                                           TextColor="{StaticResource SIPCoreTextPrimary}" />
+                                    <Label Text="{Binding MemberCount, StringFormat='{0} members'}"
+                                           TextColor="{StaticResource SIPCoreTextSecondary}" />
+                                </VerticalStackLayout>
+
+                                <Label Grid.Column="2" Text="&#xF105;" FontFamily="MaterialIcons"
+                                       TextColor="{StaticResource SIPCoreTextSecondary}" FontSize="18" VerticalOptions="Center" />
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <Label x:Name="EmptyLabel" Text="No groups yet. Tap + to create one."
+                   TextColor="{StaticResource SIPCoreTextSecondary}" Margin="20,8" IsVisible="False" />
+        </Grid>
+
+        <controls:BottomNavBar Grid.Row="3"
+                                DialerTapped="OnDialerTapped"
+                                ContactsTapped="OnContactsTapped"
+                                MessagesTapped="OnMessagesTapped"
+                                HistoryTapped="OnHistoryTapped" />
+
+    </Grid>
+</ContentPage>

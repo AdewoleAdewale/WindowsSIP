@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView x:Class="SipCoreMobile.Controls.EmptyMeetingCard"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <Border StrokeShape="RoundRectangle 20" BackgroundColor="White" Padding="18">
+        <VerticalStackLayout HorizontalOptions="Center" Spacing="6">
+            <Label Text="&#xF03D;" FontFamily="MaterialIcons" FontSize="34" TextColor="{StaticResource SIPCorePrimary}" HorizontalOptions="Center" />
+            <Label x:Name="TitleLabel" FontAttributes="Bold" TextColor="{StaticResource SIPCoreDarkBlue}" HorizontalOptions="Center" />
+            <Label x:Name="BodyLabel" FontSize="13" TextColor="{StaticResource SIPCoreTextSecondary}" HorizontalTextAlignment="Center" />
+        </VerticalStackLayout>
+    </Border>
+</ContentView>

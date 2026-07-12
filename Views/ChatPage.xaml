@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="SipCoreMobile.Views.ChatPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:SipCoreMobile.Models"
+             xmlns:vm="clr-namespace:SipCoreMobile.ViewModels"
+             x:DataType="vm:ChatViewModel"
+             BackgroundColor="{StaticResource SIPCoreBackground}"
+             Shell.NavBarIsVisible="False">
+
+    <Grid RowDefinitions="Auto,*,Auto,Auto">
+
+        <!-- Header -->
+        <Grid Grid.Row="0" BackgroundColor="White" Padding="16,14" ColumnDefinitions="Auto,Auto,*,Auto">
+            <ImageButton Grid.Column="0" Source="back_icon.png" WidthRequest="28" HeightRequest="28"
+                         BackgroundColor="Transparent" Clicked="OnBackClicked" />
+
+            <Border Grid.Column="1" StrokeShape="RoundRectangle 26" BackgroundColor="#DCEBFF"
+                    WidthRequest="52" HeightRequest="52" Margin="10,0,0,0">
+                <Label x:Name="AvatarLabel" TextColor="{StaticResource SIPCoreDarkBlue}"
+                       FontAttributes="Bold" FontSize="18" HorizontalOptions="Center" VerticalOptions="Center" />
+            </Border>
+
+            <VerticalStackLayout Grid.Column="2" VerticalOptions="Center" Margin="12,0,0,0">
+                <!-- New Message mode -->
+                <VerticalStackLayout x:Name="NewMessageHeader" IsVisible="False" Spacing="6">
+                    <Label Text="New Message" FontAttributes="Bold" FontSize="20" TextColor="{StaticResource SIPCoreTextPrimary}" />
+                    <Entry x:Name="NewRecipientEntry" Placeholder="Enter extension" Keyboard="Numeric"
+                           Unfocused="OnNewRecipientUnfocused" />
+                </VerticalStackLayout>
+
+                <!-- Existing conversation header -->
+                <VerticalStackLayout x:Name="ConversationHeader" IsVisible="False" Spacing="2">
+                    <Label x:Name="ContactNameLabel" FontAttributes="Bold" FontSize="19"
+                           TextColor="{StaticResource SIPCoreTextPrimary}" LineBreakMode="TailTruncation" />
+                    <Label x:Name="ContactStatusLabel" FontSize="13" />
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+
+            <ImageButton Grid.Column="3" Source="call_icon.png" WidthRequest="26" HeightRequest="26"
+                         BackgroundColor="Transparent" Clicked="OnCallClicked" />
+        </Grid>
+
+        <!-- Message list -->
+        <CollectionView Grid.Row="1" x:Name="MessagesList" Padding="16" ItemsSource="{Binding Messages}"
+                         VerticalScrollBarVisibility="Default">
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout Orientation="Vertical" ItemSpacing="14" />
+            </CollectionView.ItemsLayout>
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:ChatMessage">
+                    <Grid>
+                        <Border x:Name="Bubble" StrokeShape="RoundRectangle 20" Padding="14"
+                                MaximumWidthRequest="320" HorizontalOptions="Start">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnMessageTapped" CommandParameter="{Binding .}" NumberOfTapsRequired="2" />
+                            </Border.GestureRecognizers>
+
+                            <VerticalStackLayout Spacing="4">
+                                <Label x:Name="ReplyPreviewLabel" Text="{Binding ReplyPreview}" FontSize="12"
+                                       IsVisible="{Binding ReplyPreview, Converter={StaticResource StringNotEmptyConverter}}" />
+
+                                <Label x:Name="BodyLabel" FontSize="15">
+                                    <Label.Triggers>
+                                        <DataTrigger TargetType="Label" Binding="{Binding IsDeleted}" Value="True">
+                                            <Setter Property="Text" Value="This message was deleted" />
+                                            <Setter Property="FontAttributes" Value="Italic" />
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="Label" Binding="{Binding IsDeleted}" Value="False">
+                                            <Setter Property="Text" Value="{Binding Body}" />
+                                        </DataTrigger>
+                                    </Label.Triggers>
+                                </Label>
+
+                                <HorizontalStackLayout Spacing="4">
+                                    <Label x:Name="TimeLabel" Text="{Binding Time, Converter={StaticResource MessageTimeConverter}}"
+                                           FontSize="11" TextColor="{StaticResource SIPCoreTextSecondary}" />
+                                    <Label x:Name="TicksLabel" Text="{Binding Status, Converter={StaticResource StatusTicksConverter}}"
+                                           FontSize="12" IsVisible="{Binding IsMine}" />
+                                </HorizontalStackLayout>
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <Grid.Triggers>
+                            <DataTrigger TargetType="Grid" Binding="{Binding IsMine}" Value="True">
+                                <Setter TargetName="Bubble" Property="HorizontalOptions" Value="End" />
+                                <Setter TargetName="Bubble" Property="BackgroundColor" Value="{StaticResource SIPCorePrimary}" />
+                                <Setter TargetName="BodyLabel" Property="TextColor" Value="White" />
+                                <Setter TargetName="TicksLabel" Property="TextColor" Value="White" />
+                            </DataTrigger>
+                            <DataTrigger TargetType="Grid" Binding="{Binding IsMine}" Value="False">
+                                <Setter TargetName="Bubble" Property="HorizontalOptions" Value="Start" />
+                                <Setter TargetName="Bubble" Property="BackgroundColor" Value="White" />
+                                <Setter TargetName="BodyLabel" Property="TextColor" Value="{StaticResource SIPCoreTextPrimary}" />
+                                <Setter TargetName="TicksLabel" Property="TextColor" Value="{StaticResource SIPCoreTextSecondary}" />
+                            </DataTrigger>
+                        </Grid.Triggers>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <!-- Reply context bar -->
+        <Grid x:Name="ReplyBar" Grid.Row="2" BackgroundColor="White" Padding="14,8" IsVisible="False"
+              ColumnDefinitions="4,*,Auto">
+            <BoxView Grid.Column="0" Color="{StaticResource SIPCorePrimary}" WidthRequest="4" HeightRequest="42" />
+            <VerticalStackLayout Grid.Column="1" Margin="10,0,0,0">
+                <Label Text="Replying to" TextColor="{StaticResource SIPCorePrimary}" FontAttributes="Bold" FontSize="12" />
+                <Label x:Name="ReplyBarPreview" TextColor="{StaticResource SIPCoreTextSecondary}" FontSize="13" LineBreakMode="TailTruncation" />
+            </VerticalStackLayout>
+            <ImageButton Grid.Column="2" Source="close_icon.png" WidthRequest="20" HeightRequest="20"
+                         BackgroundColor="Transparent" Clicked="OnCancelReplyClicked" />
+        </Grid>
+
+        <!-- Input bar -->
+        <Grid Grid.Row="3" BackgroundColor="White" Padding="14" ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="8">
+            <ImageButton Grid.Column="0" Source="mic_icon.png" WidthRequest="26" HeightRequest="26"
+                         BackgroundColor="Transparent" Clicked="OnMicClicked" />
+
+            <Border Grid.Column="1" StrokeShape="RoundRectangle 20" BackgroundColor="{StaticResource SIPCoreBackground}"
+                    Padding="14,8">
+                <Entry x:Name="MessageEntry" Placeholder="Type a message" BackgroundColor="Transparent" />
+            </Border>
+
+            <ImageButton Grid.Column="2" Source="attach_icon.png" WidthRequest="26" HeightRequest="26"
+                         BackgroundColor="Transparent" Clicked="OnAttachClicked" />
+
+            <Border Grid.Column="3" StrokeShape="RoundRectangle 22" BackgroundColor="{StaticResource SIPCorePrimary}"
+                    WidthRequest="44" HeightRequest="44">
+                <Label Text="&#xF040;" FontFamily="MaterialIcons" TextColor="White" FontSize="18"
+                       HorizontalOptions="Center" VerticalOptions="Center" />
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnSendTapped" />
+                </Border.GestureRecognizers>
+            </Border>
+        </Grid>
+
+    </Grid>
+</ContentPage>

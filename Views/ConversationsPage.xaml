@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="SipCoreMobile.Views.ConversationsPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:controls="clr-namespace:SipCoreMobile.Controls"
+             xmlns:models="clr-namespace:SipCoreMobile.Models"
+             xmlns:vm="clr-namespace:SipCoreMobile.ViewModels"
+             x:DataType="vm:AppStateViewModel"
+             BackgroundColor="{StaticResource SIPCoreBackground}"
+             Shell.NavBarIsVisible="False">
+
+    <Grid RowDefinitions="Auto,Auto,Auto,*,Auto">
+
+        <controls:SipCoreHeader Grid.Row="0" DrawerRequested="OnDrawerRequested" />
+
+        <SearchBar Grid.Row="1" x:Name="SearchBox" Placeholder="Search conversations..."
+                   Margin="20,18,20,0" TextChanged="OnSearchTextChanged" />
+
+        <Label Grid.Row="2" Text="Recent Chats" FontSize="34" FontAttributes="Bold"
+               TextColor="{StaticResource SIPCoreTextPrimary}" Margin="20,28,20,18" />
+
+        <Grid Grid.Row="3">
+            <CollectionView x:Name="ConversationsList" Padding="20,0">
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Vertical" ItemSpacing="14" />
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:ConversationUi">
+                        <Border StrokeShape="RoundRectangle 20" BackgroundColor="White" Padding="16">
+                            <Border.Shadow>
+                                <Shadow Brush="Black" Opacity="0.06" Radius="4" Offset="0,2" />
+                            </Border.Shadow>
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnConversationTapped" CommandParameter="{Binding .}" />
+                            </Border.GestureRecognizers>
+
+                            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="14">
+                                <Border Grid.Column="0" StrokeShape="RoundRectangle 29" BackgroundColor="#DCEBFF"
+                                        WidthRequest="58" HeightRequest="58">
+                                    <Label Text="{Binding Extension, Converter={StaticResource LastTwoCharsConverter}}"
+                                           TextColor="{StaticResource SIPCoreDarkBlue}"
+                                           FontAttributes="Bold" FontSize="20" HorizontalOptions="Center" VerticalOptions="Center" />
+                                </Border>
+
+                                <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
+                                    <Label Text="{Binding Extension}" FontAttributes="Bold" FontSize="18"
+                                           TextColor="{StaticResource SIPCoreTextPrimary}" LineBreakMode="TailTruncation" />
+                                    <Label FontSize="12">
+                                        <Label.Triggers>
+                                            <DataTrigger TargetType="Label" Binding="{Binding IsOnline}" Value="True">
+                                                <Setter Property="Text" Value="Available" />
+                                                <Setter Property="TextColor" Value="{StaticResource SIPCoreSuccess}" />
+                                            </DataTrigger>
+                                            <DataTrigger TargetType="Label" Binding="{Binding IsOnline}" Value="False">
+                                                <Setter Property="Text" Value="Offline" />
+                                                <Setter Property="TextColor" Value="Gray" />
+                                            </DataTrigger>
+                                        </Label.Triggers>
+                                    </Label>
+                                    <Label Text="{Binding LastMessage}" TextColor="{StaticResource SIPCoreTextSecondary}"
+                                           LineBreakMode="TailTruncation" MaxLines="1" />
+                                </VerticalStackLayout>
+
+                                <Border Grid.Column="2" StrokeShape="RoundRectangle 14" BackgroundColor="{StaticResource SIPCorePrimary}"
+                                        WidthRequest="28" HeightRequest="28" VerticalOptions="Start"
+                                        IsVisible="{Binding UnreadCount, Converter={StaticResource IntGreaterThanZeroConverter}}">
+                                    <Label Text="{Binding UnreadCount}" TextColor="White" FontSize="12"
+                                           HorizontalOptions="Center" VerticalOptions="Center" />
+                                </Border>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <Label x:Name="EmptyLabel" Text="No conversations yet. Tap compose to start."
+                   TextColor="{StaticResource SIPCoreTextSecondary}" Margin="20,0" IsVisible="False" />
+
+            <Border StrokeShape="RoundRectangle 28" BackgroundColor="{StaticResource SIPCorePrimary}"
+                    WidthRequest="56" HeightRequest="56"
+                    HorizontalOptions="End" VerticalOptions="End" Margin="0,0,28,20">
+                <Label Text="&#xF040;" FontFamily="MaterialIcons" TextColor="White" FontSize="22"
+                       HorizontalOptions="Center" VerticalOptions="Center" />
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnComposeTapped" />
+                </Border.GestureRecognizers>
+            </Border>
+        </Grid>
+
+        <controls:BottomNavBar Grid.Row="4" SelectedScreen="Conversations"
+                                DialerTapped="OnDialerTapped"
+                                ContactsTapped="OnContactsTapped"
+                                HistoryTapped="OnHistoryTapped" />
+
+    </Grid>
+</ContentPage>

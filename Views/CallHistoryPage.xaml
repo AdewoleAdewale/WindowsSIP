@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="SipCoreMobile.Views.CallHistoryPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:controls="clr-namespace:SipCoreMobile.Controls"
+             xmlns:models="clr-namespace:SipCoreMobile.Models"
+             xmlns:vm="clr-namespace:SipCoreMobile.ViewModels"
+             x:DataType="vm:AppStateViewModel"
+             BackgroundColor="{StaticResource SIPCoreBackground}"
+             Shell.NavBarIsVisible="False">
+
+    <ContentPage.Resources>
+        <DataTemplate x:Key="HeaderRowTemplate" x:DataType="models:CallHistoryRowItem">
+            <Label Text="{Binding HeaderText}" FontSize="14" FontAttributes="Bold"
+                   TextColor="{StaticResource SIPCoreTextSecondary}" Margin="0,6,0,2" />
+        </DataTemplate>
+
+        <DataTemplate x:Key="LogRowTemplate" x:DataType="models:CallHistoryRowItem">
+            <Border StrokeShape="RoundRectangle 20" BackgroundColor="White" Padding="18">
+                <Border.Shadow>
+                    <Shadow Brush="Black" Opacity="0.06" Radius="4" Offset="0,2" />
+                </Border.Shadow>
+
+                <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="16">
+                    <Border Grid.Column="0" StrokeShape="RoundRectangle 28" WidthRequest="56" HeightRequest="56"
+                            BackgroundColor="{Binding IconBackgroundColor}">
+                        <Label Text="{Binding IconGlyph}" TextColor="{Binding IconColor}"
+                               FontFamily="MaterialIcons" FontSize="22"
+                               HorizontalOptions="Center" VerticalOptions="Center" />
+                    </Border>
+
+                    <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
+                        <Label Text="{Binding DisplayName}" FontAttributes="Bold" FontSize="19"
+                               TextColor="{StaticResource SIPCoreTextPrimary}" LineBreakMode="TailTruncation" />
+                        <Label Text="{Binding StatusText}" TextColor="{StaticResource SIPCoreTextSecondary}" />
+                        <Label Text="{Binding Subtitle}" FontSize="12" TextColor="{StaticResource SIPCoreTextSecondary}" />
+                    </VerticalStackLayout>
+
+                    <ImageButton Grid.Column="2" Source="call_icon.png" WidthRequest="26" HeightRequest="26"
+                                 BackgroundColor="Transparent"
+                                 Clicked="OnCallBackClicked" CommandParameter="{Binding Extension}" />
+                </Grid>
+            </Border>
+        </DataTemplate>
+
+        <controls:CallHistoryItemTemplateSelector x:Key="RowSelector"
+                                                    HeaderTemplate="{StaticResource HeaderRowTemplate}"
+                                                    LogTemplate="{StaticResource LogRowTemplate}" />
+    </ContentPage.Resources>
+
+    <Grid RowDefinitions="Auto,Auto,*,Auto">
+
+        <controls:SipCoreHeader Grid.Row="0" DrawerRequested="OnDrawerRequested" />
+
+        <Grid Grid.Row="1" Padding="20,18,20,0" ColumnDefinitions="*,Auto">
+            <VerticalStackLayout Grid.Column="0">
+                <Label Text="Call History" FontSize="34" FontAttributes="Bold" TextColor="{StaticResource SIPCoreTextPrimary}" />
+                <Label Text="Recent inbound and outbound calls" TextColor="{StaticResource SIPCoreTextSecondary}" />
+            </VerticalStackLayout>
+
+            <Button x:Name="ClearButton" Grid.Column="1" Text="Clear" TextColor="{StaticResource SIPCoreDanger}"
+                    BackgroundColor="Transparent" VerticalOptions="Start" Clicked="OnClearHistoryClicked" />
+        </Grid>
+
+        <Grid Grid.Row="2">
+            <CollectionView x:Name="HistoryList" Padding="20,22" ItemTemplate="{StaticResource RowSelector}">
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Vertical" ItemSpacing="14" />
+                </CollectionView.ItemsLayout>
+            </CollectionView>
+
+            <VerticalStackLayout x:Name="EmptyState" IsVisible="False" HorizontalOptions="Center" VerticalOptions="Center" Spacing="10" Padding="28">
+                <Label Text="No call history yet" FontAttributes="Bold" FontSize="18" TextColor="{StaticResource SIPCoreTextPrimary}" HorizontalOptions="Center" />
+                <Label Text="Your completed and missed calls will appear here." TextColor="{StaticResource SIPCoreTextSecondary}" HorizontalTextAlignment="Center" />
+            </VerticalStackLayout>
+        </Grid>
+
+        <controls:BottomNavBar Grid.Row="3" SelectedScreen="CallHistory"
+                                DialerTapped="OnDialerTapped"
+                                ContactsTapped="OnContactsTapped"
+                                MessagesTapped="OnMessagesTapped" />
+
+    </Grid>
+</ContentPage>

@@ -1,0 +1,15 @@
+Font: MaterialIcons-Regular.ttf
+Source: Font Awesome 4.7.0 (fontawesome-webfont.ttf), fetched via the "font-awesome" npm
+package (https://www.npmjs.com/package/font-awesome), version 4.7.0.
+
+License: SIL Open Font License, Version 1.1 (OFL-1.1).
+Full license text: https://scripts.sil.org/OFL
+
+The OFL permits embedding and redistributing this font, including in commercial closed-source
+applications, provided the font itself is not sold on its own. Renamed here to
+"MaterialIcons-Regular.ttf" / registered under the font alias "MaterialIcons" purely to match
+the FontFamily="MaterialIcons" references already used throughout this codebase (see
+Resources/Fonts/README.md) -- it is still Font Awesome 4 under the hood, not Google's Material
+Icons font.
+
+Font Awesome by Dave Gandy - http://fontawesome.io

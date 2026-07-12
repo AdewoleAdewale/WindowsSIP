@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage x:Class="SipCoreMobile.Views.LoginPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:SipCoreMobile.ViewModels"
+             x:DataType="vm:AppStateViewModel"
+             BackgroundColor="{StaticResource SIPCoreBackground}"
+             Shell.NavBarIsVisible="False">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="28" Spacing="0" VerticalOptions="Center">
+
+            <!-- Logo -->
+            <Border StrokeShape="RoundRectangle 34"
+                    BackgroundColor="#1A0057B8"
+                    WidthRequest="120" HeightRequest="120"
+                    HorizontalOptions="Center">
+                <Image Source="sipcore_logo.png" WidthRequest="82" HeightRequest="82"
+                       Aspect="AspectFit" HorizontalOptions="Center" VerticalOptions="Center" />
+            </Border>
+
+            <Label Text="Enterprise Secure Communications"
+                   TextColor="{StaticResource SIPCoreTextSecondary}"
+                   FontSize="15"
+                   HorizontalOptions="Center"
+                   Margin="0,24,0,38" />
+
+            <!-- Sign-in card -->
+            <Border StrokeShape="RoundRectangle 28"
+                    BackgroundColor="{StaticResource SIPCoreCard}"
+                    Padding="24">
+                <Border.Shadow>
+                    <Shadow Brush="Black" Opacity="0.12" Radius="12" Offset="0,4" />
+                </Border.Shadow>
+
+                <VerticalStackLayout Spacing="0">
+                    <Label Text="Sign in"
+                           FontSize="26" FontAttributes="Bold"
+                           TextColor="{StaticResource SIPCoreDarkBlue}" />
+
+                    <Entry x:Name="ExtensionEntry"
+                           Placeholder="Extension (e.g. 1001)"
+                           Keyboard="Numeric"
+                           Margin="0,20,0,0" />
+
+                    <Entry x:Name="PasswordEntry"
+                           Placeholder="Password"
+                           IsPassword="True"
+                           Margin="0,16,0,0" />
+
+                    <Button Text="{Binding IsLoggingIn, Converter={StaticResource LoginButtonTextConverter}}"
+                            IsEnabled="{Binding IsLoggingIn, Converter={StaticResource InverseBoolConverter}}"
+                            Clicked="OnLoginClicked"
+                            BackgroundColor="{StaticResource SIPCorePrimary}"
+                            TextColor="White"
+                            FontSize="17" FontAttributes="Bold"
+                            HeightRequest="58"
+                            CornerRadius="18"
+                            Margin="0,26,0,0" />
+
+                    <Label Text="{Binding Status}"
+                           TextColor="{StaticResource SIPCoreTextPrimary}"
+                           FontSize="14"
+                           HorizontalTextAlignment="Center"
+                           Margin="0,18,0,0" />
+                </VerticalStackLayout>
+            </Border>
+
+            <Label Text="Powered by Softworks LLC"
+                   TextColor="{StaticResource SIPCoreTextSecondary}"
+                   Opacity="0.9"
+                   FontSize="13"
+                   HorizontalOptions="Center"
+                   Margin="0,36,0,0" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
