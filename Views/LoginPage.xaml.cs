@@ -1,11 +1,13 @@
-using System;
-using Microsoft.Maui.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using SipCoreMobile.ViewModels;
 
 namespace SipCoreMobile.Views;
 
 public partial class LoginPage : ContentPage
 {
+    private const string Domain = "4.206.202.181";
+    private const double HeroCollapseWidth = 860;
+
     private readonly AppStateViewModel _viewModel;
 
     public LoginPage(AppStateViewModel viewModel)
@@ -13,35 +15,60 @@ public partial class LoginPage : ContentPage
         InitializeComponent();
         _viewModel = viewModel;
         BindingContext = viewModel;
+
+     
+        SizeChanged += OnPageSizeChanged;
     }
 
-    private const string Domain = "4.206.202.181";
+    /// <summary>Hide the hero pane on narrow windows so the form gets full width.</summary>
+    private void OnPageSizeChanged(object? sender, EventArgs e)
+    {
+        var narrow = Width > 0 && Width < HeroCollapseWidth;
+        HeroPane.IsVisible = !narrow;
+        RootGrid.ColumnDefinitions[0].Width = narrow ? new GridLength(0) : GridLength.Star;
+        RootGrid.ColumnDefinitions[1].Width = narrow ? GridLength.Star : new GridLength(460);
+    }
 
-    private async void OnLoginClicked(object? sender, EventArgs e)
+    /// <summary>Fluent-style focus ring: accent border while the field has focus.</summary>
+    private void OnFieldFocusChanged(object? sender, FocusEventArgs e)
+    {
+        var border = sender == ExtensionEntry ? ExtensionBorder : PasswordBorder;
+        border.Stroke = e.IsFocused
+            ? (Color)Application.Current!.Resources["SIPCorePrimary"]
+            : (Color)Application.Current!.Resources["SIPCoreBorder"];
+    }
+
+    private void OnTogglePasswordClicked(object? sender, EventArgs e)
+    {
+        PasswordEntry.IsPassword = !PasswordEntry.IsPassword;
+        RevealButton.Text = PasswordEntry.IsPassword ? "👁" : "🙈";
+    }
+
+    private void OnRememberMeLabelTapped(object? sender, EventArgs e) =>
+        RememberMeCheck.IsChecked = !RememberMeCheck.IsChecked;
+
+    private void OnExtensionCompleted(object? sender, EventArgs e) =>
+        PasswordEntry.Focus();
+
+    private async void OnPasswordCompleted(object? sender, EventArgs e) =>
+        await AttemptLoginAsync();
+
+    private async void OnLoginClicked(object? sender, EventArgs e) =>
+        await AttemptLoginAsync();
+
+    private async Task AttemptLoginAsync()
     {
         if (_viewModel.IsLoggingIn) return;
 
-        // Perform basic verification before invoking view model mechanics
-        if (string.IsNullOrWhiteSpace(ExtensionEntry.Text) || string.IsNullOrWhiteSpace(PasswordEntry.Text))
+        var extension = ExtensionEntry.Text?.Trim() ?? "";
+        var password = PasswordEntry.Text ?? "";
+
+        if (string.IsNullOrEmpty(extension) || string.IsNullOrEmpty(password))
         {
-            _viewModel.Status = "Extension and Password cannot be blank.";
+            await DisplayAlert("Missing details", "Enter your extension and password to sign in.", "OK");
             return;
         }
 
-        // Optional: Save extension info locally here if RememberMeCheck.IsChecked == true
-
-        await _viewModel.LoginAsync(ExtensionEntry.Text.Trim(), PasswordEntry.Text, Domain);
-    }
-
-    /// <summary>
-    /// Implements standard Windows input behavior allowing users to inspect their typed input.
-    /// </summary>
-    private void OnTogglePasswordClicked(object sender, EventArgs e)
-    {
-        if (sender is Button toggleButton)
-        {
-            PasswordEntry.IsPassword = !PasswordEntry.IsPassword;
-            toggleButton.Text = PasswordEntry.IsPassword ? "👁" : "🙈";
-        }
+        await _viewModel.LoginAsync(extension, password, Domain);
     }
 }

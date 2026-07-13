@@ -4,115 +4,186 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:SipCoreMobile.ViewModels"
              x:DataType="vm:AppStateViewModel"
+             x:Name="Root"
              BackgroundColor="{StaticResource SIPCoreBackground}"
              Shell.NavBarIsVisible="False">
 
-    <!-- Grid system accommodates both Desktop split-views and responsive scaling -->
-    <Grid ColumnDefinitions="*, Auto" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+    <Grid x:Name="RootGrid" ColumnDefinitions="*,460">
 
-        <!-- LEFT SIDE: Windows Hero / Branding Section (Hidden on narrow viewports if necessary) -->
-        <Grid Grid.Column="0" BackgroundColor="{StaticResource SIPCorePrimary}" Padding="40" RowDefinitions="*, Auto">
-            <VerticalStackLayout VerticalOptions="Center" Spacing="16" HorizontalOptions="Center">
-                <!-- Large Native Look Icon -->
-                <Border StrokeShape="RoundRectangle 24" BackgroundColor="#20FFFFFF" WidthRequest="100" HeightRequest="100" HorizontalOptions="Center" StrokeThickness="0">
-                    <Image Source="sipcore_logo.png" WidthRequest="64" HeightRequest="64" Aspect="AspectFit"/>
+        <!-- ══════════ LEFT: Brand hero (collapses on narrow windows) ══════════ -->
+        <Grid x:Name="HeroPane" Grid.Column="0" RowDefinitions="*,Auto" Padding="48">
+            <Grid.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Color="#0E42B3" Offset="0.0" />
+                    <GradientStop Color="{StaticResource SIPCorePrimary}" Offset="0.55" />
+                    <GradientStop Color="#3D7BFF" Offset="1.0" />
+                </LinearGradientBrush>
+            </Grid.Background>
+
+            <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="20">
+                <Border StrokeShape="RoundRectangle 26" StrokeThickness="0"
+                        BackgroundColor="White"
+                        WidthRequest="104" HeightRequest="104"
+                        HorizontalOptions="Center">
+                    <Image Source="sipcorelogo.png" WidthRequest="64" HeightRequest="64"
+                           Aspect="AspectFit" HorizontalOptions="Center" VerticalOptions="Center" />
                 </Border>
-                <Label Text="SipCore Enterprise" FontAttributes="Bold" FontSize="32" TextColor="White" HorizontalOptions="Center"/>
-                <Label Text="Secure, distributed, and enterprise-grade communications." TextColor="#DCE6F2" FontSize="16" HorizontalOptions="Center" HorizontalTextAlignment="Center" MaximumWidthRequest="350"/>
-            </VerticalStackLayout>
 
-            <Label Grid.Row="1" Text="Powered by Softworks LLC" TextColor="#A6C4EC" FontSize="12" HorizontalOptions="Center"/>
-        </Grid>
-
-        <!-- RIGHT SIDE: Modern Windows Fluent Login Console -->
-        <ScrollView Grid.Column="1" WidthRequest="450" BackgroundColor="{StaticResource SIPCoreCard}" VerticalOptions="FillAndExpand">
-            <VerticalStackLayout Padding="40" Spacing="24" VerticalOptions="Center">
-
-                <!-- Header Block -->
-                <VerticalStackLayout Spacing="6">
-                    <Label Text="Sign In" FontSize="28" FontAttributes="Bold" TextColor="{StaticResource SIPCoreDarkBlue}" />
-                    <Label Text="Access your communication workspace" FontSize="14" TextColor="{StaticResource SIPCoreTextSecondary}"/>
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="SIPCore Enterprise"
+                           FontSize="34" FontAttributes="Bold" TextColor="White"
+                           HorizontalOptions="Center" />
+                    <Label Text="Secure, distributed, enterprise-grade communications."
+                           FontSize="15" TextColor="#D6E3F8"
+                           HorizontalOptions="Center" HorizontalTextAlignment="Center"
+                           MaximumWidthRequest="360" LineHeight="1.35" />
                 </VerticalStackLayout>
 
-                <!-- Input Elements with Windows Style Grouping -->
-                <VerticalStackLayout Spacing="16">
+                <!-- Feature ticks -->
+                <VerticalStackLayout Spacing="10" Margin="0,20,0,0" HorizontalOptions="Center">
+                    <HorizontalStackLayout Spacing="10">
+                        <Label Text="✓" TextColor="{StaticResource SIPCoreSignal}" FontSize="14" FontAttributes="Bold" VerticalOptions="Center"/>
+                        <Label Text="Encrypted SIP voice and messaging" TextColor="#C4D6F5" FontSize="13" VerticalOptions="Center"/>
+                    </HorizontalStackLayout>
+                    <HorizontalStackLayout Spacing="10">
+                        <Label Text="✓" TextColor="{StaticResource SIPCoreSignal}" FontSize="14" FontAttributes="Bold" VerticalOptions="Center"/>
+                        <Label Text="Conference calling and presence" TextColor="#C4D6F5" FontSize="13" VerticalOptions="Center"/>
+                    </HorizontalStackLayout>
+                    <HorizontalStackLayout Spacing="10">
+                        <Label Text="✓" TextColor="{StaticResource SIPCoreSignal}" FontSize="14" FontAttributes="Bold" VerticalOptions="Center"/>
+                        <Label Text="WorkDesk tasks and meetings, built in" TextColor="#C4D6F5" FontSize="13" VerticalOptions="Center"/>
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
+            </VerticalStackLayout>
 
-                    <!-- Extension Entry Layer -->
-                    <VerticalStackLayout Spacing="6">
-                        <Label Text="Extension number" FontSize="12" FontAttributes="Bold" TextColor="{StaticResource SIPCoreTextPrimary}"/>
+            <Label Grid.Row="1" Text="Powered by Softworks LLC"
+                   TextColor="#8FB2E8" FontSize="12" HorizontalOptions="Center" />
+        </Grid>
+
+        <!-- ══════════ RIGHT: Sign-in console ══════════ -->
+        <ScrollView x:Name="FormPane" Grid.Column="1" BackgroundColor="{StaticResource SIPCoreCard}">
+            <VerticalStackLayout Padding="44,40" Spacing="26" VerticalOptions="Center">
+
+                <VerticalStackLayout Spacing="6">
+                    <Label Text="Sign in" FontSize="28" FontAttributes="Bold"
+                           TextColor="{StaticResource SIPCoreDarkBlue}"
+                           SemanticProperties.HeadingLevel="Level1" />
+                    <Label Text="Access your communication workspace"
+                           FontSize="14" TextColor="{StaticResource SIPCoreTextSecondary}" />
+                </VerticalStackLayout>
+
+                <!-- Extension -->
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="EXTENSION" FontSize="11" FontAttributes="Bold"
+                           CharacterSpacing="1.2" TextColor="{StaticResource SIPCoreTextSecondary}" />
+                    <Border x:Name="ExtensionBorder"
+                            StrokeShape="RoundRectangle 8" StrokeThickness="1.5"
+                            Stroke="{StaticResource SIPCoreBorder}"
+                            BackgroundColor="{StaticResource SIPCoreBackground}"
+                            Padding="14,2">
                         <Entry x:Name="ExtensionEntry"
                                Placeholder="e.g. 1001"
                                Keyboard="Numeric"
+                               ReturnType="Next"
+                               FontSize="15"
+                               HeightRequest="44"
+                               BackgroundColor="Transparent"
                                TextColor="{StaticResource SIPCoreTextPrimary}"
-                               HeightRequest="40"/>
-                    </VerticalStackLayout>
-
-                    <!-- Password Entry Layer with View Password Toggle -->
-                    <VerticalStackLayout Spacing="6">
-                        <Label Text="Password" FontSize="12" FontAttributes="Bold" TextColor="{StaticResource SIPCoreTextPrimary}"/>
-                        <Grid ColumnDefinitions="*, Auto">
-                            <Entry x:Name="PasswordEntry"
-                                   Grid.Column="0"
-                                   Placeholder="••••••••"
-                                   IsPassword="True"
-                                   TextColor="{StaticResource SIPCoreTextPrimary}"
-                                   HeightRequest="40"/>
-                            <!-- Windows-style Reveal Password Button -->
-                            <Button Grid.Column="1" 
-                                    Text="👁"
-                                    WidthRequest="40" HeightRequest="40"
-                                    Padding="0" Margin="4,0,0,0"
-                                    BackgroundColor="Transparent"
-                                    TextColor="{StaticResource SIPCoreTextSecondary}"
-                                    Clicked="OnTogglePasswordClicked"/>
-                        </Grid>
-                    </VerticalStackLayout>
-                </VerticalStackLayout>
-
-                <!-- Interactive Advanced Features -->
-                <Grid ColumnDefinitions="*, Auto" Margin="0,4,0,0">
-                    <!-- Remember Me Toggle (Standard in Windows Desktop Apps) -->
-                    <HorizontalStackLayout Grid.Column="0" Spacing="8" VerticalOptions="Center">
-                        <CheckBox x:Name="RememberMeCheck" IsChecked="True" Color="{StaticResource SIPCorePrimary}"/>
-                        <Label Text="Remember me" FontSize="13" VerticalOptions="Center" TextColor="{StaticResource SIPCoreTextPrimary}"/>
-                    </HorizontalStackLayout>
-
-                    <!-- System Status Indicator (Network / Server status) -->
-                    <HorizontalStackLayout Grid.Column="1" Spacing="6" VerticalOptions="Center">
-                        <BoxView WidthRequest="8" HeightRequest="8" CornerRadius="4" Color="Green" VerticalOptions="Center"/>
-                        <Label Text="Server Online" FontSize="12" TextColor="{StaticResource SIPCoreTextSecondary}" VerticalOptions="Center"/>
-                    </HorizontalStackLayout>
-                </Grid>
-
-                <!-- Primary Submission Segment -->
-                <VerticalStackLayout Spacing="16" Margin="0,12,0,0">
-                    <Grid>
-                        <!-- Main Action Button -->
-                        <Button Text="{Binding IsLoggingIn, Converter={StaticResource LoginButtonTextConverter}}"
-                                IsEnabled="{Binding IsLoggingIn, Converter={StaticResource InverseBoolConverter}}"
-                                Clicked="OnLoginClicked"
-                                BackgroundColor="{StaticResource SIPCorePrimary}"
-                                TextColor="White"
-                                FontSize="15" FontAttributes="Bold"
-                                HeightRequest="44"
-                                CornerRadius="4" />
-
-                        <!-- Premium Windows-style Activity Ring Overlay -->
-                        <ActivityIndicator IsRunning="{Binding IsLoggingIn}"
-                                           IsVisible="{Binding IsLoggingIn}"
-                                           Color="White"
-                                           HorizontalOptions="Center" VerticalOptions="Center"
-                                           WidthRequest="24" HeightRequest="24" Margin="0,0,12,0"/>
-                    </Grid>
-
-                    <!-- Server Error/Status Output Context -->
-                    <Border BackgroundColor="#0AFF0000" Stroke="Red" StrokeThickness="0.5" StrokeShape="RoundRectangle 4" Padding="12" IsVisible="{Binding Status}">
-                        <Label Text="{Binding Status}"
-                               TextColor="#E81123"
-                               FontSize="13"
-                               HorizontalTextAlignment="Center" />
+                               PlaceholderColor="{StaticResource SIPCoreTextSecondary}"
+                               Completed="OnExtensionCompleted"
+                               Focused="OnFieldFocusChanged" Unfocused="OnFieldFocusChanged"
+                               SemanticProperties.Description="Extension number" />
                     </Border>
                 </VerticalStackLayout>
+
+                <!-- Password -->
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="PASSWORD" FontSize="11" FontAttributes="Bold"
+                           CharacterSpacing="1.2" TextColor="{StaticResource SIPCoreTextSecondary}" />
+                    <Border x:Name="PasswordBorder"
+                            StrokeShape="RoundRectangle 8" StrokeThickness="1.5"
+                            Stroke="{StaticResource SIPCoreBorder}"
+                            BackgroundColor="{StaticResource SIPCoreBackground}"
+                            Padding="14,2,6,2">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Entry x:Name="PasswordEntry"
+                                   Placeholder="••••••••"
+                                   IsPassword="True"
+                                   ReturnType="Go"
+                                   FontSize="15"
+                                   HeightRequest="44"
+                                   BackgroundColor="Transparent"
+                                   TextColor="{StaticResource SIPCoreTextPrimary}"
+                                   PlaceholderColor="{StaticResource SIPCoreTextSecondary}"
+                                   Completed="OnPasswordCompleted"
+                                   Focused="OnFieldFocusChanged" Unfocused="OnFieldFocusChanged"
+                                   SemanticProperties.Description="Password" />
+                            <Button x:Name="RevealButton"
+                                    Grid.Column="1"
+                                    Text="👁"
+                                    FontSize="15"
+                                    WidthRequest="38" HeightRequest="38"
+                                    Padding="0"
+                                    CornerRadius="6"
+                                    BackgroundColor="Transparent"
+                                    TextColor="{StaticResource SIPCoreTextSecondary}"
+                                    Clicked="OnTogglePasswordClicked"
+                                    SemanticProperties.Hint="Show or hide password" />
+                        </Grid>
+                    </Border>
+                </VerticalStackLayout>
+
+                <!-- Remember me + server chip -->
+                <Grid ColumnDefinitions="*,Auto">
+                    <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
+                        <CheckBox x:Name="RememberMeCheck" IsChecked="True"
+                                  Color="{StaticResource SIPCorePrimary}" />
+                        <Label Text="Remember me" FontSize="13" VerticalOptions="Center"
+                               TextColor="{StaticResource SIPCoreTextPrimary}">
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnRememberMeLabelTapped" />
+                            </Label.GestureRecognizers>
+                        </Label>
+                    </HorizontalStackLayout>
+
+                    <Border Grid.Column="1" StrokeThickness="0"
+                            StrokeShape="RoundRectangle 12"
+                            BackgroundColor="{StaticResource SIPCorePrimaryLight}"
+                            Padding="10,5" VerticalOptions="Center">
+                        <Label  Text="****************"  FontSize="11.5"
+                               TextColor="{StaticResource SIPCorePrimaryDark}" />
+                    </Border>
+                </Grid>
+
+                <!-- Submit -->
+                <Grid Margin="0,6,0,0">
+                    <Button x:Name="LoginButton"
+                            Text="{Binding IsLoggingIn, Converter={StaticResource LoginButtonTextConverter}}"
+                            IsEnabled="{Binding IsLoggingIn, Converter={StaticResource InverseBoolConverter}}"
+                            Clicked="OnLoginClicked"
+                            BackgroundColor="{StaticResource SIPCorePrimary}"
+                            TextColor="White"
+                            FontSize="15" FontAttributes="Bold"
+                            HeightRequest="46"
+                            CornerRadius="8" />
+                    <ActivityIndicator IsRunning="{Binding IsLoggingIn}"
+                                       IsVisible="{Binding IsLoggingIn}"
+                                       Color="White"
+                                       WidthRequest="22" HeightRequest="22"
+                                       HorizontalOptions="End" VerticalOptions="Center"
+                                       Margin="0,0,16,0"
+                                       InputTransparent="True" />
+                </Grid>
+
+                <!-- Status banner (only when there is a status) -->
+                <Border BackgroundColor="#14F04438"
+                        Stroke="{StaticResource SIPCoreDanger}" StrokeThickness="0.8"
+                        StrokeShape="RoundRectangle 8" Padding="12"
+                        IsVisible="{Binding Status, Converter={StaticResource StringNotEmptyConverter}}">
+                    <Label Text="{Binding Status}"
+                           TextColor="{StaticResource SIPCoreDanger}"
+                           FontSize="13" HorizontalTextAlignment="Center" />
+                </Border>
 
             </VerticalStackLayout>
         </ScrollView>

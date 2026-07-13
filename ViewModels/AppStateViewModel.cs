@@ -11,19 +11,7 @@ using SipCoreMobile.Services.Storage;
 
 namespace SipCoreMobile.ViewModels;
 
-/// <summary>
-/// Port of the non-screen-specific parts of MainActivity.kt: the SIP/call state machine
-/// (ISipEvents implementation), login/auto-login, contacts/conversations loading, call
-/// timer, presence heartbeat, and the navigateSafely() guard. MainActivity.kt was a single
-/// 5,497-line God-Activity holding ~40 mutableStateOf fields and screen-callback wiring for
-/// all 22 screens; this class intentionally covers only the foundational slice that Login/
-/// Home and the call flow need. WorkDesk-, Email-, Meeting-, Groups-, and Settings-specific
-/// state/logic stay out of this class and belong in their own feature ViewModels in later
-/// batches (mirrors how WorkDesk already lives in its own Kotlin files).
-///
-/// Register as a singleton in MauiProgram.cs (one instance for the app's lifetime, same as
-/// the original Activity's fields effectively were for as long as the process lived).
-/// </summary>
+
 public partial class AppStateViewModel : ObservableObject, ISipEvents
 {
     private readonly ISipCoreApiService _api;
@@ -379,19 +367,25 @@ public partial class AppStateViewModel : ObservableObject, ISipEvents
         var wasAlreadyRegistered = Registered;
         var shouldNavigateHome = !wasAlreadyRegistered && CurrentScreen == Screen.Login;
 
-        Registered = true;
-        Status = "Registered";
-
-        if (shouldNavigateHome)
+        // Update UI-bound properties on the main thread
+        Microsoft.Maui.ApplicationModel.MainThread.BeginInvokeOnMainThread(() =>
         {
-            NavigateSafely(Screen.Home);
-        }
+            Registered = true;
+            Status = "Registered";
 
+            if (shouldNavigateHome)
+            {
+                NavigateSafely(Screen.Home);
+            }
+
+            IsLoggingIn = false;
+        });
+
+        // Start background work (no UI thread required)
         _ = LoadConversationsAsync();
         _ = LoadContactsAsync();
         StartPresenceHeartbeat();
         _ = RegisterPushTokenAsync();
-        IsLoggingIn = false;
 
         _ = Task.Run(async () =>
         {
@@ -788,8 +782,11 @@ public partial class AppStateViewModel : ObservableObject, ISipEvents
                 .ThenBy(c => c.DisplayName)
                 .ToList();
 
-            Contacts.Clear();
-            foreach (var c in merged) Contacts.Add(c);
+            await MainThread.InvokeOnMainThreadAsync(() =>
+            {
+                Contacts.Clear();
+                foreach (var c in merged) Contacts.Add(c);
+            });
         }
         catch
         {

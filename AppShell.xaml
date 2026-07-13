@@ -9,9 +9,9 @@
   FlyoutBehavior="Flyout"
   Shell.NavBarIsVisible="False">
 
-    <!--<Shell.FlyoutContent>
+    <Shell.FlyoutContent>
         <controls:SIPCoreDrawerContent />
-    </Shell.FlyoutContent>-->
+    </Shell.FlyoutContent>
 
     <ShellContent x:Name="LoginContent" Route="login" ContentTemplate="{DataTemplate views:LoginPage}" />
     <ShellContent x:Name="HomeContent" Route="home" ContentTemplate="{DataTemplate views:HomePage}" />

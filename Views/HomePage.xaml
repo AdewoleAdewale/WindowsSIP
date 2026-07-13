@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<!-- Port of HomeScreen() from SIPCoreApp.kt. -->
 <ContentPage x:Class="SipCoreMobile.Views.HomePage"
              xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
@@ -14,68 +13,149 @@
         <controls:SipCoreHeader Grid.Row="0" x:Name="Header" DrawerRequested="OnDrawerRequested" />
 
         <ScrollView Grid.Row="1">
-            <VerticalStackLayout Padding="20,20,20,24" Spacing="20">
+            <VerticalStackLayout Padding="24,22,24,28" Spacing="22" MaximumWidthRequest="920">
 
-                <VerticalStackLayout HorizontalOptions="Center" Spacing="8">
-                    <Border StrokeShape="RoundRectangle 65" BackgroundColor="White"
-                            WidthRequest="130" HeightRequest="130" HorizontalOptions="Center">
-                        <Border.Shadow>
-                            <Shadow Brush="Black" Opacity="0.15" Radius="10" Offset="0,4" />
-                        </Border.Shadow>
-                        <Image Source="sipcore_logo.png" WidthRequest="90" HeightRequest="90" Aspect="AspectFit" />
-                    </Border>
-
-                    <Label Text="Enterprise Secure Communications"
-                           TextColor="{StaticResource SIPCoreDarkBlue}"
-                           FontSize="22" FontAttributes="Bold"
-                           HorizontalTextAlignment="Center"
-                           Margin="0,18,0,0" />
-
-                    <Label Text="Secure calling, messaging and collaboration for modern enterprises."
-                           TextColor="{StaticResource SIPCoreTextSecondary}"
-                           FontSize="14"
-                           HorizontalTextAlignment="Center"
-                           Padding="12,0" />
+                <!-- Greeting -->
+                <VerticalStackLayout Spacing="4">
+                    <Label Text="Welcome back" FontSize="26" FontAttributes="Bold"
+                           TextColor="{StaticResource SIPCoreDarkBlue}" />
+                    <Label Text="Your secure workspace for calls, messages and collaboration."
+                           FontSize="14" TextColor="{StaticResource SIPCoreTextSecondary}" />
                 </VerticalStackLayout>
 
-                <!-- WorkDesk entry card -->
-                <Border StrokeShape="RoundRectangle 24" BackgroundColor="{StaticResource SIPCorePrimary}" Padding="22">
+                <!-- Quick actions -->
+                <Grid ColumnDefinitions="*,*,*,*" ColumnSpacing="14">
+
+                    <Border Grid.Column="0" StrokeShape="RoundRectangle 16" StrokeThickness="1"
+                            Stroke="{StaticResource SIPCoreBorder}"
+                            BackgroundColor="{StaticResource SIPCoreCard}" Padding="18,16">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnDialerTapped" />
+                        </Border.GestureRecognizers>
+                        <VerticalStackLayout Spacing="10">
+                            <Border StrokeShape="RoundRectangle 10" StrokeThickness="0" WidthRequest="40" HeightRequest="40"
+                                    BackgroundColor="{StaticResource SIPCorePrimaryLight}" HorizontalOptions="Start">
+                                <Label Text="⌨" FontSize="18" HorizontalOptions="Center" VerticalOptions="Center"
+                                       TextColor="{StaticResource SIPCorePrimaryDark}" />
+                            </Border>
+                            <Label Text="Dial pad" FontSize="15" FontAttributes="Bold"
+                                   TextColor="{StaticResource SIPCoreTextPrimary}" />
+                            <Label Text="Place a call" FontSize="12"
+                                   TextColor="{StaticResource SIPCoreTextSecondary}" />
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <Border Grid.Column="1" StrokeShape="RoundRectangle 16" StrokeThickness="1"
+                            Stroke="{StaticResource SIPCoreBorder}"
+                            BackgroundColor="{StaticResource SIPCoreCard}" Padding="18,16">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnMessagesTapped" />
+                        </Border.GestureRecognizers>
+                        <VerticalStackLayout Spacing="10">
+                            <Border StrokeShape="RoundRectangle 10" StrokeThickness="0" WidthRequest="40" HeightRequest="40"
+                                    BackgroundColor="{StaticResource SIPCoreSignalDim}" HorizontalOptions="Start">
+                                <Label Text="✉" FontSize="18" HorizontalOptions="Center" VerticalOptions="Center"
+                                       TextColor="{StaticResource SIPCoreSignal}" />
+                            </Border>
+                            <Label Text="Messages" FontSize="15" FontAttributes="Bold"
+                                   TextColor="{StaticResource SIPCoreTextPrimary}" />
+                            <Label Text="Chats and threads" FontSize="12"
+                                   TextColor="{StaticResource SIPCoreTextSecondary}" />
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <Border Grid.Column="2" StrokeShape="RoundRectangle 16" StrokeThickness="1"
+                            Stroke="{StaticResource SIPCoreBorder}"
+                            BackgroundColor="{StaticResource SIPCoreCard}" Padding="18,16">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnContactsTapped" />
+                        </Border.GestureRecognizers>
+                        <VerticalStackLayout Spacing="10">
+                            <Border StrokeShape="RoundRectangle 10" StrokeThickness="0" WidthRequest="40" HeightRequest="40"
+                                    BackgroundColor="{StaticResource PriorityHighBackground}" HorizontalOptions="Start">
+                                <Label Text="👤" FontSize="18" HorizontalOptions="Center" VerticalOptions="Center"
+                                       TextColor="{StaticResource PriorityHighText}" />
+                            </Border>
+                            <Label Text="Contacts" FontSize="15" FontAttributes="Bold"
+                                   TextColor="{StaticResource SIPCoreTextPrimary}" />
+                            <Label Text="Directory" FontSize="12"
+                                   TextColor="{StaticResource SIPCoreTextSecondary}" />
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <Border Grid.Column="3" StrokeShape="RoundRectangle 16" StrokeThickness="1"
+                            Stroke="{StaticResource SIPCoreBorder}"
+                            BackgroundColor="{StaticResource SIPCoreCard}" Padding="18,16">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnHistoryTapped" />
+                        </Border.GestureRecognizers>
+                        <VerticalStackLayout Spacing="10">
+                            <Border StrokeShape="RoundRectangle 10" StrokeThickness="0" WidthRequest="40" HeightRequest="40"
+                                    BackgroundColor="{StaticResource PriorityLowBackground}" HorizontalOptions="Start">
+                                <Label Text="🕘" FontSize="18" HorizontalOptions="Center" VerticalOptions="Center"
+                                       TextColor="{StaticResource PriorityLowText}" />
+                            </Border>
+                            <Label Text="History" FontSize="15" FontAttributes="Bold"
+                                   TextColor="{StaticResource SIPCoreTextPrimary}" />
+                            <Label Text="Recent calls" FontSize="12"
+                                   TextColor="{StaticResource SIPCoreTextSecondary}" />
+                        </VerticalStackLayout>
+                    </Border>
+                </Grid>
+
+                <!-- WorkDesk hero -->
+                <Border StrokeShape="RoundRectangle 20" StrokeThickness="0" Padding="26,24">
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                            <GradientStop Color="#0E42B3" Offset="0.0" />
+                            <GradientStop Color="{StaticResource SIPCorePrimary}" Offset="0.6" />
+                            <GradientStop Color="#3D7BFF" Offset="1.0" />
+                        </LinearGradientBrush>
+                    </Border.Background>
                     <Border.Shadow>
-                        <Shadow Brush="Black" Opacity="0.12" Radius="10" Offset="0,4" />
+                        <Shadow Brush="{StaticResource SIPCorePrimary}" Opacity="0.28" Radius="18" Offset="0,6" />
                     </Border.Shadow>
                     <Border.GestureRecognizers>
                         <TapGestureRecognizer Tapped="OnOpenWorkDeskTapped" />
                     </Border.GestureRecognizers>
-                    <VerticalStackLayout Spacing="8">
-                        <Label Text="WorkDesk" TextColor="White" FontAttributes="Bold" FontSize="22" />
-                        <Label Text="Tasks, approvals, checklists and team collaboration"
-                               TextColor="#E6FFFFFF" FontSize="14" />
-                        <Label Text="Open Workspace →" TextColor="White" FontAttributes="Bold" FontSize="14" />
-                    </VerticalStackLayout>
+
+                    <Grid ColumnDefinitions="*,Auto">
+                        <VerticalStackLayout Spacing="8">
+                            <Label Text="WORKDESK" FontSize="11" FontAttributes="Bold"
+                                   CharacterSpacing="1.6" TextColor="#B8CFF5" />
+                            <Label Text="Your team's operational hub"
+                                   TextColor="White" FontAttributes="Bold" FontSize="22" />
+                            <Label Text="Tasks, approvals, checklists and team collaboration — all in one place."
+                                   TextColor="#DCE8FB" FontSize="14" MaximumWidthRequest="440"
+                                   HorizontalOptions="Start" />
+                            <Border StrokeShape="RoundRectangle 8" StrokeThickness="0"
+                                    BackgroundColor="#2EFFFFFF" Padding="14,8"
+                                    HorizontalOptions="Start" Margin="0,8,0,0">
+                                <Label Text="Open workspace →" TextColor="White"
+                                       FontAttributes="Bold" FontSize="14" />
+                            </Border>
+                        </VerticalStackLayout>
+                        <Label Grid.Column="1" Text="🗂" FontSize="56" Opacity="0.35"
+                               VerticalOptions="Center" Margin="12,0,4,0" />
+                    </Grid>
                 </Border>
 
-                <!-- Version / footer card -->
-                <Border StrokeShape="RoundRectangle 22" BackgroundColor="{StaticResource SIPCoreCard}" Padding="22">
-                    <Border.Shadow>
-                        <Shadow Brush="Black" Opacity="0.08" Radius="8" Offset="0,2" />
-                    </Border.Shadow>
-                    <VerticalStackLayout HorizontalOptions="Center" Spacing="10">
-                        <Label Text="Version 1.0.0" TextColor="{StaticResource SIPCorePrimary}"
-                               FontAttributes="Bold" FontSize="16" HorizontalOptions="Center" />
-                        <BoxView HeightRequest="1" Color="{StaticResource SIPCoreBorder}" HorizontalOptions="Fill" />
-                        <Label Text="https://sipcore.org" TextColor="{StaticResource SIPCorePrimary}"
-                               FontAttributes="Bold" FontSize="14" HorizontalOptions="Center" />
-                    </VerticalStackLayout>
-                </Border>
+                <!-- Footer -->
+                <Grid ColumnDefinitions="Auto,*,Auto" Margin="4,2,4,0">
+                    <Label Text="SIPCore · Version 1.0.0" FontSize="12"
+                           TextColor="{StaticResource SIPCoreTextSecondary}" VerticalOptions="Center" />
+                    <Label Grid.Column="2" Text="sipcore.org" FontSize="12" FontAttributes="Bold"
+                           TextColor="{StaticResource SIPCorePrimary}" VerticalOptions="Center" />
+                </Grid>
 
             </VerticalStackLayout>
         </ScrollView>
 
         <controls:BottomNavBar Grid.Row="2" x:Name="BottomNav" SelectedScreen="Home"
-                                DialerTapped="OnDialerTapped"
-                                ContactsTapped="OnContactsTapped"
-                                MessagesTapped="OnMessagesTapped"
-                                HistoryTapped="OnHistoryTapped" />
+                               DialerTapped="OnDialerTapped"
+                               ContactsTapped="OnContactsTapped"
+                               MessagesTapped="OnMessagesTapped"
+                               HistoryTapped="OnHistoryTapped" />
 
     </Grid>
 </ContentPage>

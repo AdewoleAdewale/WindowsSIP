@@ -1,66 +1,104 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<!--
-  Port of SIPCoreDrawer()'s ModalDrawerSheet content. Original wrapped the whole app in a
-  ModalNavigationDrawer with this as drawerContent; here it's set as Shell.FlyoutContent in
-  AppShell.xaml with FlyoutBehavior="Flyout", which is the closest MAUI equivalent to an
-  always-available slide-out drawer.
--->
 <ContentView x:Class="SipCoreMobile.Controls.SIPCoreDrawerContent"
              xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:controls="clr-namespace:SipCoreMobile.Controls"
              xmlns:vm="clr-namespace:SipCoreMobile.ViewModels"
              x:DataType="vm:AppStateViewModel"
-             BackgroundColor="White">
+             BackgroundColor="{StaticResource SIPCoreCard}">
 
-    <Grid RowDefinitions="Auto,Auto,*,Auto" Padding="0,28,0,18">
+    <Grid RowDefinitions="Auto,Auto,*,Auto">
 
-        <!-- Header: logo + app name -->
-        <HorizontalStackLayout Grid.Row="0" Padding="20,0" Spacing="14">
-            <Border StrokeShape="RoundRectangle 35" BackgroundColor="White" WidthRequest="70" HeightRequest="70">
-                <Border.Shadow>
-                    <Shadow Brush="Black" Opacity="0.1" Radius="6" Offset="0,2" />
-                </Border.Shadow>
-                <Image Source="sipcore_logo.png" WidthRequest="54" HeightRequest="54" Aspect="AspectFit"
-                       HorizontalOptions="Center" VerticalOptions="Center" />
-            </Border>
-            <VerticalStackLayout VerticalOptions="Center" Spacing="2">
-                <Label Text="SIPCore" FontSize="24" FontAttributes="Bold" TextColor="{StaticResource SIPCoreDarkBlue}" />
-                <Label Text="Business Softphone" FontSize="13" TextColor="{StaticResource SIPCoreTextSecondary}" />
-            </VerticalStackLayout>
-        </HorizontalStackLayout>
+        <!-- ── Brand band ── -->
+        <Grid Grid.Row="0" Padding="20,26,20,22">
+            <Grid.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Color="#0E42B3" Offset="0.0" />
+                    <GradientStop Color="{StaticResource SIPCorePrimary}" Offset="1.0" />
+                </LinearGradientBrush>
+            </Grid.Background>
 
-        <!-- Status card -->
-        <Border Grid.Row="1" StrokeShape="RoundRectangle 18" BackgroundColor="#F4F7FC" Padding="16" Margin="16,20,16,18">
-            <VerticalStackLayout Spacing="2">
-                <Label Text="Extension" FontSize="12" TextColor="{StaticResource SIPCoreTextSecondary}" />
-                <Label x:Name="ExtensionLabel" FontSize="20" FontAttributes="Bold" TextColor="{StaticResource SIPCoreDarkBlue}" />
+            <HorizontalStackLayout Spacing="14">
+                <Border StrokeShape="RoundRectangle 16" StrokeThickness="0"
+                        BackgroundColor="White"
+                        WidthRequest="58" HeightRequest="58">
+                    <Image Source="sipcorelogo.png" WidthRequest="38" HeightRequest="38"
+                           Aspect="AspectFit" HorizontalOptions="Center" VerticalOptions="Center" />
+                </Border>
+                <VerticalStackLayout VerticalOptions="Center" Spacing="2">
+                    <Label Text="SIPCore" FontSize="22" FontAttributes="Bold" TextColor="White" />
+                    <Label Text="Business Softphone" FontSize="12" TextColor="#C9DAF6" />
+                </VerticalStackLayout>
+            </HorizontalStackLayout>
+        </Grid>
 
-                <HorizontalStackLayout Spacing="8" Margin="0,10,0,0">
+        <!-- ── Identity / status card ── -->
+        <Border Grid.Row="1"
+                StrokeShape="RoundRectangle 14" StrokeThickness="1"
+                Stroke="{StaticResource SIPCoreBorder}"
+                BackgroundColor="{StaticResource SIPCoreBackground}"
+                Padding="16,14" Margin="14,16,14,10">
+            <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto" RowSpacing="3">
+
+                <Label Grid.Row="0" Grid.Column="0"
+                       Text="SIGNED IN AS" FontSize="10" FontAttributes="Bold"
+                       CharacterSpacing="1.2"
+                       TextColor="{StaticResource SIPCoreTextSecondary}" />
+
+                <Label Grid.Row="1" Grid.Column="0"
+                       x:Name="ExtensionLabel"
+                       FontSize="22" FontAttributes="Bold"
+                       TextColor="{StaticResource SIPCoreDarkBlue}" />
+
+                <HorizontalStackLayout Grid.Row="2" Grid.Column="0" Spacing="7" Margin="0,4,0,0">
                     <controls:StatusPulseDot x:Name="StatusDot" VerticalOptions="Center" />
-                    <Label x:Name="RegisteredLabel" FontSize="14" FontAttributes="Bold" />
+                    <Label x:Name="RegisteredLabel" FontSize="13" FontAttributes="Bold"
+                           VerticalOptions="Center" />
                 </HorizontalStackLayout>
 
-                <Label x:Name="ExtraStatusLabel" FontSize="12" TextColor="{StaticResource SIPCoreTextSecondary}"
-                       Margin="0,6,0,0" IsVisible="False" />
-            </VerticalStackLayout>
+                <Label Grid.Row="0" Grid.RowSpan="3" Grid.Column="1"
+                       Text="SIP" FontSize="26" Opacity="0.18"
+                       TextColor="{StaticResource SIPCorePrimaryDark}"
+                       VerticalOptions="Center" />
+
+                <Label Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"
+                       x:Name="ExtraStatusLabel"
+                       FontSize="11.5" IsVisible="False" Margin="0,6,0,0"
+                       TextColor="{StaticResource SIPCoreTextSecondary}" />
+            </Grid>
         </Border>
 
-        <!-- Menu items -->
-        <VerticalStackLayout Grid.Row="2" Padding="10,0" Spacing="2">
-            <controls:DrawerMenuItem x:Name="HomeItem" Icon="&#xF015;" Label="Home" Tapped="OnHomeTapped" />
-            <controls:DrawerMenuItem x:Name="GroupsItem" Icon="&#xF0C0;" Label="Groups" Tapped="OnGroupsTapped" />
-            <controls:DrawerMenuItem x:Name="EmailItem" Icon="&#xF0E0;" Label="Email" Tapped="OnEmailTapped" />
-            <controls:DrawerMenuItem x:Name="MeetingsItem" Icon="&#xF03D;" Label="Meetings" Tapped="OnMeetingsTapped" />
-            <controls:DrawerMenuItem x:Name="WorkDeskItem" Icon="&#xF0AE;" Label="WorkDesk" Tapped="OnWorkDeskTapped" />
-            <controls:DrawerMenuItem x:Name="ProfileItem" Icon="&#xF007;" Label="Profile" Tapped="OnProfileTapped" />
-            <controls:DrawerMenuItem x:Name="SettingsItem" Icon="&#xF013;" Label="Settings" Tapped="OnSettingsTapped" />
-        </VerticalStackLayout>
+        <!-- ── Navigation ── -->
+        <ScrollView Grid.Row="2">
+            <VerticalStackLayout Padding="10,4,10,0" Spacing="2">
 
-        <!-- Logout -->
-        <VerticalStackLayout Grid.Row="3" Padding="10,0">
-            <BoxView HeightRequest="1" Color="{StaticResource SIPCoreBorder}" Margin="6,0,6,6" />
-            <controls:DrawerMenuItem Icon="&#xF08B;" Label="Logout" Tapped="OnLogoutTapped" />
+                <Label Text="WORKSPACE" FontSize="10" FontAttributes="Bold"
+                       CharacterSpacing="1.4" Margin="12,10,0,6"
+                       TextColor="{StaticResource SIPCoreTextSecondary}" />
+
+                <controls:DrawerMenuItem x:Name="HomeItem"     Icon="&#xF015;" Label="Home"     Tapped="OnHomeTapped" />
+                <controls:DrawerMenuItem x:Name="GroupsItem"   Icon="&#xF0C0;" Label="Groups"   Tapped="OnGroupsTapped" />
+                <controls:DrawerMenuItem x:Name="EmailItem"    Icon="&#xF0E0;" Label="Email"    Tapped="OnEmailTapped" />
+                <controls:DrawerMenuItem x:Name="MeetingsItem" Icon="&#xF03D;" Label="Meetings" Tapped="OnMeetingsTapped" />
+                <controls:DrawerMenuItem x:Name="WorkDeskItem" Icon="&#xF0AE;" Label="WorkDesk" Tapped="OnWorkDeskTapped" />
+
+                <Label Text="ACCOUNT" FontSize="10" FontAttributes="Bold"
+                       CharacterSpacing="1.4" Margin="12,16,0,6"
+                       TextColor="{StaticResource SIPCoreTextSecondary}" />
+
+                <controls:DrawerMenuItem x:Name="ProfileItem"  Icon="&#xF007;" Label="Profile"  Tapped="OnProfileTapped" />
+                <controls:DrawerMenuItem x:Name="SettingsItem" Icon="&#xF013;" Label="Settings" Tapped="OnSettingsTapped" />
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- ── Logout zone ── -->
+        <VerticalStackLayout Grid.Row="3" Padding="10,6,10,14" Spacing="8">
+            <BoxView HeightRequest="1" Color="{StaticResource SIPCoreBorder}" Margin="8,0" />
+            <Border StrokeShape="RoundRectangle 10" StrokeThickness="0"
+                    BackgroundColor="#0DF04438" Padding="0">
+                <controls:DrawerMenuItem Icon="&#xF08B;" Label="Logout" Tapped="OnLogoutTapped" />
+            </Border>
         </VerticalStackLayout>
 
     </Grid>
