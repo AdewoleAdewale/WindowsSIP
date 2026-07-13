@@ -1,3 +1,5 @@
 <Solution>
-  <Project Path="SipCoreMobile.csproj" />
+  <Project Path="SipCoreMobile.csproj">
+    <Deploy Solution="Debug|*" />
+  </Project>
 </Solution>

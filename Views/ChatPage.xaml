@@ -42,7 +42,7 @@
         </Grid>
 
         <!-- Message list -->
-        <CollectionView Grid.Row="1" x:Name="MessagesList" Padding="16" ItemsSource="{Binding Messages}"
+        <CollectionView Grid.Row="1" x:Name="MessagesList"  ItemsSource="{Binding Messages}"
                          VerticalScrollBarVisibility="Default">
             <CollectionView.ItemsLayout>
                 <LinearItemsLayout Orientation="Vertical" ItemSpacing="14" />
@@ -85,14 +85,12 @@
                             <DataTrigger TargetType="Grid" Binding="{Binding IsMine}" Value="True">
                                 <Setter TargetName="Bubble" Property="HorizontalOptions" Value="End" />
                                 <Setter TargetName="Bubble" Property="BackgroundColor" Value="{StaticResource SIPCorePrimary}" />
-                                <Setter TargetName="BodyLabel" Property="TextColor" Value="White" />
-                                <Setter TargetName="TicksLabel" Property="TextColor" Value="White" />
+                              
                             </DataTrigger>
                             <DataTrigger TargetType="Grid" Binding="{Binding IsMine}" Value="False">
                                 <Setter TargetName="Bubble" Property="HorizontalOptions" Value="Start" />
                                 <Setter TargetName="Bubble" Property="BackgroundColor" Value="White" />
-                                <Setter TargetName="BodyLabel" Property="TextColor" Value="{StaticResource SIPCoreTextPrimary}" />
-                                <Setter TargetName="TicksLabel" Property="TextColor" Value="{StaticResource SIPCoreTextSecondary}" />
+                             
                             </DataTrigger>
                         </Grid.Triggers>
                     </Grid>

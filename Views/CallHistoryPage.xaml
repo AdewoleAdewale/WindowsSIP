@@ -63,7 +63,7 @@
         </Grid>
 
         <Grid Grid.Row="2">
-            <CollectionView x:Name="HistoryList" Padding="20,22" ItemTemplate="{StaticResource RowSelector}">
+            <CollectionView x:Name="HistoryList"  ItemTemplate="{StaticResource RowSelector}">
                 <CollectionView.ItemsLayout>
                     <LinearItemsLayout Orientation="Vertical" ItemSpacing="14" />
                 </CollectionView.ItemsLayout>

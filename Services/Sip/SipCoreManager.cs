@@ -7,25 +7,6 @@ using SipCoreMobile.Services.Storage;
 
 namespace SipCoreMobile.Services.Sip;
 
-/// <summary>
-/// Port of SipCoreManager.kt. The original wrapped pjsua2 (native PJSIP via the Android NDK
-/// build: libc++_shared.so + libpjsua2.so, loaded with System.loadLibrary). That native build
-/// doesn't carry over to Windows, so this targets SIPSorcery instead -- the same library
-/// already used for SIP MESSAGE handling in SIPCOREMOBILE's Windows build.
-///
-/// Structural differences from the original worth knowing about:
-/// - pjsua2 has one persistent Account object that spawns Call objects; SIPSorcery instead
-///   creates a new SIPUserAgent per call, sharing one SIPTransport. "_regUserAgent" here
-///   plays the role of the original `account` for registration purposes only.
-/// - pjsua2's AudDevManager gives you a device-level audio bridge for conferencing almost
-///   for free (media.startTransmit(otherMedia)). SIPSorcery has no built-in N-way conference
-///   mixer -- BridgeConferenceAudio() below is a simplified starting point (pairwise RTP
-///   forwarding) and should be replaced with a real audio mixer (sum + re-encode PCM frames)
-///   before shipping 3+-way conferencing.
-/// - Speaker routing (AudioRouteHelper.setSpeaker in the original) is an Android
-///   AudioManager call; on Windows this needs a WinRT MediaDevice / MMDevice output-switch
-///   helper, tracked as part of the calling-infra conversion batch.
-/// </summary>
 public class SipCoreManager
 {
     private readonly ISipEvents _events;
@@ -72,13 +53,12 @@ public class SipCoreManager
         if (sipRequest.Method == SIPMethodsEnum.INVITE)
         {
             var userAgent = new SIPUserAgent(_sipTransport, null);
-            var call = new SipCall(userAgent, this, _events);
+            var uas = userAgent.AcceptCall(sipRequest);
+            var call = new SipCall(userAgent, this, _events, uas);
             SetIncomingCall(call);
 
             var caller = ExtractExtension(sipRequest.Header.From.FromURI.ToString());
             _events.OnIncomingCall(caller);
-
-            userAgent.OnIncomingCall(sipRequest);
         }
         else if (sipRequest.Method == SIPMethodsEnum.MESSAGE)
         {

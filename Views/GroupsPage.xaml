@@ -30,7 +30,7 @@
         </Grid>
 
         <Grid Grid.Row="2">
-            <CollectionView x:Name="GroupsList" Padding="20,20" ItemsSource="{Binding Groups}">
+            <CollectionView x:Name="GroupsList" ItemsSource="{Binding Groups}">
                 <CollectionView.ItemsLayout>
                     <LinearItemsLayout Orientation="Vertical" ItemSpacing="14" />
                 </CollectionView.ItemsLayout>

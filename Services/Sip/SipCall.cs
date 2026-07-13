@@ -13,20 +13,22 @@ namespace SipCoreMobile.Services.Sip;
 public class SipCall
 {
     private readonly SIPUserAgent _userAgent;
+    private readonly SIPServerUserAgent? _uas;
     private readonly SipCoreManager _manager;
     private readonly ISipEvents _events;
     private VoIPMediaSession? _mediaSession;
 
-    public SipCall(SIPUserAgent userAgent, SipCoreManager manager, ISipEvents events)
+    public SipCall(SIPUserAgent userAgent, SipCoreManager manager, ISipEvents events, SIPServerUserAgent? uas = null)
     {
         _userAgent = userAgent;
+        _uas = uas;
         _manager = manager;
         _events = events;
 
         _userAgent.ClientCallTrying += (uac, resp) => _events.OnCallStateChanged("Calling");
         _userAgent.ClientCallRinging += (uac, resp) => _events.OnCallStateChanged("Ringing");
         _userAgent.OnCallHungup += (dialogue) => _events.OnCallStateChanged("Ended");
-        _userAgent.OnIncomingCallAnswered += (uac, resp) =>
+        _userAgent.ClientCallAnswered += (uac, resp) =>
         {
             _events.OnCallStateChanged("Connected");
             _manager.ConnectAudio(this);
@@ -51,24 +53,31 @@ public class SipCall
         var remoteContact = dialogue?.RemoteTarget?.ToString() ?? "";
         return (remoteUri, remoteContact);
     }
-
     public async Task<bool> MakeCallAsync(string destination, VoIPMediaSession mediaSession)
     {
         _mediaSession = mediaSession;
         return await _userAgent.Call(destination, null, null, mediaSession);
     }
 
-    public Task<bool> AnswerAsync(VoIPMediaSession mediaSession)
+    public async Task<bool> AnswerAsync(VoIPMediaSession mediaSession)
     {
         _mediaSession = mediaSession;
-        return _userAgent.Answer(mediaSession);
+        if (_uas is null) return false;
+
+        var answered = await _userAgent.Answer(_uas, mediaSession);
+        if (answered)
+        {
+            _events.OnCallStateChanged("Connected");
+            _manager.ConnectAudio(this);
+        }
+        return answered;
     }
 
     public void Hangup() => _userAgent.Hangup();
 
     public void Reject(SIPResponseStatusCodesEnum status, string reason) =>
-        _userAgent.Reject(status, reason);
-
+        _uas?.Reject(status, reason, null);
+  
     public bool PutOnHold()
     {
         _userAgent.PutOnHold();
@@ -90,4 +99,5 @@ public class SipCall
     }
 
     public bool IsConnected => _userAgent.IsCallActive;
+
 }

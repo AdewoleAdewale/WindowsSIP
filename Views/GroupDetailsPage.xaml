@@ -37,7 +37,7 @@
                TextColor="{StaticResource SIPCoreTextPrimary}" Margin="20,20,20,12" />
 
         <Grid Grid.Row="3">
-            <CollectionView x:Name="MembersList" Padding="20,0" ItemsSource="{Binding SelectedGroupMembers}">
+            <CollectionView x:Name="MembersList"  ItemsSource="{Binding SelectedGroupMembers}">
                 <CollectionView.ItemsLayout>
                     <LinearItemsLayout Orientation="Vertical" ItemSpacing="12" />
                 </CollectionView.ItemsLayout>

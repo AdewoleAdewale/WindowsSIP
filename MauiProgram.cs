@@ -5,6 +5,10 @@ using SipCoreMobile.Data;
 using SipCoreMobile.Services.Api;
 using SipCoreMobile.ViewModels;
 using SipCoreMobile.Views;
+#if WINDOWS
+using Microsoft.Windows.AppNotifications;
+using Microsoft.Windows.AppNotifications.Builder;
+#endif
 
 namespace SipCoreMobile;
 
@@ -95,18 +99,15 @@ public static class MauiProgram
 
         var app = builder.Build();
 
-        // Windows App SDK toast notifications (Batch 3's NotificationHelper) need this called
-        // once at startup before any AppNotificationManager.Default.Show(...) call succeeds.
-        try
-        {
-            AppNotificationManager.Default.Register();
-        }
-        catch
-        {
-            // Registration can legitimately fail in unpackaged/dev-unsigned builds; toast
-            // calls will no-op rather than crash if so.
-        }
-
+#if WINDOWS
+    var notification = new AppNotificationBuilder()
+        .AddText("Hello,You can now make calls and send messages with Sipcore!")
+        .BuildNotification();
+    AppNotificationManager.Default.Show(notification);
+#elif MACCATALYST
+        // Add Mac-specific notification logic here if needed
+#endif
+  
         return app;
     }
 }

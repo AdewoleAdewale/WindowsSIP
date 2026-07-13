@@ -83,7 +83,7 @@
                    Margin="20,20,20,0" TextChanged="OnSearchTextChanged" />
 
         <Grid Grid.Row="3">
-            <CollectionView x:Name="ContactsList" Padding="20,20" ItemTemplate="{StaticResource ContactRowSelector}">
+            <CollectionView x:Name="ContactsList" ItemTemplate="{StaticResource ContactRowSelector}">
                 <CollectionView.ItemsLayout>
                     <LinearItemsLayout Orientation="Vertical" ItemSpacing="14" />
                 </CollectionView.ItemsLayout>

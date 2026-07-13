@@ -20,7 +20,7 @@
                TextColor="{StaticResource SIPCoreTextPrimary}" Margin="20,28,20,18" />
 
         <Grid Grid.Row="3">
-            <CollectionView x:Name="ConversationsList" Padding="20,0">
+            <CollectionView x:Name="ConversationsList">
                 <CollectionView.ItemsLayout>
                     <LinearItemsLayout Orientation="Vertical" ItemSpacing="14" />
                 </CollectionView.ItemsLayout>

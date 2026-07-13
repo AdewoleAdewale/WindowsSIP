@@ -1,3 +1,4 @@
+using Microsoft.Maui.Controls.Shapes;
 using SipCoreMobile.Models;
 using SipCoreMobile.ViewModels;
 
