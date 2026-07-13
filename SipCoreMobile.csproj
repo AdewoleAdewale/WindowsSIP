@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFrameworks>net9.0-windows10.0.19041.0</TargetFrameworks>
@@ -62,14 +62,7 @@
 		<PackageReference Include="System.Windows.Extensions" Version="10.0.9" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <BundleResource Update="Resources\Styles\Colors.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </BundleResource>
-	  <BundleResource Update="Resources\Styles\Styles.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </BundleResource>
-	</ItemGroup>
+
 
 	<ItemGroup>
 	  <MauiXaml Update="Controls\BottomNavBar.xaml">
@@ -132,6 +125,12 @@
 	  <MauiXaml Update="Resources\Styles\SIPCoreColors.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Resources\Styles\Styles.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+		<MauiXaml Update="Resources\Styles\Colors.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
 	  <MauiXaml Update="Resources\Styles\Typography.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

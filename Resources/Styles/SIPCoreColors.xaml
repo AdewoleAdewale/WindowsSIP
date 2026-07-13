@@ -1,26 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!--
-  SIPCore design tokens — v2 ("Signal" palette).
 
-  This replaces the flat port of the original Kotlin SIPCoreColors with a deliberately
-  designed system for the Windows app. Every key name that existing pages already reference
-  (SIPCorePrimary, SIPCoreDarkBlue, SIPCoreBackground, SIPCoreCard, SIPCoreTextPrimary,
-  SIPCoreTextSecondary, SIPCoreBorder, SIPCoreSuccess, SIPCoreWarning, SIPCoreDanger) is kept,
-  so all existing pages inherit this palette with zero per-file edits. New tokens (SIPCoreInk,
-  SIPCoreSignal, the elevation/radius/spacing scales) are additive.
-
-  Design rationale:
-  - SIPCore is enterprise calling/collaboration software — the brief is precision and calm
-    trustworthiness, not a consumer/marketing look. A saturated "SaaS blue" reads correctly
-    here rather than as a generic default, because the audience (office workers, IT admins)
-    expects exactly that register.
-  - SIPCoreSignal (teal) is the one deliberate accent: it marks "live" state specifically —
-    active calls, online presence, live meetings — and appears nowhere else. One recognizable
-    signal color used consistently for "this is happening right now" is the throughline that
-    ties the calling, chat, and WorkDesk screens together as one product.
-  - SIPCoreInk replaces the flat #002E6D used on dark screens (active call, WorkDesk) with a
-    near-black navy that reads as premium/precise rather than "just a darker blue."
--->
 <ResourceDictionary xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
                      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 

@@ -30,6 +30,11 @@ public static class MauiProgram
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
             });
+        AppDomain.CurrentDomain.UnhandledException += (_, e) =>
+        {
+            var path = Path.Combine(FileSystem.AppDataDirectory, "crash.log");
+            File.WriteAllText(path, e.ExceptionObject?.ToString() ?? "unknown");
+        };
 
 #if DEBUG
         builder.Logging.AddDebug();
@@ -38,7 +43,8 @@ public static class MauiProgram
         // ---------------------------------------------------------------
         // Data layer (Batch 1)
         // ---------------------------------------------------------------
-        builder.Services.AddSingleton(_ => SipCoreDatabase.GetDatabaseAsync().GetAwaiter().GetResult());
+        builder.Services.AddSingleton(_ =>
+      Task.Run(() => SipCoreDatabase.GetDatabaseAsync()).GetAwaiter().GetResult());
         builder.Services.AddSingleton<Data.ISipCoreRepository, SipCoreRepository>();
 
         // ---------------------------------------------------------------
@@ -98,16 +104,23 @@ public static class MauiProgram
         builder.Services.AddSingleton<AppShell>();
 
         var app = builder.Build();
-
 #if WINDOWS
-    var notification = new AppNotificationBuilder()
-        .AddText("Hello,You can now make calls and send messages with Sipcore!")
-        .BuildNotification();
-    AppNotificationManager.Default.Show(notification);
-#elif MACCATALYST
-        // Add Mac-specific notification logic here if needed
+        try
+        {
+            AppNotificationManager.Default.Register();
+
+            var notification = new AppNotificationBuilder()
+                .AddText("Hello, you can now make calls and send messages with Sipcore!")
+                .BuildNotification();
+
+            AppNotificationManager.Default.Show(notification);
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Windows notification failed: {ex}");
+        }
 #endif
-  
+
         return app;
     }
 }
