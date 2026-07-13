@@ -33,6 +33,7 @@ public class SipCall
             _events.OnCallStateChanged("Connected");
             _manager.ConnectAudio(this);
         };
+        _userAgent.ClientCallFailed += (uac, error, resp) =>_events.OnCallStateChanged($"Call failed: {error}");
     }
 
     public SIPUserAgent UserAgent => _userAgent;

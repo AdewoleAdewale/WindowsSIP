@@ -9,50 +9,83 @@
              BackgroundColor="{StaticResource SIPCoreDarkBlue}"
              Shell.NavBarIsVisible="False">
 
-    <Grid>
-        <Grid Padding="18" RowDefinitions="Auto,Auto,*">
+    <Grid RowDefinitions="Auto,Auto,*" Padding="22,18" MaximumWidthRequest="860"
+          HorizontalOptions="Center">
 
-            <HorizontalStackLayout Grid.Row="0" Spacing="12">
-                <Border StrokeShape="RoundRectangle 21" BackgroundColor="#1FFFFFFF" WidthRequest="42" HeightRequest="42">
-                    <Label Text="&#xF060;" FontFamily="MaterialIcons" TextColor="White" FontSize="18" HorizontalOptions="Center" VerticalOptions="Center" />
-                    <Border.GestureRecognizers><TapGestureRecognizer Tapped="OnBackTapped" /></Border.GestureRecognizers>
-                </Border>
-                <VerticalStackLayout VerticalOptions="Center">
-                    <Label Text="My Tasks" TextColor="White" FontSize="20" FontAttributes="Bold" />
-                    <Label x:Name="SubtitleLabel" TextColor="#B8FFFFFF" FontSize="12" />
-                </VerticalStackLayout>
-            </HorizontalStackLayout>
+        <!-- Header -->
+        <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto" ColumnSpacing="14">
+            <Border StrokeShape="RoundRectangle 10" StrokeThickness="0"
+                    BackgroundColor="#1FFFFFFF" WidthRequest="40" HeightRequest="40">
+                <Label Text="&#xF060;" FontFamily="MaterialIcons" TextColor="White" FontSize="15"
+                       HorizontalOptions="Center" VerticalOptions="Center" />
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnBackTapped" />
+                </Border.GestureRecognizers>
+            </Border>
 
-            <SearchBar x:Name="SearchBox" Grid.Row="1" Placeholder="Search tasks" Margin="0,14,0,0" TextChanged="OnSearchTextChanged" />
+            <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="1">
+                <Label Text="My Tasks" TextColor="White" FontSize="21" FontAttributes="Bold" />
+                <Label x:Name="SubtitleLabel" TextColor="#99FFFFFF" FontSize="12" />
+            </VerticalStackLayout>
 
-            <Grid Grid.Row="2" Margin="0,14,0,0">
-                <ActivityIndicator x:Name="LoadingIndicator" IsRunning="False" IsVisible="False" Color="{StaticResource SIPCorePrimary}" />
-
-                <VerticalStackLayout x:Name="EmptyState" IsVisible="False" HorizontalOptions="Center" VerticalOptions="Center" Spacing="8" Padding="24">
-                    <Label Text="&#xF057;" FontFamily="MaterialIcons" FontSize="34" TextColor="#B8FFFFFF" HorizontalOptions="Center" />
-                    <Label x:Name="EmptyTitleLabel" TextColor="White" FontAttributes="Bold" HorizontalOptions="Center" />
-                    <Label x:Name="EmptyMessageLabel" TextColor="#99FFFFFF" HorizontalTextAlignment="Center" />
-                </VerticalStackLayout>
-
-                <CollectionView x:Name="TasksList">
-                    <CollectionView.ItemsLayout>
-                        <LinearItemsLayout Orientation="Vertical" ItemSpacing="12" />
-                    </CollectionView.ItemsLayout>
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate x:DataType="api:WorkTaskDto">
-                            <controls:WorkDeskTaskCard x:Name="Card" Loaded="OnCardLoaded" />
-                        </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
-            </Grid>
+            <Border Grid.Column="2" StrokeShape="RoundRectangle 10" StrokeThickness="0"
+                    BackgroundColor="{StaticResource SIPCorePrimary}"
+                    Padding="15,9" VerticalOptions="Center">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnCreateTaskTapped" />
+                </Border.GestureRecognizers>
+                <HorizontalStackLayout Spacing="7">
+                    <Label Text="&#xF067;" FontFamily="MaterialIcons" TextColor="White"
+                           FontSize="12" VerticalOptions="Center" />
+                    <Label Text="New task" TextColor="White" FontSize="13" FontAttributes="Bold"
+                           VerticalOptions="Center" />
+                </HorizontalStackLayout>
+            </Border>
         </Grid>
 
-        <Border StrokeShape="RoundRectangle 28" BackgroundColor="{StaticResource SIPCorePrimary}"
-                WidthRequest="56" HeightRequest="56" HorizontalOptions="End" VerticalOptions="End" Margin="0,0,22,22">
-            <Label Text="&#xF067;" FontFamily="MaterialIcons" TextColor="White" FontSize="22" HorizontalOptions="Center" VerticalOptions="Center" />
-            <Border.GestureRecognizers>
-                <TapGestureRecognizer Tapped="OnCreateTaskTapped" />
-            </Border.GestureRecognizers>
+        <!-- Search -->
+        <Border Grid.Row="1" StrokeShape="RoundRectangle 10" StrokeThickness="1"
+                Stroke="#26FFFFFF" BackgroundColor="#14FFFFFF"
+                Margin="0,16,0,4" Padding="12,0">
+            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
+                <Label Text="🔍" FontSize="13" Opacity="0.5" VerticalOptions="Center" />
+                <SearchBar Grid.Column="1" x:Name="SearchBox"
+                           Placeholder="Search title, status, priority, people…"
+                           TextColor="White" PlaceholderColor="#73FFFFFF"
+                           BackgroundColor="Transparent"
+                           TextChanged="OnSearchTextChanged" />
+            </Grid>
         </Border>
+
+        <!-- Content -->
+        <Grid Grid.Row="2" Margin="0,10,0,0">
+
+            <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="10">
+                <ActivityIndicator x:Name="LoadingIndicator" IsRunning="False" IsVisible="False"
+                                   Color="White" WidthRequest="30" HeightRequest="30" />
+            </VerticalStackLayout>
+
+            <VerticalStackLayout x:Name="EmptyState" IsVisible="False"
+                                 HorizontalOptions="Center" VerticalOptions="Center"
+                                 Spacing="10" Padding="30">
+                <Label Text="&#xF057;" FontFamily="MaterialIcons" FontSize="36"
+                       TextColor="#66FFFFFF" HorizontalOptions="Center" />
+                <Label x:Name="EmptyTitleLabel" TextColor="White" FontSize="16"
+                       FontAttributes="Bold" HorizontalOptions="Center" />
+                <Label x:Name="EmptyMessageLabel" TextColor="#99FFFFFF" FontSize="13"
+                       HorizontalTextAlignment="Center" MaximumWidthRequest="320" />
+            </VerticalStackLayout>
+
+            <CollectionView x:Name="TasksList">
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Vertical" ItemSpacing="10" />
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="api:WorkTaskDto">
+                        <controls:WorkDeskTaskCard Loaded="OnCardLoaded" />
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </Grid>
     </Grid>
 </ContentPage>

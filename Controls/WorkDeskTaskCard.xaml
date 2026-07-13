@@ -3,45 +3,66 @@
              xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
-    <Border StrokeShape="RoundRectangle 24" BackgroundColor="#14FFFFFF" Padding="16">
+    <Border StrokeShape="RoundRectangle 16" StrokeThickness="1"
+            Stroke="#1FFFFFFF" BackgroundColor="#12FFFFFF" Padding="16,14">
         <Border.GestureRecognizers>
             <TapGestureRecognizer Tapped="OnCardTapped" />
         </Border.GestureRecognizers>
 
-        <VerticalStackLayout Spacing="10">
+        <VerticalStackLayout Spacing="12">
+
+            <!-- Header -->
             <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
-                <Border x:Name="IconBg" Grid.Column="0" StrokeShape="RoundRectangle 23" WidthRequest="46" HeightRequest="46">
-                    <Label Text="&#xF0AE;" FontFamily="MaterialIcons" x:Name="IconLabel" HorizontalOptions="Center" VerticalOptions="Center" />
+                <Border x:Name="IconBg" Grid.Column="0" StrokeShape="RoundRectangle 12"
+                        StrokeThickness="0" WidthRequest="44" HeightRequest="44">
+                    <Label x:Name="IconLabel" Text="&#xF0AE;" FontFamily="MaterialIcons"
+                           FontSize="17" HorizontalOptions="Center" VerticalOptions="Center" />
                 </Border>
 
-                <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="1">
-                    <Label x:Name="TitleLabel" TextColor="White" FontAttributes="Bold" FontSize="16" LineBreakMode="TailTruncation" />
+                <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
+                    <Label x:Name="TitleLabel" TextColor="White" FontAttributes="Bold"
+                           FontSize="15.5" LineBreakMode="TailTruncation" MaxLines="2" />
                     <Label x:Name="CreatorLabel" TextColor="#99FFFFFF" FontSize="12" />
                     <Label x:Name="CreatorCompanyLabel" TextColor="#6BFFFFFF" FontSize="11" IsVisible="False" />
                 </VerticalStackLayout>
 
-                <ImageButton Grid.Column="2" x:Name="EditButton" Source="edit_icon.png" WidthRequest="20" HeightRequest="20"
-                             BackgroundColor="Transparent" IsVisible="False" Clicked="OnEditClicked" />
+                <Border Grid.Column="2" StrokeShape="RoundRectangle 10" StrokeThickness="0"
+                        BackgroundColor="#1FFFFFFF" WidthRequest="36" HeightRequest="36"
+                        VerticalOptions="Start">
+                    <ImageButton x:Name="EditButton" Source="edit_icon.png"
+                                 WidthRequest="16" HeightRequest="16" Padding="0"
+                                 BackgroundColor="Transparent" IsVisible="False"
+                                 HorizontalOptions="Center" VerticalOptions="Center"
+                                 Clicked="OnEditClicked"
+                                 SemanticProperties.Description="Edit task" />
+                </Border>
             </Grid>
 
+            <!-- Chips + progress -->
             <HorizontalStackLayout Spacing="8">
-                <Border x:Name="StatusChip" StrokeShape="RoundRectangle 50" Padding="10,4">
-                    <Label x:Name="StatusLabel" FontSize="11" FontAttributes="Bold" />
+                <Border x:Name="StatusChip" StrokeShape="RoundRectangle 8" StrokeThickness="0" Padding="9,4">
+                    <Label x:Name="StatusLabel" FontSize="10.5" FontAttributes="Bold" CharacterSpacing="0.6" />
                 </Border>
-                <Border x:Name="PriorityChip" StrokeShape="RoundRectangle 50" Padding="10,4">
-                    <Label x:Name="PriorityLabel" FontSize="11" FontAttributes="Bold" />
+                <Border x:Name="PriorityChip" StrokeShape="RoundRectangle 8" StrokeThickness="0" Padding="9,4">
+                    <Label x:Name="PriorityLabel" FontSize="10.5" FontAttributes="Bold" CharacterSpacing="0.6" />
                 </Border>
             </HorizontalStackLayout>
 
-            <ProgressBar x:Name="ProgressIndicator" HeightRequest="5" />
+            <ProgressBar x:Name="ProgressIndicator" HeightRequest="4" BackgroundColor="#1FFFFFFF" />
 
-            <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="10">
-                <VerticalStackLayout Grid.Column="0">
-                    <Label x:Name="TeamLeadLabel" FontSize="12" TextColor="#B8FFFFFF" />
+            <BoxView HeightRequest="1" Color="#14FFFFFF" />
+
+            <!-- Meta row -->
+            <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="14">
+                <VerticalStackLayout Grid.Column="0" Spacing="1">
+                    <Label x:Name="TeamLeadLabel" FontSize="12" TextColor="#B8FFFFFF"
+                           LineBreakMode="TailTruncation" />
                     <Label x:Name="TeamLeadCompanyLabel" FontSize="11" TextColor="#6BFFFFFF" IsVisible="False" />
                 </VerticalStackLayout>
-                <Label Grid.Column="1" x:Name="CommentsCountLabel" FontSize="12" TextColor="#99FFFFFF" VerticalOptions="Center" />
-                <Label Grid.Column="2" x:Name="AttachmentsCountLabel" FontSize="12" TextColor="#99FFFFFF" VerticalOptions="Center" />
+                <Label Grid.Column="1" x:Name="CommentsCountLabel" FontSize="12"
+                       TextColor="#99FFFFFF" VerticalOptions="Center" />
+                <Label Grid.Column="2" x:Name="AttachmentsCountLabel" FontSize="12"
+                       TextColor="#99FFFFFF" VerticalOptions="Center" />
             </Grid>
         </VerticalStackLayout>
     </Border>

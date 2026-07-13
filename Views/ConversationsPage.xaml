@@ -13,59 +13,99 @@
 
         <controls:SipCoreHeader Grid.Row="0" DrawerRequested="OnDrawerRequested" />
 
-        <SearchBar Grid.Row="1" x:Name="SearchBox" Placeholder="Search conversations..."
-                   Margin="20,18,20,0" TextChanged="OnSearchTextChanged" />
+        <!-- Title + compose -->
+        <Grid Grid.Row="1" Padding="22,18,22,0" ColumnDefinitions="*,Auto" ColumnSpacing="12">
+            <VerticalStackLayout Spacing="3">
+                <Label Text="Messages" FontSize="28" FontAttributes="Bold"
+                       TextColor="{StaticResource SIPCoreDarkBlue}"
+                       SemanticProperties.HeadingLevel="Level1" />
+                <Label Text="Direct messages across your workspace"
+                       FontSize="13.5" TextColor="{StaticResource SIPCoreTextSecondary}" />
+            </VerticalStackLayout>
 
-        <Label Grid.Row="2" Text="Recent Chats" FontSize="34" FontAttributes="Bold"
-               TextColor="{StaticResource SIPCoreTextPrimary}" Margin="20,28,20,18" />
+            <Border Grid.Column="1" StrokeShape="RoundRectangle 12" StrokeThickness="0"
+                    BackgroundColor="{StaticResource SIPCorePrimary}"
+                    Padding="16,10" VerticalOptions="Center">
+                <Border.Shadow>
+                    <Shadow Brush="{StaticResource SIPCorePrimary}" Opacity="0.3" Radius="10" Offset="0,3" />
+                </Border.Shadow>
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnComposeTapped" />
+                </Border.GestureRecognizers>
+                <HorizontalStackLayout Spacing="7">
+                    <Label Text="✎" TextColor="White" FontSize="14" VerticalOptions="Center" />
+                    <Label Text="New message" TextColor="White" FontSize="13.5" FontAttributes="Bold" VerticalOptions="Center" />
+                </HorizontalStackLayout>
+            </Border>
+        </Grid>
 
+        <!-- Search -->
+        <Border Grid.Row="2" StrokeShape="RoundRectangle 10" StrokeThickness="1.2"
+                Stroke="{StaticResource SIPCoreBorder}"
+                BackgroundColor="{StaticResource SIPCoreCard}"
+                Margin="22,16,22,4" Padding="12,0">
+            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
+                <Label Text="🔍" FontSize="14" Opacity="0.55" VerticalOptions="Center" />
+                <SearchBar Grid.Column="1" x:Name="SearchBox"
+                           Placeholder="Search conversations…"
+                           BackgroundColor="Transparent"
+                           TextChanged="OnSearchTextChanged" />
+            </Grid>
+        </Border>
+
+        <!-- List -->
         <Grid Grid.Row="3">
-            <CollectionView x:Name="ConversationsList">
+            <CollectionView x:Name="ConversationsList" Margin="22,6,22,8">
                 <CollectionView.ItemsLayout>
-                    <LinearItemsLayout Orientation="Vertical" ItemSpacing="14" />
+                    <LinearItemsLayout Orientation="Vertical" ItemSpacing="10" />
                 </CollectionView.ItemsLayout>
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="models:ConversationUi">
-                        <Border StrokeShape="RoundRectangle 20" BackgroundColor="White" Padding="16">
-                            <Border.Shadow>
-                                <Shadow Brush="Black" Opacity="0.06" Radius="4" Offset="0,2" />
-                            </Border.Shadow>
+                        <Border StrokeShape="RoundRectangle 14" StrokeThickness="1"
+                                Stroke="{StaticResource SIPCoreBorder}"
+                                BackgroundColor="{StaticResource SIPCoreCard}"
+                                Padding="14,12">
                             <Border.GestureRecognizers>
                                 <TapGestureRecognizer Tapped="OnConversationTapped" CommandParameter="{Binding .}" />
                             </Border.GestureRecognizers>
 
                             <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="14">
-                                <Border Grid.Column="0" StrokeShape="RoundRectangle 29" BackgroundColor="#DCEBFF"
-                                        WidthRequest="58" HeightRequest="58">
-                                    <Label Text="{Binding Extension, Converter={StaticResource LastTwoCharsConverter}}"
-                                           TextColor="{StaticResource SIPCoreDarkBlue}"
-                                           FontAttributes="Bold" FontSize="20" HorizontalOptions="Center" VerticalOptions="Center" />
-                                </Border>
 
-                                <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
-                                    <Label Text="{Binding Extension}" FontAttributes="Bold" FontSize="18"
-                                           TextColor="{StaticResource SIPCoreTextPrimary}" LineBreakMode="TailTruncation" />
-                                    <Label FontSize="12">
-                                        <Label.Triggers>
-                                            <DataTrigger TargetType="Label" Binding="{Binding IsOnline}" Value="True">
-                                                <Setter Property="Text" Value="Available" />
-                                                <Setter Property="TextColor" Value="{StaticResource SIPCoreSuccess}" />
-                                            </DataTrigger>
-                                            <DataTrigger TargetType="Label" Binding="{Binding IsOnline}" Value="False">
-                                                <Setter Property="Text" Value="Offline" />
-                                                <Setter Property="TextColor" Value="Gray" />
-                                            </DataTrigger>
-                                        </Label.Triggers>
-                                    </Label>
-                                    <Label Text="{Binding LastMessage}" TextColor="{StaticResource SIPCoreTextSecondary}"
+                                <!-- Avatar + presence -->
+                                <Grid Grid.Column="0" WidthRequest="48" HeightRequest="48">
+                                    <Border StrokeShape="RoundRectangle 24" StrokeThickness="0"
+                                            BackgroundColor="{StaticResource SIPCorePrimaryLight}">
+                                        <Label Text="{Binding Extension, Converter={StaticResource LastTwoCharsConverter}}"
+                                               TextColor="{StaticResource SIPCorePrimaryDark}"
+                                               FontAttributes="Bold" FontSize="16"
+                                               HorizontalOptions="Center" VerticalOptions="Center" />
+                                    </Border>
+                                    <Border StrokeShape="RoundRectangle 7"
+                                            Stroke="{StaticResource SIPCoreCard}" StrokeThickness="2"
+                                            BackgroundColor="{StaticResource SIPCoreSuccess}"
+                                            WidthRequest="14" HeightRequest="14"
+                                            HorizontalOptions="End" VerticalOptions="End"
+                                            IsVisible="{Binding IsOnline}" />
+                                </Grid>
+
+                                <!-- Preview -->
+                                <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="3">
+                                    <Label Text="{Binding Extension}" FontAttributes="Bold" FontSize="15.5"
+                                           TextColor="{StaticResource SIPCoreTextPrimary}"
+                                           LineBreakMode="TailTruncation" />
+                                    <Label Text="{Binding LastMessage}" FontSize="13"
+                                           TextColor="{StaticResource SIPCoreTextSecondary}"
                                            LineBreakMode="TailTruncation" MaxLines="1" />
                                 </VerticalStackLayout>
 
-                                <Border Grid.Column="2" StrokeShape="RoundRectangle 14" BackgroundColor="{StaticResource SIPCorePrimary}"
-                                        WidthRequest="28" HeightRequest="28" VerticalOptions="Start"
+                                <!-- Unread pill -->
+                                <Border Grid.Column="2" StrokeShape="RoundRectangle 11" StrokeThickness="0"
+                                        BackgroundColor="{StaticResource SIPCorePrimary}"
+                                        Padding="8,3" VerticalOptions="Center"
                                         IsVisible="{Binding UnreadCount, Converter={StaticResource IntGreaterThanZeroConverter}}">
-                                    <Label Text="{Binding UnreadCount}" TextColor="White" FontSize="12"
-                                           HorizontalOptions="Center" VerticalOptions="Center" />
+                                    <Label Text="{Binding UnreadCount}" TextColor="White"
+                                           FontSize="11.5" FontAttributes="Bold"
+                                           HorizontalOptions="Center" />
                                 </Border>
                             </Grid>
                         </Border>
@@ -73,24 +113,21 @@
                 </CollectionView.ItemTemplate>
             </CollectionView>
 
-            <Label x:Name="EmptyLabel" Text="No conversations yet. Tap compose to start."
-                   TextColor="{StaticResource SIPCoreTextSecondary}" Margin="20,0" IsVisible="False" />
-
-            <Border StrokeShape="RoundRectangle 28" BackgroundColor="{StaticResource SIPCorePrimary}"
-                    WidthRequest="56" HeightRequest="56"
-                    HorizontalOptions="End" VerticalOptions="End" Margin="0,0,28,20">
-                <Label Text="&#xF040;" FontFamily="MaterialIcons" TextColor="White" FontSize="22"
-                       HorizontalOptions="Center" VerticalOptions="Center" />
-                <Border.GestureRecognizers>
-                    <TapGestureRecognizer Tapped="OnComposeTapped" />
-                </Border.GestureRecognizers>
-            </Border>
+            <VerticalStackLayout x:Name="EmptyLabel" IsVisible="False"
+                                 HorizontalOptions="Center" VerticalOptions="Center"
+                                 Spacing="10" Padding="30">
+                <Label Text="💬" FontSize="42" Opacity="0.35" HorizontalOptions="Center" />
+                <Label Text="No conversations yet" FontSize="17" FontAttributes="Bold"
+                       TextColor="{StaticResource SIPCoreTextPrimary}" HorizontalOptions="Center" />
+                <Label Text="Start one with “New message”, or message a contact from the directory."
+                       FontSize="13" TextColor="{StaticResource SIPCoreTextSecondary}"
+                       HorizontalTextAlignment="Center" MaximumWidthRequest="320" />
+            </VerticalStackLayout>
         </Grid>
 
         <controls:BottomNavBar Grid.Row="4" SelectedScreen="Conversations"
-                                DialerTapped="OnDialerTapped"
-                                ContactsTapped="OnContactsTapped"
-                                HistoryTapped="OnHistoryTapped" />
-
+                               DialerTapped="OnDialerTapped"
+                               ContactsTapped="OnContactsTapped"
+                               HistoryTapped="OnHistoryTapped" />
     </Grid>
 </ContentPage>

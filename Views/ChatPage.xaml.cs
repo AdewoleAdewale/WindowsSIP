@@ -153,4 +153,19 @@ public partial class ChatPage : ContentPage
         // Attachment picking/upload is deferred -- see class remarks.
         await DisplayAlert("Attachments", "File attachments are coming in a follow-up update.", "OK");
     }
+
+    private async void Button_Clicked(object sender, EventArgs e)
+    {
+        var text = MessageEntry.Text?.Trim() ?? "";
+        var to = string.IsNullOrEmpty(_chatViewModel.ActiveExtension)
+            ? NewRecipientEntry.Text?.Trim() ?? ""
+            : _chatViewModel.ActiveExtension;
+
+        if (string.IsNullOrEmpty(text) || string.IsNullOrEmpty(to)) return;
+
+        MessageEntry.Text = "";
+        await _chatViewModel.SendTextMessageAsync(to, text);
+        _replyingTo = null;
+        ReplyBar.IsVisible = false;
+    }
 }

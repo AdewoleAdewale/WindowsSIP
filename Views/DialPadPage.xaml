@@ -8,68 +8,129 @@
              BackgroundColor="{StaticResource SIPCoreBackground}"
              Shell.NavBarIsVisible="False">
 
-    <Grid RowDefinitions="Auto,Auto,*,Auto,Auto">
+    <Grid RowDefinitions="Auto,*,Auto">
 
+        <!-- Top Header Navigation -->
         <controls:SipCoreHeader Grid.Row="0" DrawerRequested="OnDrawerRequested" />
 
-        <Label x:Name="NumberDisplay" Grid.Row="1"
-               Text=""
-               HorizontalTextAlignment="Center"
-               FontSize="36" FontAttributes="Bold"
-               TextColor="{StaticResource SIPCorePrimary}"
-               HeightRequest="48"
-               Margin="0,12,0,0"
-               LineBreakMode="NoWrap" />
+        <!-- Main Content Area -->
+        <ScrollView Grid.Row="1" Orientation="Neither">
+            <Grid HorizontalOptions="Center" VerticalOptions="Center" Margin="24">
 
-        <!-- Keypad -->
-        <VerticalStackLayout Grid.Row="2" VerticalOptions="Center" Padding="28,0" Spacing="10">
-            <Grid ColumnDefinitions="*,*,*" ColumnSpacing="10">
-                <controls:DialpadKey Grid.Column="0" Digit="1" Letters="" Tapped="OnKeyTapped" LongPressed="OnKeyLongPressed" />
-                <controls:DialpadKey Grid.Column="1" Digit="2" Letters="ABC" Tapped="OnKeyTapped" LongPressed="OnKeyLongPressed" />
-                <controls:DialpadKey Grid.Column="2" Digit="3" Letters="DEF" Tapped="OnKeyTapped" LongPressed="OnKeyLongPressed" />
+                <!-- Fluent Desktop Framing Device -->
+                <Border StrokeShape="RoundRectangle 4" StrokeThickness="1"
+                        Stroke="{StaticResource SIPCoreBorder}"
+                        BackgroundColor="{StaticResource SIPCoreCard}"
+                        WidthRequest="720" HeightRequest="480">
+                    <Border.Shadow>
+                        <Shadow Brush="Black" Opacity="0.06" Radius="12" Offset="0,4" />
+                    </Border.Shadow>
+
+                    <!-- Responsive Desktop 2-Column Split Structure -->
+                    <Grid ColumnDefinitions="*, 1.2*">
+
+                        <!-- LEFT COLUMN: Call Configuration & Interactive Readout Console -->
+                        <Grid Grid.Column="0" RowDefinitions="*, Auto, Auto" Padding="32" BackgroundColor="#04000000">
+
+                            <!-- Display State Core Context -->
+                            <VerticalStackLayout Grid.Row="0" Spacing="16" VerticalOptions="Center">
+                                <Label Text="Dial a Number" FontSize="20" FontAttributes="Bold" TextColor="{StaticResource SIPCoreDarkBlue}"/>
+
+                                <!-- Windows Terminal/Field Inspired Number Output -->
+                                <Border StrokeShape="RoundRectangle 4" StrokeThickness="1"
+                                        Stroke="{StaticResource SIPCoreBorder}"
+                                        BackgroundColor="{StaticResource SIPCoreBackground}"
+                                        Padding="16" HeightRequest="68">
+                                    <Grid ColumnDefinitions="*, Auto">
+
+                                        <!-- Placeholder Text Context Trigger -->
+                                        <Label Grid.Column="0" Text="Enter extension or phone address..."
+                                               FontSize="14" TextColor="{StaticResource SIPCoreTextSecondary}"
+                                               Opacity="0.7" VerticalOptions="Center">
+                                            <Label.Triggers>
+                                                <DataTrigger TargetType="Label"
+                                                             Binding="{Binding Source={x:Reference NumberDisplay}, Path=Text.Length}"
+                                                             Value="0">
+                                                    <Setter Property="IsVisible" Value="True" />
+                                                </DataTrigger>
+                                            </Label.Triggers>
+                                            <Label.IsVisible>False</Label.IsVisible>
+                                        </Label>
+
+                                        <!-- Real-time Input Display -->
+                                        <Label x:Name="NumberDisplay" Grid.Column="0" Text=""
+                                               HorizontalTextAlignment="Start" FontSize="26" FontAttributes="Bold"
+                                               TextColor="{StaticResource SIPCoreDarkBlue}" VerticalOptions="Center"
+                                               LineBreakMode="HeadTruncation" />
+
+                                        <!-- Integrated Clear Button -->
+                                        <ImageButton Grid.Column="1" Source="back.png" WidthRequest="20" HeightRequest="20"
+                                                     BackgroundColor="Transparent" VerticalOptions="Center"
+                                                     Clicked="OnBackspaceTapped" Margin="8,0,0,0"
+                                                     SemanticProperties.Description="Delete last digit" />
+                                    </Grid>
+                                </Border>
+                            </VerticalStackLayout>
+
+                            <!-- Mid-Console Context Sub-actions (e.g. Video Call Option) -->
+                            <Grid Grid.Row="1" ColumnDefinitions="*, Auto" Margin="0,0,0,20">
+                                <HorizontalStackLayout Grid.Column="0" Spacing="8" VerticalOptions="Center" Opacity="0.6">
+                                    <Image Source="keypad.png" WidthRequest="16" HeightRequest="16" VerticalOptions="Center"/>
+                                    <Label Text="Video Capabilities (Disabled)" FontSize="12" TextColor="{StaticResource SIPCoreTextSecondary}" VerticalOptions="Center"/>
+                                </HorizontalStackLayout>
+                                <Border Grid.Column="1" BackgroundColor="#11000000" Padding="6,2" StrokeShape="RoundRectangle 2" StrokeThickness="0">
+                                    <Label Text="SIP" FontSize="10" FontAttributes="Bold" TextColor="{StaticResource SIPCoreTextSecondary}"/>
+                                </Border>
+                            </Grid>
+
+                            <!-- Primary Core Audio Connection Mechanism -->
+                            <Button Grid.Row="2" Text="Start Voice Call"
+                                    Clicked="Button_Clicked"
+                                    BackgroundColor="{StaticResource SIPCoreSuccess}"
+                                    TextColor="White" FontSize="14" FontAttributes="Bold"
+                                    HeightRequest="42" CornerRadius="4" HorizontalOptions="FillAndExpand">
+                                <Button.Shadow>
+                                    <Shadow Brush="{StaticResource SIPCoreSuccess}" Opacity="0.3" Radius="8" Offset="0,2" />
+                                </Button.Shadow>
+                            </Button>
+                        </Grid>
+
+                        <!-- RIGHT COLUMN: Elegant Matrix Input Dialpad Grid -->
+                        <Grid Grid.Column="1" Padding="32" VerticalOptions="Center">
+                            <VerticalStackLayout Spacing="8">
+                                <Grid ColumnDefinitions="*,*,*" ColumnSpacing="8">
+                                    <controls:DialpadKey Grid.Column="0" Digit="1" Letters="" Tapped="OnKeyTapped" LongPressed="OnKeyLongPressed" />
+                                    <controls:DialpadKey Grid.Column="1" Digit="2" Letters="ABC" Tapped="OnKeyTapped" LongPressed="OnKeyLongPressed" />
+                                    <controls:DialpadKey Grid.Column="2" Digit="3" Letters="DEF" Tapped="OnKeyTapped" LongPressed="OnKeyLongPressed" />
+                                </Grid>
+                                <Grid ColumnDefinitions="*,*,*" ColumnSpacing="8">
+                                    <controls:DialpadKey Grid.Column="0" Digit="4" Letters="GHI" Tapped="OnKeyTapped" LongPressed="OnKeyLongPressed" />
+                                    <controls:DialpadKey Grid.Column="1" Digit="5" Letters="JKL" Tapped="OnKeyTapped" LongPressed="OnKeyLongPressed" />
+                                    <controls:DialpadKey Grid.Column="2" Digit="6" Letters="MNO" Tapped="OnKeyTapped" LongPressed="OnKeyLongPressed" />
+                                </Grid>
+                                <Grid ColumnDefinitions="*,*,*" ColumnSpacing="8">
+                                    <controls:DialpadKey Grid.Column="0" Digit="7" Letters="PQRS" Tapped="OnKeyTapped" LongPressed="OnKeyLongPressed" />
+                                    <controls:DialpadKey Grid.Column="1" Digit="8" Letters="TUV" Tapped="OnKeyTapped" LongPressed="OnKeyLongPressed" />
+                                    <controls:DialpadKey Grid.Column="2" Digit="9" Letters="WXYZ" Tapped="OnKeyTapped" LongPressed="OnKeyLongPressed" />
+                                </Grid>
+                                <Grid ColumnDefinitions="*,*,*" ColumnSpacing="8">
+                                    <controls:DialpadKey Grid.Column="0" Digit="*" Letters="" Tapped="OnKeyTapped" LongPressed="OnKeyLongPressed" />
+                                    <controls:DialpadKey Grid.Column="1" Digit="0" Letters="+" Tapped="OnKeyTapped" LongPressed="OnKeyLongPressed" />
+                                    <controls:DialpadKey Grid.Column="2" Digit="#" Letters="" Tapped="OnKeyTapped" LongPressed="OnKeyLongPressed" />
+                                </Grid>
+                            </VerticalStackLayout>
+                        </Grid>
+
+                    </Grid>
+                </Border>
+
             </Grid>
-            <Grid ColumnDefinitions="*,*,*" ColumnSpacing="10">
-                <controls:DialpadKey Grid.Column="0" Digit="4" Letters="GHI" Tapped="OnKeyTapped" LongPressed="OnKeyLongPressed" />
-                <controls:DialpadKey Grid.Column="1" Digit="5" Letters="JKL" Tapped="OnKeyTapped" LongPressed="OnKeyLongPressed" />
-                <controls:DialpadKey Grid.Column="2" Digit="6" Letters="MNO" Tapped="OnKeyTapped" LongPressed="OnKeyLongPressed" />
-            </Grid>
-            <Grid ColumnDefinitions="*,*,*" ColumnSpacing="10">
-                <controls:DialpadKey Grid.Column="0" Digit="7" Letters="PQRS" Tapped="OnKeyTapped" LongPressed="OnKeyLongPressed" />
-                <controls:DialpadKey Grid.Column="1" Digit="8" Letters="TUV" Tapped="OnKeyTapped" LongPressed="OnKeyLongPressed" />
-                <controls:DialpadKey Grid.Column="2" Digit="9" Letters="WXYZ" Tapped="OnKeyTapped" LongPressed="OnKeyLongPressed" />
-            </Grid>
-            <Grid ColumnDefinitions="*,*,*" ColumnSpacing="10">
-                <controls:DialpadKey Grid.Column="0" Digit="*" Letters="" Tapped="OnKeyTapped" LongPressed="OnKeyLongPressed" />
-                <controls:DialpadKey Grid.Column="1" Digit="0" Letters="+" Tapped="OnKeyTapped" LongPressed="OnKeyLongPressed" />
-                <controls:DialpadKey Grid.Column="2" Digit="#" Letters="" Tapped="OnKeyTapped" LongPressed="OnKeyLongPressed" />
-            </Grid>
-        </VerticalStackLayout>
+        </ScrollView>
 
-        <!-- Call / video / backspace row -->
-        <Grid Grid.Row="3" ColumnDefinitions="*,*,*" Padding="30,8" VerticalOptions="Center">
-            <VerticalStackLayout Grid.Column="0" HorizontalOptions="Center" Spacing="2">
-                <ImageButton Source="video_icon.png" WidthRequest="32" HeightRequest="32" BackgroundColor="Transparent"
-                             Clicked="OnVideoTapped" />
-                <Label Text="Soon" FontSize="10" TextColor="{StaticResource SIPCorePrimary}" FontAttributes="Bold" HorizontalOptions="Center" />
-            </VerticalStackLayout>
-
-            <Border Grid.Column="1" StrokeShape="RoundRectangle 39" WidthRequest="78" HeightRequest="78"
-                    BackgroundColor="{StaticResource SIPCorePrimary}" HorizontalOptions="Center">
-                <Image Source="call_icon.png" WidthRequest="36" HeightRequest="36" />
-                <Border.GestureRecognizers>
-                    <TapGestureRecognizer Tapped="OnCallTapped" />
-                </Border.GestureRecognizers>
-            </Border>
-
-            <ImageButton Grid.Column="2" Source="backspace_icon.png" WidthRequest="32" HeightRequest="32"
-                         BackgroundColor="Transparent" HorizontalOptions="Center"
-                         Clicked="OnBackspaceTapped" />
-        </Grid>
-
-        <controls:BottomNavBar Grid.Row="4" SelectedScreen="DialPad"
-                                ContactsTapped="OnContactsTapped"
-                                MessagesTapped="OnMessagesTapped"
-                                HistoryTapped="OnHistoryTapped" />
-
+        <!-- Persistent Application Base Navigation -->
+        <controls:BottomNavBar Grid.Row="2" SelectedScreen="DialPad"
+                               ContactsTapped="OnContactsTapped"
+                               MessagesTapped="OnMessagesTapped"
+                               HistoryTapped="OnHistoryTapped" />
     </Grid>
 </ContentPage>

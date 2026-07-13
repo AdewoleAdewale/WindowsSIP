@@ -16,9 +16,9 @@
                 <Label Text="{Binding Status}" TextColor="#D1FFFFFF" FontSize="17" FontAttributes="Bold" />
             </HorizontalStackLayout>
 
-            <Border StrokeShape="RoundRectangle 61" BackgroundColor="#1AFFFFFF"
+            <Border StrokeShape="RoundRectangle 61" BackgroundColor="White"
                     WidthRequest="122" HeightRequest="122" HorizontalOptions="Center">
-                <Image Source="sipcore_logo.png" WidthRequest="76" HeightRequest="76" Aspect="AspectFit"
+                <Image Source="sipcorelogo.png" WidthRequest="76" HeightRequest="76" Aspect="AspectFit"
                        HorizontalOptions="Center" VerticalOptions="Center" />
             </Border>
 
@@ -49,7 +49,7 @@
                                     <Ellipse Grid.Column="0" Fill="{StaticResource SIPCoreSuccess}" WidthRequest="10" HeightRequest="10" VerticalOptions="Center" />
                                     <Label Grid.Column="1" Text="{Binding .}" TextColor="White" FontSize="14"
                                            LineBreakMode="TailTruncation" VerticalOptions="Center" />
-                                    <ImageButton Grid.Column="2" Source="call_end_icon.png" WidthRequest="22" HeightRequest="22"
+                                    <ImageButton Grid.Column="2" Source="end.png" WidthRequest="22" HeightRequest="22"
                                                  BackgroundColor="Transparent"
                                                  Clicked="OnRemoveParticipantClicked"
                                                  CommandParameter="{Binding .}" />
@@ -75,8 +75,8 @@
                     CornerRadius="18" Margin="0,24,0,0" />
 
             <Border StrokeShape="RoundRectangle 42" WidthRequest="84" HeightRequest="84"
-                    BackgroundColor="{StaticResource SIPCoreDanger}" HorizontalOptions="Center" Margin="0,40,0,22">
-                <Image Source="call_end_icon.png" WidthRequest="42" HeightRequest="42" />
+                    BackgroundColor="White" HorizontalOptions="Center" Margin="0,40,0,22">
+                <Image Source="end.png" WidthRequest="42" HeightRequest="42" />
                 <Border.GestureRecognizers>
                     <TapGestureRecognizer Tapped="OnHangupTapped" />
                 </Border.GestureRecognizers>

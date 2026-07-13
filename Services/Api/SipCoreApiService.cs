@@ -1,26 +1,24 @@
-using System.Net.Http.Json;
-using System.Text.Json;
 using SipCoreMobile.Models;
 using SipCoreMobile.Models.Api;
+using System.Net.Http.Json;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+
 
 namespace SipCoreMobile.Services.Api;
 
-/// <summary>
-/// Port of ApiClient.kt's OkHttp/Retrofit/Gson setup. Register HttpClient via
-/// MauiProgram: builder.Services.AddHttpClient&lt;ISipCoreApiService, SipCoreApiService&gt;(c =>
-///     c.BaseAddress = new Uri("https://softworks-us.org/"));
-/// The original OkHttpClient allowed TLS 1.0-1.3 plus cleartext as a fallback and set
-/// 30s connect/read/write timeouts with retry-on-connection-failure; on Windows/.NET,
-/// TLS version negotiation is handled by the OS (Schannel), so there's no equivalent
-/// knob to set here -- just the 30s timeout, applied below.
-/// </summary>
+
 public class SipCoreApiService : ISipCoreApiService
 {
     private readonly HttpClient _http;
+
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        PropertyNameCaseInsensitive = true,
+        NumberHandling = JsonNumberHandling.AllowReadingFromString
     };
+
 
     public SipCoreApiService(HttpClient httpClient)
     {
@@ -114,14 +112,17 @@ public class SipCoreApiService : ISipCoreApiService
         var resp = await _http.GetAsync($"api/companies/{companyId}/worktasks/dashboard/{extension}");
         resp.EnsureSuccessStatusCode();
         return (await resp.Content.ReadFromJsonAsync<WorkDeskDashboardDto>(JsonOptions))!;
+
     }
 
     public async Task<List<WorkTaskDto>> GetMyWorkTasksAsync(int companyId, string extension)
     {
         var resp = await _http.GetAsync($"api/companies/{companyId}/worktasks/my-tasks/{extension}");
         resp.EnsureSuccessStatusCode();
-        return (await resp.Content.ReadFromJsonAsync<List<WorkTaskDto>>(JsonOptions))!;
+
+        return await ReadJsonAsync<List<WorkTaskDto>>(resp);
     }
+    
 
     public async Task<WorkTaskDetailResponse> GetWorkTaskAsync(int companyId, string taskId)
     {
@@ -275,10 +276,31 @@ public class SipCoreApiService : ISipCoreApiService
         return (await resp.Content.ReadFromJsonAsync<SimpleSuccessResponse>(JsonOptions))!;
     }
 
+ 
     public async Task<SimpleSuccessResponse> KickMeetingMemberAsync(int companyId, string meetingId, MeetingMemberActionRequest request)
     {
         var resp = await _http.PostAsJsonAsync($"api/companies/{companyId}/meetings/{meetingId}/kick", request, JsonOptions);
         resp.EnsureSuccessStatusCode();
         return (await resp.Content.ReadFromJsonAsync<SimpleSuccessResponse>(JsonOptions))!;
     }
+
+
+
+
+private async Task<T> ReadJsonAsync<T>(HttpResponseMessage resp)
+    {
+        var body = await resp.Content.ReadAsStringAsync();
+        try
+        {
+            return JsonSerializer.Deserialize<T>(body, JsonOptions)!;
+        }
+        catch (JsonException ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"JSON FAIL {resp.RequestMessage?.RequestUri}: {ex.Message}");
+            System.Diagnostics.Debug.WriteLine(body.Length > 2000 ? body[..2000] : body);
+            throw;
+        }
+    }
 }
+
+

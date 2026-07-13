@@ -8,63 +8,94 @@
              BackgroundColor="{StaticResource SIPCoreBackground}"
              Shell.NavBarIsVisible="False">
 
+    <!-- Primary Windows Workframe -->
     <Grid RowDefinitions="Auto,*,Auto,Auto">
 
-        <!-- Header -->
-        <Grid Grid.Row="0" BackgroundColor="White" Padding="16,14" ColumnDefinitions="Auto,Auto,*,Auto">
-            <ImageButton Grid.Column="0" Source="back_icon.png" WidthRequest="28" HeightRequest="28"
-                         BackgroundColor="Transparent" Clicked="OnBackClicked" />
+        <!-- ══════════ TOP: FLUENT APP BAR / HEADER ══════════ -->
+        <Border Grid.Row="0" 
+                StrokeThickness="0" 
+                BackgroundColor="{StaticResource SIPCoreCard}"
+                HeightRequest="70"
+                Padding="24,0">
+            <Border.Shadow>
+                <Shadow Brush="Black" Opacity="0.04" Radius="4" Offset="0,2" />
+            </Border.Shadow>
 
-            <Border Grid.Column="1" StrokeShape="RoundRectangle 26" BackgroundColor="#DCEBFF"
-                    WidthRequest="52" HeightRequest="52" Margin="10,0,0,0">
-                <Label x:Name="AvatarLabel" TextColor="{StaticResource SIPCoreDarkBlue}"
-                       FontAttributes="Bold" FontSize="18" HorizontalOptions="Center" VerticalOptions="Center" />
-            </Border>
+            <Grid ColumnDefinitions="Auto,Auto,*,Auto" ColumnSpacing="16" VerticalOptions="Center">
+                <!-- Navigation Action -->
+                <ImageButton Grid.Column="0" Source="home.png" WidthRequest="22" HeightRequest="22"
+                             BackgroundColor="Transparent" Clicked="OnBackClicked" VerticalOptions="Center" />
 
-            <VerticalStackLayout Grid.Column="2" VerticalOptions="Center" Margin="12,0,0,0">
-                <!-- New Message mode -->
-                <VerticalStackLayout x:Name="NewMessageHeader" IsVisible="False" Spacing="6">
-                    <Label Text="New Message" FontAttributes="Bold" FontSize="20" TextColor="{StaticResource SIPCoreTextPrimary}" />
-                    <Entry x:Name="NewRecipientEntry" Placeholder="Enter extension" Keyboard="Numeric"
-                           Unfocused="OnNewRecipientUnfocused" />
+                <!-- WhatsApp-Style Contact Profile Frame -->
+                <Border Grid.Column="1" StrokeShape="RoundRectangle 4" BackgroundColor="#E3EDF9"
+                        WidthRequest="42" HeightRequest="42" StrokeThickness="0" VerticalOptions="Center">
+                    <Label x:Name="AvatarLabel" TextColor="{StaticResource SIPCoreDarkBlue}"
+                           FontFamily="OpenSansSemibold" FontSize="15" HorizontalOptions="Center" VerticalOptions="Center" />
+                </Border>
+
+                <!-- Typography Console -->
+                <VerticalStackLayout Grid.Column="2" VerticalOptions="Center" Spacing="2">
+                    <!-- New Message Configuration Mode -->
+                    <VerticalStackLayout x:Name="NewMessageHeader" IsVisible="False" Spacing="4">
+                        <Label Text="New Chat" FontAttributes="Bold" FontSize="16" TextColor="{StaticResource SIPCoreTextPrimary}" />
+                        <Entry x:Name="NewRecipientEntry" Placeholder="Enter workspace extension..." Keyboard="Numeric"
+                               FontSize="13" HeightRequest="32" Unfocused="OnNewRecipientUnfocused" />
+                    </VerticalStackLayout>
+
+                    <!-- Active Conversation Target -->
+                    <VerticalStackLayout x:Name="ConversationHeader" IsVisible="False" Spacing="2">
+                        <Label x:Name="ContactNameLabel" FontFamily="OpenSansSemibold" FontSize="16" FontAttributes="Bold"
+                               TextColor="{StaticResource SIPCoreTextPrimary}" LineBreakMode="TailTruncation" />
+                        <Label x:Name="ContactStatusLabel" FontSize="12" FontFamily="OpenSansRegular" />
+                    </VerticalStackLayout>
                 </VerticalStackLayout>
 
-                <!-- Existing conversation header -->
-                <VerticalStackLayout x:Name="ConversationHeader" IsVisible="False" Spacing="2">
-                    <Label x:Name="ContactNameLabel" FontAttributes="Bold" FontSize="19"
-                           TextColor="{StaticResource SIPCoreTextPrimary}" LineBreakMode="TailTruncation" />
-                    <Label x:Name="ContactStatusLabel" FontSize="13" />
-                </VerticalStackLayout>
-            </VerticalStackLayout>
+                <!-- Audio Integration Control -->
+                <Button Grid.Column="3" Text="📞 Voice Call" 
+                        FontSize="13" FontAttributes="Bold"
+                        TextColor="{StaticResource SIPCorePrimary}"
+                        BackgroundColor="Transparent"
+                        BorderColor="{StaticResource SIPCoreBorder}" BorderWidth="1"
+                        HeightRequest="36" Padding="16,0" CornerRadius="4"
+                        Clicked="OnCallClicked" VerticalOptions="Center" />
+            </Grid>
+        </Border>
 
-            <ImageButton Grid.Column="3" Source="call_icon.png" WidthRequest="26" HeightRequest="26"
-                         BackgroundColor="Transparent" Clicked="OnCallClicked" />
-        </Grid>
-
-        <!-- Message list -->
-        <CollectionView Grid.Row="1" x:Name="MessagesList"  ItemsSource="{Binding Messages}"
-                         VerticalScrollBarVisibility="Default">
+        <!-- ══════════ MID: DESKTOP CHAT STREAM CONSOLE ══════════ -->
+        <!-- Note: Background pattern can be augmented with system resource assets to emulate wallpaper grids -->
+        <CollectionView Grid.Row="1" x:Name="MessagesList" ItemsSource="{Binding Messages}"
+                        VerticalScrollBarVisibility="Default" >
             <CollectionView.ItemsLayout>
-                <LinearItemsLayout Orientation="Vertical" ItemSpacing="14" />
+                <LinearItemsLayout Orientation="Vertical" ItemSpacing="10" />
             </CollectionView.ItemsLayout>
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:ChatMessage">
-                    <Grid>
-                        <Border x:Name="Bubble" StrokeShape="RoundRectangle 20" Padding="14"
-                                MaximumWidthRequest="320" HorizontalOptions="Start">
+                    <Grid Padding="0,2">
+                        <!-- Desktop sizing configuration limits bubble blowouts across wide screens -->
+                        <Border x:Name="Bubble" StrokeShape="RoundRectangle 6" Padding="12,10"
+                                MaximumWidthRequest="480" StrokeThickness="0">
                             <Border.GestureRecognizers>
                                 <TapGestureRecognizer Tapped="OnMessageTapped" CommandParameter="{Binding .}" NumberOfTapsRequired="2" />
                             </Border.GestureRecognizers>
 
-                            <VerticalStackLayout Spacing="4">
-                                <Label x:Name="ReplyPreviewLabel" Text="{Binding ReplyPreview}" FontSize="12"
-                                       IsVisible="{Binding ReplyPreview, Converter={StaticResource StringNotEmptyConverter}}" />
+                            <VerticalStackLayout Spacing="6">
+                                <!-- WhatsApp Contextual Embedded Reply Frame -->
+                                <Border BackgroundColor="#12000000" StrokeThickness="0" StrokeShape="RoundRectangle 4"
+                                        Padding="10,6" IsVisible="{Binding ReplyPreview, Converter={StaticResource StringNotEmptyConverter}}">
+                                    <Grid ColumnDefinitions="3,*">
+                                        <BoxView Grid.Column="0" Color="{StaticResource SIPCorePrimary}" WidthRequest="3" VerticalOptions="Fill" />
+                                        <Label Grid.Column="1" x:Name="ReplyPreviewLabel" Text="{Binding ReplyPreview}" FontSize="12.5" 
+                                               TextColor="{StaticResource SIPCoreTextSecondary}" Margin="8,0,0,0" LineBreakMode="TailTruncation"/>
+                                    </Grid>
+                                </Border>
 
-                                <Label x:Name="BodyLabel" FontSize="15">
+                                <!-- Message Copy Content Payload -->
+                                <Label x:Name="BodyLabel" FontSize="14.5" LineHeight="1.25" TextColor="{StaticResource SIPCoreTextPrimary}">
                                     <Label.Triggers>
                                         <DataTrigger TargetType="Label" Binding="{Binding IsDeleted}" Value="True">
-                                            <Setter Property="Text" Value="This message was deleted" />
+                                            <Setter Property="Text" Value="🚫 This message was deleted" />
                                             <Setter Property="FontAttributes" Value="Italic" />
+                                            <Setter Property="Opacity" Value="0.6"/>
                                         </DataTrigger>
                                         <DataTrigger TargetType="Label" Binding="{Binding IsDeleted}" Value="False">
                                             <Setter Property="Text" Value="{Binding Body}" />
@@ -72,25 +103,26 @@
                                     </Label.Triggers>
                                 </Label>
 
-                                <HorizontalStackLayout Spacing="4">
+                                <!-- Timestamp Context + Status Ticks Row -->
+                                <HorizontalStackLayout Spacing="6" HorizontalOptions="End" Margin="0,2,0,0" Opacity="0.8">
                                     <Label x:Name="TimeLabel" Text="{Binding Time, Converter={StaticResource MessageTimeConverter}}"
-                                           FontSize="11" TextColor="{StaticResource SIPCoreTextSecondary}" />
+                                           FontSize="11" TextColor="{StaticResource SIPCoreTextSecondary}" VerticalOptions="Center" />
                                     <Label x:Name="TicksLabel" Text="{Binding Status, Converter={StaticResource StatusTicksConverter}}"
-                                           FontSize="12" IsVisible="{Binding IsMine}" />
+                                           FontSize="11" IsVisible="{Binding IsMine}" VerticalOptions="Center" />
                                 </HorizontalStackLayout>
                             </VerticalStackLayout>
                         </Border>
 
+                        <!-- Explicit Data Drivers managing target orientation alignment -->
                         <Grid.Triggers>
                             <DataTrigger TargetType="Grid" Binding="{Binding IsMine}" Value="True">
                                 <Setter TargetName="Bubble" Property="HorizontalOptions" Value="End" />
-                                <Setter TargetName="Bubble" Property="BackgroundColor" Value="{StaticResource SIPCorePrimary}" />
-                              
+                                <Setter TargetName="Bubble" Property="BackgroundColor" Value="#E1F5FE" />
+                                <!-- Soft light teal desktop tone -->
                             </DataTrigger>
                             <DataTrigger TargetType="Grid" Binding="{Binding IsMine}" Value="False">
                                 <Setter TargetName="Bubble" Property="HorizontalOptions" Value="Start" />
-                                <Setter TargetName="Bubble" Property="BackgroundColor" Value="White" />
-                             
+                                <Setter TargetName="Bubble" Property="BackgroundColor" Value="{StaticResource SIPCoreCard}" />
                             </DataTrigger>
                         </Grid.Triggers>
                     </Grid>
@@ -98,40 +130,62 @@
             </CollectionView.ItemTemplate>
         </CollectionView>
 
-        <!-- Reply context bar -->
-        <Grid x:Name="ReplyBar" Grid.Row="2" BackgroundColor="White" Padding="14,8" IsVisible="False"
-              ColumnDefinitions="4,*,Auto">
-            <BoxView Grid.Column="0" Color="{StaticResource SIPCorePrimary}" WidthRequest="4" HeightRequest="42" />
-            <VerticalStackLayout Grid.Column="1" Margin="10,0,0,0">
-                <Label Text="Replying to" TextColor="{StaticResource SIPCorePrimary}" FontAttributes="Bold" FontSize="12" />
-                <Label x:Name="ReplyBarPreview" TextColor="{StaticResource SIPCoreTextSecondary}" FontSize="13" LineBreakMode="TailTruncation" />
-            </VerticalStackLayout>
-            <ImageButton Grid.Column="2" Source="close_icon.png" WidthRequest="20" HeightRequest="20"
-                         BackgroundColor="Transparent" Clicked="OnCancelReplyClicked" />
-        </Grid>
+        <!-- ══════════ LOWER: CONTEXTUAL INLINE REPLY MODULE ══════════ -->
+        <Border x:Name="ReplyBar" Grid.Row="2" BackgroundColor="{StaticResource SIPCoreCard}" 
+                StrokeThickness="1" Stroke="{StaticResource SIPCoreBorder}" Padding="24,10" IsVisible="False">
+            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                <BoxView Grid.Column="0" Color="{StaticResource SIPCorePrimary}" WidthRequest="3" CornerRadius="1.5" VerticalOptions="Fill" />
+                <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                    <Label Text="Replying to Message" TextColor="{StaticResource SIPCorePrimary}" FontFamily="OpenSansSemibold" FontSize="11" FontAttributes="Bold" />
+                    <Label x:Name="ReplyBarPreview" TextColor="{StaticResource SIPCoreTextSecondary}" FontSize="13" LineBreakMode="TailTruncation" />
+                </VerticalStackLayout>
+                <ImageButton Grid.Column="2" Source="back.png" WidthRequest="18" HeightRequest="18"
+                             BackgroundColor="Transparent" Clicked="OnCancelReplyClicked" VerticalOptions="Center" />
+            </Grid>
+        </Border>
 
-        <!-- Input bar -->
-        <Grid Grid.Row="3" BackgroundColor="White" Padding="14" ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="8">
-            <ImageButton Grid.Column="0" Source="mic_icon.png" WidthRequest="26" HeightRequest="26"
-                         BackgroundColor="Transparent" Clicked="OnMicClicked" />
+        <!-- ══════════ BOTTOM: RE-ARCHITECTED INPUT UTILITY TRAY ══════════ -->
+        <Border Grid.Row="3" 
+                BackgroundColor="{StaticResource SIPCoreCard}" 
+                StrokeThickness="1" Stroke="{StaticResource SIPCoreBorder}"
+                Padding="24,14">
+            <Grid ColumnDefinitions="Auto,Auto,*,Auto" ColumnSpacing="12" VerticalOptions="Center">
 
-            <Border Grid.Column="1" StrokeShape="RoundRectangle 20" BackgroundColor="{StaticResource SIPCoreBackground}"
-                    Padding="14,8">
-                <Entry x:Name="MessageEntry" Placeholder="Type a message" BackgroundColor="Transparent" />
-            </Border>
+                <!-- Attachment Menu Launcher -->
+                <ImageButton Grid.Column="0" Source="folder.png" WidthRequest="22" HeightRequest="22"
+                             BackgroundColor="Transparent" Clicked="OnAttachClicked" VerticalOptions="Center" />
 
-            <ImageButton Grid.Column="2" Source="attach_icon.png" WidthRequest="26" HeightRequest="26"
-                         BackgroundColor="Transparent" Clicked="OnAttachClicked" />
+                <!-- Voice Note Recorder Utility -->
+                <ImageButton Grid.Column="1" Source="speaker.png" WidthRequest="22" HeightRequest="22"
+                             BackgroundColor="Transparent" Clicked="OnMicClicked" VerticalOptions="Center" />
 
-            <Border Grid.Column="3" StrokeShape="RoundRectangle 22" BackgroundColor="{StaticResource SIPCorePrimary}"
-                    WidthRequest="44" HeightRequest="44">
-                <Label Text="&#xF040;" FontFamily="MaterialIcons" TextColor="White" FontSize="18"
-                       HorizontalOptions="Center" VerticalOptions="Center" />
-                <Border.GestureRecognizers>
-                    <TapGestureRecognizer Tapped="OnSendTapped" />
-                </Border.GestureRecognizers>
-            </Border>
-        </Grid>
+                <!-- High-End Flat Field Input Wrapper -->
+                <Border Grid.Column="2" 
+                        StrokeShape="RoundRectangle 4" StrokeThickness="1"
+                        Stroke="{StaticResource SIPCoreBorder}" 
+                        BackgroundColor="{StaticResource SIPCoreBackground}"
+                        HeightRequest="40" Padding="14,0">
+                    <Entry x:Name="MessageEntry" 
+                           Placeholder="Type a message..." 
+                           FontSize="14"
+                           TextColor="{StaticResource SIPCoreTextPrimary}"
+                           PlaceholderColor="{StaticResource SIPCoreTextSecondary}"
+                           BackgroundColor="Transparent" 
+                           VerticalOptions="Center" />
+                </Border>
+
+                <!-- Explicit Text Submission Mechanism -->
+                <Button Grid.Column="3" Text="Send" 
+                        Clicked="Button_Clicked"
+                        BackgroundColor="{StaticResource SIPCorePrimary}" 
+                        TextColor="White" FontSize="13" FontAttributes="Bold"
+                        HeightRequest="40" Padding="20,0" CornerRadius="4">
+                    <Button.Shadow>
+                        <Shadow Brush="{StaticResource SIPCorePrimary}" Opacity="0.2" Radius="6" Offset="0,2" />
+                    </Button.Shadow>
+                </Button>
+            </Grid>
+        </Border>
 
     </Grid>
 </ContentPage>

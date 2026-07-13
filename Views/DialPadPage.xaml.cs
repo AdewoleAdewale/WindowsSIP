@@ -39,11 +39,7 @@ public partial class DialPadPage : ContentPage
         NumberDisplay.Text = _number;
     }
 
-    private async void OnCallTapped(object? sender, TappedEventArgs e)
-    {
-        if (string.IsNullOrEmpty(_number)) return;
-        await _viewModel.MakeOutgoingCallAsync(_number);
-    }
+
 
     private async void OnVideoTapped(object? sender, EventArgs e)
     {
@@ -55,4 +51,10 @@ public partial class DialPadPage : ContentPage
     private void OnContactsTapped(object? sender, EventArgs e) => _viewModel.NavigateSafely(Screen.Contacts);
     private void OnMessagesTapped(object? sender, EventArgs e) => _viewModel.NavigateSafely(Screen.Conversations);
     private void OnHistoryTapped(object? sender, EventArgs e) => _viewModel.NavigateSafely(Screen.CallHistory);
+
+    private async void Button_Clicked(object sender, EventArgs e)
+    {
+        if (string.IsNullOrEmpty(_number)) return;
+        await _viewModel.MakeOutgoingCallAsync(_number);
+    }
 }

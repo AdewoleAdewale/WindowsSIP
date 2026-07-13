@@ -146,7 +146,7 @@
                 Margin="22,16,22,4" Padding="12,0">
             <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
                 <Label Text="🔍" FontSize="14" Opacity="0.55" VerticalOptions="Center" />
-                <SearchBar Grid.Column="1" x:Name="SearchBox"
+                <SearchBar Grid.Column="1" x:Name="SearchBox"    TextColor="red"
                            Placeholder="Search name, extension, company or status…"
                            BackgroundColor="Transparent"
                            TextChanged="OnSearchTextChanged" />

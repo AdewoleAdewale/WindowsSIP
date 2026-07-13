@@ -1,4 +1,3 @@
-using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using SipCoreMobile.Data;
 using SipCoreMobile.Data.Entities;
@@ -8,6 +7,8 @@ using SipCoreMobile.Services.Api;
 using SipCoreMobile.Services.Notifications;
 using SipCoreMobile.Services.Sip;
 using SipCoreMobile.Services.Storage;
+using System.Collections.ObjectModel;
+using System.Security.Principal;
 
 namespace SipCoreMobile.ViewModels;
 
@@ -342,10 +343,15 @@ public partial class AppStateViewModel : ObservableObject, ISipEvents
         if (string.IsNullOrEmpty(cleanNumber)) return;
 
         var contact = Contacts.FirstOrDefault(c => c.Extension == cleanNumber);
-        if (contact is not null && contact.Status != "Active")
+     
+        if (contact is not null && contact.CanViewPresence)
         {
-            Status = "Extension is not active";
-            return;
+            var callableStatuses = new[] { "Online", "Available", "Registered", "Active", "Reachable", "Ready", "Connected" };
+            if (!callableStatuses.Any(s => string.Equals(contact.Status, s, StringComparison.OrdinalIgnoreCase)))
+            {
+                Status = "Extension is not active";
+                return;
+            }
         }
 
         _currentCallNumber = cleanNumber;
@@ -354,7 +360,7 @@ public partial class AppStateViewModel : ObservableObject, ISipEvents
         _callConnectedAt = 0;
 
         SipCoreHolder.IsCallActive = true;
-
+        var destination = $"sip:{cleanNumber}@{Domain}";
         await SipManager.MakeCallAsync(cleanNumber);
     }
 
@@ -362,14 +368,12 @@ public partial class AppStateViewModel : ObservableObject, ISipEvents
     // ISipEvents
     // ---------------------------------------------------------------------
 
-    public void OnRegistered()
-    {
-        var wasAlreadyRegistered = Registered;
-        var shouldNavigateHome = !wasAlreadyRegistered && CurrentScreen == Screen.Login;
-
-        // Update UI-bound properties on the main thread
-        Microsoft.Maui.ApplicationModel.MainThread.BeginInvokeOnMainThread(() =>
+    public void OnRegistered() =>
+        MainThread.BeginInvokeOnMainThread(() =>
         {
+            var wasAlreadyRegistered = Registered;
+            var shouldNavigateHome = !wasAlreadyRegistered && CurrentScreen == Screen.Login;
+
             Registered = true;
             Status = "Registered";
 
@@ -378,64 +382,162 @@ public partial class AppStateViewModel : ObservableObject, ISipEvents
                 NavigateSafely(Screen.Home);
             }
 
+            _ = LoadConversationsAsync();
+            _ = LoadContactsAsync();
+            StartPresenceHeartbeat();
+            _ = RegisterPushTokenAsync();
             IsLoggingIn = false;
+
+            _ = Task.Run(async () =>
+            {
+                await Task.Delay(5000);
+                StartPresenceRefresh();
+            });
         });
 
-        // Start background work (no UI thread required)
-        _ = LoadConversationsAsync();
-        _ = LoadContactsAsync();
-        StartPresenceHeartbeat();
-        _ = RegisterPushTokenAsync();
+    public void OnRegistrationFailed(string reason) =>
+        MainThread.BeginInvokeOnMainThread(() =>
+        {
+            IsLoggingIn = false;
+            Registered = false;
+            Status = reason;
+            CurrentScreen = Screen.Login;
+        });
+
+    public void OnIncomingCall(string callerRaw) =>
+        MainThread.BeginInvokeOnMainThread(() =>
+        {
+            var cleanCaller = ExtractExtensionFromDisplay(callerRaw);
+            var callerName = GetDisplayNameForExtension(cleanCaller);
+
+            var alreadyOnActiveCall = SipCoreHolder.IsCallActive && CurrentScreen != Screen.IncomingCall;
+
+            if (alreadyOnActiveCall || ConferenceParticipants.Count > 0)
+            {
+                SipManager.RejectIncomingCallBusy();
+                NotificationHelper.CancelIncomingCall();
+                return;
+            }
+
+            _currentCallNumber = ExtractExtensionFromDisplay(cleanCaller);
+            _currentCallIncoming = true;
+            _callStartedAt = NowMs;
+            _callConnectedAt = 0;
+
+            // Call is ringing, not active yet.
+            SipCoreHolder.IsCallActive = false;
+            SipCoreHolder.ActiveNumber = callerName;
+            SipCoreHolder.CallStatus = "Incoming call";
+
+            NotificationHelper.ShowIncomingCall(callerName);
+
+            Caller = callerName;
+            ActiveNumber = callerName;
+            Status = "Incoming call";
+            CurrentScreen = Screen.IncomingCall;
+            CallDurationSeconds = 0;
+        });
+
+    public void OnCallStateChanged(string state) =>
+        MainThread.BeginInvokeOnMainThread(() =>
+        {
+            switch (state)
+            {
+                case "Ended":
+                case "Disconnected":
+                    NotificationHelper.CancelIncomingCall();
+                    RingbackPlayer.Stop();
+
+                    if (ConferenceParticipants.Count > 0)
+                    {
+                        SipCoreHolder.IsCallActive = true;
+                        SipCoreHolder.CallStatus = "Connected";
+                        CurrentScreen = Screen.ActiveCall;
+                        Status = "Participant disconnected";
+                        return;
+                    }
+
+                    StopCallTimer();
+                    _ = SaveCallLogAsync();
+
+                    _callConnectedAt = 0;
+                    ConferenceParticipants.Clear();
+
+                    SipCoreHolder.IsCallActive = false;
+                    SipCoreHolder.ActiveNumber = "";
+                    SipCoreHolder.CallStatus = "Call ended";
+
+                    CurrentScreen = Screen.DialPad;
+                    ActiveNumber = "";
+                    Caller = "";
+                    Status = "Call ended";
+                    break;
+
+                case "Connected":
+                case "CONFIRMED":
+                    RingbackPlayer.Stop();
+
+                    if (_callConnectedAt == 0)
+                    {
+                        _callConnectedAt = NowMs;
+                        StartCallTimer();
+                    }
+
+                    var number = string.IsNullOrEmpty(ActiveNumber) ? Caller : ActiveNumber;
+
+                    SipCoreHolder.IsCallActive = true;
+                    SipCoreHolder.ActiveNumber = number;
+                    SipCoreHolder.CallStatus = "Connected";
+
+                    CurrentScreen = Screen.ActiveCall;
+                    ActiveNumber = number;
+                    Caller = "";
+                    Status = "Connected";
+                    break;
+
+                default:
+                    if (SipCoreHolder.IsCallActive && CurrentScreen != Screen.IncomingCall)
+                    {
+                        CurrentScreen = Screen.ActiveCall;
+                        Status = state;
+                    }
+                    else
+                    {
+                        Status = state;
+                    }
+                    break;
+            }
+        });
+
+    // ---------------------------------------------------------------------
+    // Call timer (port of startCallTimer()/stopCallTimer())
+    // ---------------------------------------------------------------------
+
+    private void StartCallTimer()
+    {
+        _callTimerCts?.Cancel();
+        _callTimerCts = new CancellationTokenSource();
+        var token = _callTimerCts.Token;
 
         _ = Task.Run(async () =>
         {
-            await Task.Delay(5000);
-            StartPresenceRefresh();
-        });
+            try
+            {
+                while (!token.IsCancellationRequested)
+                {
+                    await Task.Delay(1000, token);
+                    var secs = _callConnectedAt > 0 ? (int)((NowMs - _callConnectedAt) / 1000) : 0;
+                    MainThread.BeginInvokeOnMainThread(() => CallDurationSeconds = secs);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                // expected when StopCallTimer() cancels the token
+            }
+        }, token);
     }
 
-    public void OnRegistrationFailed(string reason)
-    {
-        IsLoggingIn = false;
-        Registered = false;
-        Status = reason;
-        CurrentScreen = Screen.Login;
-    }
-
-    public void OnIncomingCall(string callerRaw)
-    {
-        var cleanCaller = ExtractExtensionFromDisplay(callerRaw);
-        var callerName = GetDisplayNameForExtension(cleanCaller);
-
-        var alreadyOnActiveCall = SipCoreHolder.IsCallActive && CurrentScreen != Screen.IncomingCall;
-
-        if (alreadyOnActiveCall || ConferenceParticipants.Count > 0)
-        {
-            SipManager.RejectIncomingCallBusy();
-            NotificationHelper.CancelIncomingCall();
-            return;
-        }
-
-        _currentCallNumber = ExtractExtensionFromDisplay(cleanCaller);
-        _currentCallIncoming = true;
-        _callStartedAt = NowMs;
-        _callConnectedAt = 0;
-
-        // Call is ringing, not active yet.
-        SipCoreHolder.IsCallActive = false;
-        SipCoreHolder.ActiveNumber = callerName;
-        SipCoreHolder.CallStatus = "Incoming call";
-
-        NotificationHelper.ShowIncomingCall(callerName);
-
-        Caller = callerName;
-        ActiveNumber = callerName;
-        Status = "Incoming call";
-        CurrentScreen = Screen.IncomingCall;
-        CallDurationSeconds = 0;
-    }
-
-    public void OnCallStateChanged(string state)
+    private void HandleCallStateChanged(string state)
     {
         switch (state)
         {
@@ -505,33 +607,42 @@ public partial class AppStateViewModel : ObservableObject, ISipEvents
         }
     }
 
-    // ---------------------------------------------------------------------
-    // Call timer (port of startCallTimer()/stopCallTimer())
-    // ---------------------------------------------------------------------
 
-    private void StartCallTimer()
+
+    private void HandleIncomingCall(string callerRaw)
     {
-        _callTimerCts?.Cancel();
-        _callTimerCts = new CancellationTokenSource();
-        var token = _callTimerCts.Token;
+        var cleanCaller = ExtractExtensionFromDisplay(callerRaw);
+        var callerName = GetDisplayNameForExtension(cleanCaller);
 
-        _ = Task.Run(async () =>
+        var alreadyOnActiveCall = SipCoreHolder.IsCallActive && CurrentScreen != Screen.IncomingCall;
+
+        if (alreadyOnActiveCall || ConferenceParticipants.Count > 0)
         {
-            try
-            {
-                while (!token.IsCancellationRequested)
-                {
-                    await Task.Delay(1000, token);
-                    CallDurationSeconds = _callConnectedAt > 0 ? (int)((NowMs - _callConnectedAt) / 1000) : 0;
-                }
-            }
-            catch (OperationCanceledException)
-            {
-                // expected when StopCallTimer() cancels the token
-            }
-        }, token);
+            SipManager.RejectIncomingCallBusy();
+            NotificationHelper.CancelIncomingCall();
+            return;
+        }
+
+        _currentCallNumber = ExtractExtensionFromDisplay(cleanCaller);
+        _currentCallIncoming = true;
+        _callStartedAt = NowMs;
+        _callConnectedAt = 0;
+
+        // Call is ringing, not active yet.
+        SipCoreHolder.IsCallActive = false;
+        SipCoreHolder.ActiveNumber = callerName;
+        SipCoreHolder.CallStatus = "Incoming call";
+
+        NotificationHelper.ShowIncomingCall(callerName);
+
+        Caller = callerName;
+        ActiveNumber = callerName;
+        Status = "Incoming call";
+        CurrentScreen = Screen.IncomingCall;
+        CallDurationSeconds = 0;
     }
 
+ 
     private void StopCallTimer()
     {
         _callTimerCts?.Cancel();

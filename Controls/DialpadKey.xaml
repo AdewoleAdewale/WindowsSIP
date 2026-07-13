@@ -1,19 +1,21 @@
 <?xml version="1.0" encoding="utf-8" ?>
-
 <Grid xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
       xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
       x:Class="SipCoreMobile.Controls.DialpadKey"
-      HeightRequest="76" WidthRequest="76" HorizontalOptions="Center">
+      HeightRequest="68" HorizontalOptions="Fill">
 
-    <Border StrokeShape="RoundRectangle 38" BackgroundColor="White">
+    <Border StrokeShape="RoundRectangle 14" StrokeThickness="1"
+            Stroke="{StaticResource SIPCoreBorder}"
+            BackgroundColor="{StaticResource SIPCoreCard}">
         <Border.Shadow>
-            <Shadow Brush="Black" Opacity="0.06" Radius="4" Offset="0,1" />
+            <Shadow Brush="Black" Opacity="0.04" Radius="3" Offset="0,1" />
         </Border.Shadow>
-        <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="0">
-            <Label x:Name="DigitLabel" FontSize="29" FontAttributes="Bold"
-                   TextColor="{StaticResource SIPCoreTextPrimary}" HorizontalOptions="Center" />
-            <Label x:Name="LettersLabel" FontSize="11"
+
+        <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="1">
+            <Label x:Name="DigitLabel" FontSize="24" FontAttributes="Bold"
+                   TextColor="{StaticResource SIPCoreDarkBlue}" HorizontalOptions="Center" />
+            <Label x:Name="LettersLabel" FontSize="9.5" CharacterSpacing="1.5"
                    TextColor="{StaticResource SIPCoreTextSecondary}" HorizontalOptions="Center" />
         </VerticalStackLayout>
 

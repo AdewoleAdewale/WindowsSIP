@@ -27,9 +27,7 @@ public partial class AppShell : Shell
         [Screen.Groups] = "//groups",
         [Screen.Settings] = "//settings",
         [Screen.MeetingHome] = "//meetinghome"
-        // TODO next batches: Chat, GroupDetails, GroupChat, MeetingCreate, MeetingDetail
-        // (pushed via Navigation, not Shell routes -- see their host page's code-behind),
-        // Email*, WorkDesk* -- see README's screen checklist.
+
     };
 
     public AppShell(AppStateViewModel appState)

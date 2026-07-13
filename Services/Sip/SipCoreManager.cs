@@ -1,10 +1,11 @@
-using System.Net;
-using System.Net.Sockets;
+using SipCoreMobile.Models;
+using SipCoreMobile.Services.Storage;
 using SIPSorcery.Media;
 using SIPSorcery.SIP;
 using SIPSorcery.SIP.App;
-using SipCoreMobile.Models;
-using SipCoreMobile.Services.Storage;
+using System.Net;
+using System.Net.Sockets;
+using System.Security.Principal;
 
 namespace SipCoreMobile.Services.Sip
 {
@@ -100,12 +101,14 @@ namespace SipCoreMobile.Services.Sip
 
             var userAgent = new SIPUserAgent(_sipTransport, null);
             var call = new SipCall(userAgent, this, _events);
+     
 
             _activeCall = call;
             _conferenceCalls.Clear();
             _conferenceCalls.Add(call);
 
-            var mediaSession = new VoIPMediaSession();
+            var winAudio = new SIPSorceryMedia.Windows.WindowsAudioEndPoint(new SIPSorcery.Media.AudioEncoder());
+            var mediaSession = new VoIPMediaSession(winAudio.ToMediaEndPoints());
             mediaSession.AcceptRtpFromAny = true;
 
             await call.MakeCallAsync($"sip:{number}@{_domain}", mediaSession);
@@ -487,6 +490,10 @@ namespace SipCoreMobile.Services.Sip
             catch
             {
                 // best-effort teardown, mirrors original
+            }
+            finally
+            {
+                lock (_startLock) { _started = false; }
             }
         }
 
