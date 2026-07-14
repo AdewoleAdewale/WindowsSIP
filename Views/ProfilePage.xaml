@@ -12,42 +12,60 @@
         <controls:SipCoreHeader Grid.Row="0" DrawerRequested="OnDrawerRequested" />
 
         <ScrollView Grid.Row="1">
-            <VerticalStackLayout Padding="20,22,20,30" Spacing="18">
+            <VerticalStackLayout Padding="22,22,22,30" Spacing="16" MaximumWidthRequest="760">
 
-                <VerticalStackLayout Spacing="6">
-                    <Label Text="Profile" FontSize="30" FontAttributes="Bold" TextColor="{StaticResource SIPCoreDarkBlue}" />
+                <VerticalStackLayout Spacing="4">
+                    <Label Text="Profile" FontSize="28" FontAttributes="Bold"
+                           TextColor="{StaticResource SIPCoreDarkBlue}" />
                     <Label Text="Manage your SIPCore identity and account information."
-                           FontSize="14" TextColor="{StaticResource SIPCoreTextSecondary}" />
+                           FontSize="13.5" TextColor="{StaticResource SIPCoreTextSecondary}" />
                 </VerticalStackLayout>
 
-                <!-- Identity card -->
-                <Border StrokeShape="RoundRectangle 28" BackgroundColor="{StaticResource SIPCorePrimary}" Padding="22">
+                <!-- ══ Identity hero (gradient) ══ -->
+                <Border StrokeShape="RoundRectangle 18" StrokeThickness="0" Padding="26,24">
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                            <GradientStop Color="#0E42B3" Offset="0.0" />
+                            <GradientStop Color="{StaticResource SIPCorePrimary}" Offset="0.55" />
+                            <GradientStop Color="#3D7BFF" Offset="1.0" />
+                        </LinearGradientBrush>
+                    </Border.Background>
                     <Border.Shadow>
-                        <Shadow Brush="Black" Opacity="0.12" Radius="10" Offset="0,4" />
+                        <Shadow Brush="{StaticResource SIPCorePrimary}" Opacity="0.3" Radius="16" Offset="0,6" />
                     </Border.Shadow>
-                    <VerticalStackLayout HorizontalOptions="Center" Spacing="4">
-                        <Border StrokeShape="RoundRectangle 48" BackgroundColor="#2EFFFFFF" WidthRequest="96" HeightRequest="96">
-                            <Label x:Name="AvatarLabel" TextColor="White" FontSize="34" FontAttributes="Bold"
+
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="22">
+
+                        <!-- Avatar with ring -->
+                        <Border Grid.Column="0" StrokeShape="RoundRectangle 47"
+                                Stroke="#4DFFFFFF" StrokeThickness="2"
+                                BackgroundColor="#26FFFFFF"
+                                WidthRequest="94" HeightRequest="94" VerticalOptions="Center">
+                            <Label x:Name="AvatarLabel" TextColor="White" FontSize="32" FontAttributes="Bold"
                                    HorizontalOptions="Center" VerticalOptions="Center" />
                         </Border>
 
-                        <Label x:Name="NameLabel" TextColor="White" FontSize="24" FontAttributes="Bold"
-                               HorizontalOptions="Center" Margin="0,16,0,0" />
-                        <Label x:Name="ExtensionLabel" TextColor="#D9FFFFFF" FontSize="15" HorizontalOptions="Center" />
-
-                        <Border StrokeShape="RoundRectangle 20" BackgroundColor="#29FFFFFF" Padding="14,7" Margin="0,12,0,0">
-                            <Label x:Name="CompanyBadgeLabel" TextColor="White" FontSize="13" FontAttributes="Bold" />
-                        </Border>
-                    </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="4">
+                            <Label x:Name="NameLabel" TextColor="White" FontSize="24" FontAttributes="Bold"
+                                   LineBreakMode="TailTruncation" />
+                            <Label x:Name="ExtensionLabel" TextColor="#D6E3F8" FontSize="14" />
+                            <Border StrokeShape="RoundRectangle 12" StrokeThickness="0"
+                                    BackgroundColor="#2EFFFFFF" Padding="12,6"
+                                    HorizontalOptions="Start" Margin="0,8,0,0">
+                                <Label x:Name="CompanyBadgeLabel" TextColor="White" FontSize="12.5" FontAttributes="Bold" />
+                            </Border>
+                        </VerticalStackLayout>
+                    </Grid>
                 </Border>
 
-                <!-- Account information card -->
-                <Border StrokeShape="RoundRectangle 24" BackgroundColor="{StaticResource SIPCoreCard}" Padding="20">
-                    <Border.Shadow>
-                        <Shadow Brush="Black" Opacity="0.08" Radius="6" Offset="0,2" />
-                    </Border.Shadow>
+                <!-- ══ Account information ══ -->
+                <Border StrokeShape="RoundRectangle 14" StrokeThickness="1"
+                        Stroke="{StaticResource SIPCoreBorder}" BackgroundColor="{StaticResource SIPCoreCard}"
+                        Padding="22,18">
                     <VerticalStackLayout Spacing="0">
-                        <Label Text="Account Information" FontSize="18" FontAttributes="Bold" TextColor="{StaticResource SIPCoreDarkBlue}" Margin="0,0,0,14" />
+                        <Label Text="ACCOUNT INFORMATION" FontSize="11" FontAttributes="Bold"
+                               CharacterSpacing="1.5" TextColor="{StaticResource SIPCorePrimary}"
+                               Margin="0,0,0,10" />
                         <controls:ProfileInfoRow x:Name="NameRow" Label="Name" />
                         <controls:ProfileInfoRow x:Name="ExtensionRow" Label="Extension" />
                         <controls:ProfileInfoRow x:Name="CompanyRow" Label="Company" />
@@ -57,25 +75,30 @@
                     </VerticalStackLayout>
                 </Border>
 
-                <!-- Workspace card -->
-                <Border StrokeShape="RoundRectangle 24" BackgroundColor="{StaticResource SIPCoreCard}" Padding="20">
-                    <Border.Shadow>
-                        <Shadow Brush="Black" Opacity="0.06" Radius="4" Offset="0,2" />
-                    </Border.Shadow>
+                <!-- ══ Workspace ══ -->
+                <Border StrokeShape="RoundRectangle 14" StrokeThickness="1"
+                        Stroke="{StaticResource SIPCoreBorder}" BackgroundColor="{StaticResource SIPCoreCard}"
+                        Padding="22,18">
                     <VerticalStackLayout Spacing="0">
-                        <Label Text="Workspace" FontSize="18" FontAttributes="Bold" TextColor="{StaticResource SIPCoreDarkBlue}" Margin="0,0,0,14" />
+                        <Label Text="WORKSPACE" FontSize="11" FontAttributes="Bold"
+                               CharacterSpacing="1.5" TextColor="{StaticResource SIPCorePrimary}"
+                               Margin="0,0,0,10" />
                         <controls:ProfileInfoRow x:Name="WorkDeskAccessRow" Label="WorkDesk Access" />
                     </VerticalStackLayout>
                 </Border>
 
-                <Button Text="Back to Dialer" Clicked="OnBackToDialerClicked"
-                        BackgroundColor="{StaticResource SIPCorePrimary}" TextColor="White"
-                        HeightRequest="56" CornerRadius="18" Margin="0,8,0,0" />
-
-                <Button Text="Logout" Clicked="OnLogoutClicked"
-                        BackgroundColor="Transparent" TextColor="{StaticResource SIPCoreDanger}"
-                        BorderColor="{StaticResource SIPCoreDanger}" BorderWidth="1"
-                        HeightRequest="56" CornerRadius="18" />
+                <!-- ══ Actions ══ -->
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="12" Margin="0,6,0,0">
+                    <Button Grid.Column="0" Text="Back to Dialer" Clicked="OnBackToDialerClicked"
+                            BackgroundColor="{StaticResource SIPCorePrimary}" TextColor="White"
+                            FontAttributes="Bold" FontSize="14"
+                            HeightRequest="48" CornerRadius="10" />
+                    <Button Grid.Column="1" Text="Logout" Clicked="OnLogoutClicked"
+                            BackgroundColor="Transparent" TextColor="{StaticResource SIPCoreDanger}"
+                            BorderColor="{StaticResource SIPCoreDanger}" BorderWidth="1"
+                            FontAttributes="Bold" FontSize="14"
+                            HeightRequest="48" CornerRadius="10" />
+                </Grid>
 
             </VerticalStackLayout>
         </ScrollView>

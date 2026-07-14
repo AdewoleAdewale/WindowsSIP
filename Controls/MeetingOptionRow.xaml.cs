@@ -40,4 +40,9 @@ public partial class MeetingOptionRow : ContentView
         ((MeetingOptionRow)bindable).SubtitleLabel.Text = (string)newValue;
 
     private void OnCheckedChanged(object? sender, CheckedChangedEventArgs e) => CheckedChanged?.Invoke(this, e.Value);
+
+    private void TapGestureRecognizer_Tapped(object sender, TappedEventArgs e)
+    {
+
+    }
 }

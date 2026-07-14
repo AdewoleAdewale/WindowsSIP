@@ -3,12 +3,20 @@
              xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
-    <Border StrokeShape="RoundRectangle 16" BackgroundColor="White" Padding="12" Margin="0,0,0,8">
-        <Grid ColumnDefinitions="Auto,*">
-            <CheckBox x:Name="Checkbox" Grid.Column="0" VerticalOptions="Center" CheckedChanged="OnCheckedChanged" />
-            <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Margin="8,0,0,0">
-                <Label x:Name="TitleLabel" TextColor="{StaticResource SIPCoreDarkBlue}" FontAttributes="Bold" />
-                <Label x:Name="SubtitleLabel" FontSize="12" TextColor="{StaticResource SIPCoreTextSecondary}" />
+    <Border StrokeShape="RoundRectangle 12" StrokeThickness="1"
+            Stroke="{StaticResource SIPCoreBorder}" BackgroundColor="White"
+            Padding="12,10" Margin="0,0,0,8">
+        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+            <CheckBox x:Name="Checkbox" Color="{StaticResource SIPCorePrimary}"
+                      VerticalOptions="Center" CheckedChanged="OnCheckedChanged" />
+            <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="1">
+                <Label x:Name="TitleLabel" FontSize="14" FontAttributes="Bold"
+                       TextColor="{StaticResource SIPCoreTextPrimary}" />
+                <Label x:Name="SubtitleLabel" FontSize="12"
+                       TextColor="{StaticResource SIPCoreTextSecondary}" />
+                <VerticalStackLayout.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
+                </VerticalStackLayout.GestureRecognizers>
             </VerticalStackLayout>
         </Grid>
     </Border>
