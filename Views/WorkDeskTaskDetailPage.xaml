@@ -3,75 +3,151 @@
              xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:controls="clr-namespace:SipCoreMobile.Controls"
-             BackgroundColor="{StaticResource SIPCoreDarkBlue}"
+             BackgroundColor="#F3F5F9"
              Shell.NavBarIsVisible="False">
 
     <Grid>
-        <ActivityIndicator x:Name="LoadingIndicator" IsRunning="True" Color="{StaticResource SIPCorePrimary}" />
+        <!-- Windows Loader Overlay -->
+        <ActivityIndicator x:Name="LoadingIndicator" IsRunning="True" Color="{StaticResource SIPCorePrimary}" 
+                           HorizontalOptions="Center" VerticalOptions="Center" WidthRequest="40" HeightRequest="40" />
 
-        <ScrollView x:Name="ContentScroll" IsVisible="False">
-            <VerticalStackLayout Padding="18" Spacing="16">
+        <ScrollView x:Name="ContentScroll" IsVisible="False" VerticalScrollBarVisibility="Never">
+            <Grid RowDefinitions="Auto, *" Padding="24" RowSpacing="20" WidthRequest="1200" HorizontalOptions="CenterAndExpand">
 
-                <!-- Header -->
-                <HorizontalStackLayout Spacing="12">
-                    <Border StrokeShape="RoundRectangle 21" BackgroundColor="#1AFFFFFF" WidthRequest="42" HeightRequest="42">
-                        <Label Text="&#xF060;" FontFamily="MaterialIcons" TextColor="White" FontSize="18" HorizontalOptions="Center" VerticalOptions="Center" />
-                        <Border.GestureRecognizers><TapGestureRecognizer Tapped="OnBackTapped" /></Border.GestureRecognizers>
-                    </Border>
-                    <VerticalStackLayout VerticalOptions="Center">
-                        <Label Text="Task Details" TextColor="White" FontSize="20" FontAttributes="Bold" />
-                        <Label x:Name="SubtitleLabel" TextColor="#A6FFFFFF" FontSize="12" />
-                    </VerticalStackLayout>
-                </HorizontalStackLayout>
+                <!-- ══════════ TOP BRAND BAR (Matches Creation & Dashboard) ══════════ -->
+                <Border Grid.Row="0" 
+                        BackgroundColor="White" 
+                        StrokeThickness="1" 
+                        Stroke="#EAEAEA" 
+                        Padding="24,16" 
+                        StrokeShape="RoundRectangle 12">
+                    <Border.Shadow>
+                        <Shadow Brush="Black" Opacity="0.04" Radius="8" Offset="0,2"/>
+                    </Border.Shadow>
 
-                <!-- Hero card -->
-                <Border StrokeShape="RoundRectangle 28" BackgroundColor="#14FFFFFF" Padding="18">
-                    <VerticalStackLayout Spacing="6">
-                        <Grid ColumnDefinitions="Auto,*">
-                            <Border Grid.Column="0" x:Name="HeroIconBg" StrokeShape="RoundRectangle 26" WidthRequest="52" HeightRequest="52">
-                                <Label Text="&#xF0AE;" FontFamily="MaterialIcons" x:Name="HeroIcon" HorizontalOptions="Center" VerticalOptions="Center" />
+                    <Grid ColumnDefinitions="*, Auto">
+                        <HorizontalStackLayout Grid.Column="0" Spacing="16" VerticalOptions="Center">
+                            <!-- Fluent Back Arrow -->
+                            <Border StrokeShape="RoundRectangle 6" BackgroundColor="#F0F4FA" StrokeThickness="0" WidthRequest="32" HeightRequest="32" VerticalOptions="Center">
+                                <Label Text="&#xF060;" FontFamily="MaterialIcons" TextColor="{StaticResource SIPCorePrimary}" FontSize="14" HorizontalOptions="Center" VerticalOptions="Center" />
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnBackTapped" />
+                                </Border.GestureRecognizers>
                             </Border>
-                            <VerticalStackLayout Grid.Column="1" Margin="12,0,0,0" VerticalOptions="Center">
-                                <Label x:Name="HeroTitleLabel" TextColor="White" FontAttributes="Bold" FontSize="19" />
-                                <Label x:Name="HeroCreatorLabel" TextColor="#9EFFFFFF" FontSize="12" />
-                                <Label x:Name="HeroCreatorCompanyLabel" TextColor="#7AFFFFFF" FontSize="11" IsVisible="False" />
+
+                            <VerticalStackLayout VerticalOptions="Center" Spacing="2">
+                                <Label Text="TASK PORTAL" FontSize="11" FontAttributes="Bold" TextColor="{StaticResource SIPCorePrimary}" CharacterSpacing="1.5" />
+                                <Label x:Name="SubtitleLabel" TextColor="{StaticResource SIPCoreTextSecondary}" FontSize="13" />
                             </VerticalStackLayout>
-                        </Grid>
-
-                        <Label x:Name="HeroDescriptionLabel" TextColor="#C2FFFFFF" FontSize="14" Margin="0,10,0,0" />
-
-                        <HorizontalStackLayout Spacing="8" Margin="0,10,0,0">
-                            <Border x:Name="HeroStatusChip" StrokeShape="RoundRectangle 50" Padding="10,4">
-                                <Label x:Name="HeroStatusLabel" FontSize="11" FontAttributes="Bold" />
-                            </Border>
-                            <Border x:Name="HeroPriorityChip" StrokeShape="RoundRectangle 50" Padding="10,4">
-                                <Label x:Name="HeroPriorityLabel" FontSize="11" FontAttributes="Bold" />
-                            </Border>
-                            <Border x:Name="HeroApprovalChip" StrokeShape="RoundRectangle 50" Padding="10,4" BackgroundColor="#29A855F7" IsVisible="False">
-                                <Label x:Name="HeroApprovalLabel" FontSize="11" FontAttributes="Bold" TextColor="#A855F7" />
-                            </Border>
                         </HorizontalStackLayout>
 
-                        <ProgressBar x:Name="HeroProgressBar" HeightRequest="7" Margin="0,12,0,0" />
-                        <Label x:Name="HeroProgressLabel" TextColor="#A3FFFFFF" FontSize="11" />
-                    </VerticalStackLayout>
+                        <!-- Live connection indicator -->
+                        <HorizontalStackLayout Grid.Column="1" Spacing="6" VerticalOptions="Center">
+                            <BoxView WidthRequest="8" HeightRequest="8" CornerRadius="4" Color="#22C55E" VerticalOptions="Center"/>
+                            <Label Text="Sync Active" FontSize="12" TextColor="{StaticResource SIPCoreTextSecondary}"/>
+                        </HorizontalStackLayout>
+                    </Grid>
                 </Border>
 
-                <!-- Actions -->
-                <controls:WorkDeskCollapsibleSection x:Name="ActionsSection" Title="Actions" />
+                <!-- ══════════ TWO-COLUMN DESKTOP BODY ══════════ -->
+                <Grid Grid.Row="1" ColumnDefinitions="*, 400" ColumnSpacing="20">
 
-                <!-- Remaining sections (populated dynamically) -->
-                <controls:WorkDeskCollapsibleSection x:Name="InfoSection" Title="Task Information" />
-                <controls:WorkDeskCollapsibleSection x:Name="AssigneesSection" Title="Assignees" />
-                <controls:WorkDeskCollapsibleSection x:Name="CommunicationSection" Title="Team Communication" />
-                <controls:WorkDeskCollapsibleSection x:Name="CommentsPreviewSection" Title="Recent Comments" />
-                <controls:WorkDeskCollapsibleSection x:Name="AttachmentsSection" Title="Attachments" />
-                <controls:WorkDeskCollapsibleSection x:Name="ChecklistSection" Title="Checklist" />
-                <controls:WorkDeskCollapsibleSection x:Name="WatchersSection" Title="Watchers" />
-                <controls:WorkDeskCollapsibleSection x:Name="TimelineSection" Title="Timeline" />
+                    <!-- LEFT COLUMN: Workspace Card & Progressive Elements -->
+                    <VerticalStackLayout Grid.Column="0" Spacing="20">
 
-                <BoxView HeightRequest="12" Color="Transparent" />
-            </VerticalStackLayout>
+                        <!-- Main Core Context Card -->
+                        <Border BackgroundColor="White" StrokeThickness="1" Stroke="#EAEAEA" Padding="28" StrokeShape="RoundRectangle 12">
+                            <Border.Shadow>
+                                <Shadow Brush="Black" Opacity="0.03" Radius="6" Offset="0,2"/>
+                            </Border.Shadow>
+
+                            <VerticalStackLayout Spacing="16">
+                                <Grid ColumnDefinitions="Auto, *">
+                                    <Border Grid.Column="0" x:Name="HeroIconBg" StrokeShape="RoundRectangle 6" WidthRequest="48" HeightRequest="48" StrokeThickness="0">
+                                        <Label Text="&#xF0AE;" FontFamily="MaterialIcons" x:Name="HeroIcon" FontSize="20" HorizontalOptions="Center" VerticalOptions="Center" />
+                                    </Border>
+
+                                    <VerticalStackLayout Grid.Column="1" Margin="16,0,0,0" VerticalOptions="Center" Spacing="2">
+                                        <Label x:Name="HeroTitleLabel" TextColor="{StaticResource SIPCoreDarkBlue}" FontAttributes="Bold" FontSize="22" />
+                                        <Label x:Name="HeroCreatorLabel" TextColor="{StaticResource SIPCoreTextSecondary}" FontSize="13" />
+                                        <Label x:Name="HeroCreatorCompanyLabel" TextColor="{StaticResource SIPCoreTextSecondary}" FontSize="12" IsVisible="False" />
+                                    </VerticalStackLayout>
+                                </Grid>
+
+                                <BoxView HeightRequest="1" Color="#EDEDED" Margin="0,4" />
+
+                                <Label Text="Task Description" FontSize="12" FontAttributes="Bold" TextColor="{StaticResource SIPCoreTextSecondary}" CharacterSpacing="1" />
+                                <Label x:Name="HeroDescriptionLabel" TextColor="{StaticResource SIPCoreTextPrimary}" FontSize="14" LineHeight="1.4" />
+
+                                <BoxView HeightRequest="1" Color="#EDEDED" Margin="0,4" />
+
+                                <!-- Modern Dynamic Status Tags Group -->
+                                <HorizontalStackLayout Spacing="8">
+                                    <Border x:Name="HeroStatusChip" StrokeShape="RoundRectangle 4" Padding="12,6" StrokeThickness="0">
+                                        <Label x:Name="HeroStatusLabel" FontSize="11" FontAttributes="Bold" />
+                                    </Border>
+                                    <Border x:Name="HeroPriorityChip" StrokeShape="RoundRectangle 4" Padding="12,6" StrokeThickness="0">
+                                        <Label x:Name="HeroPriorityLabel" FontSize="11" FontAttributes="Bold" />
+                                    </Border>
+                                    <Border x:Name="HeroApprovalChip" StrokeShape="RoundRectangle 4" Padding="12,6" BackgroundColor="#1AE04438" StrokeThickness="0" IsVisible="False">
+                                        <Label x:Name="HeroApprovalLabel" FontSize="11" FontAttributes="Bold" TextColor="#E04438" />
+                                    </Border>
+                                </HorizontalStackLayout>
+
+                                <!-- Progress indicator section -->
+                                <VerticalStackLayout Spacing="6" Margin="0,10,0,0">
+                                    <Grid ColumnDefinitions="*, Auto">
+                                        <Label Text="COMPLETION PROGRESS" FontSize="11" FontAttributes="Bold" TextColor="{StaticResource SIPCoreTextSecondary}" CharacterSpacing="1" />
+                                        <Label x:Name="HeroProgressLabel" Grid.Column="1" TextColor="{StaticResource SIPCorePrimary}" FontAttributes="Bold" FontSize="12" />
+                                    </Grid>
+                                    <ProgressBar x:Name="HeroProgressBar" HeightRequest="6" ProgressColor="{StaticResource SIPCorePrimary}" BackgroundColor="#F0F4FA" />
+                                </VerticalStackLayout>
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <!-- Dynamic Render Section Anchors (Left Side) -->
+                        <controls:WorkDeskCollapsibleSection x:Name="ChecklistSection" Title="Checklist" Margin="0,0,0,0"/>
+                        <controls:WorkDeskCollapsibleSection x:Name="CommentsPreviewSection" Title="Recent Comments" />
+                        <controls:WorkDeskCollapsibleSection x:Name="AttachmentsSection" Title="Attachments" />
+                        <controls:WorkDeskCollapsibleSection x:Name="TimelineSection" Title="Timeline" />
+                    </VerticalStackLayout>
+
+                    <!-- RIGHT COLUMN: Workflow Control Sidebar -->
+                    <VerticalStackLayout Grid.Column="1" Spacing="20">
+
+                        <!-- Actions Console Card -->
+                        <Border BackgroundColor="White" StrokeThickness="1" Stroke="#EAEAEA" Padding="24" StrokeShape="RoundRectangle 12">
+                            <Border.Shadow>
+                                <Shadow Brush="Black" Opacity="0.03" Radius="6" Offset="0,2"/>
+                            </Border.Shadow>
+
+                            <VerticalStackLayout Spacing="16">
+                                <Label Text="Task Controls" TextColor="{StaticResource SIPCoreDarkBlue}" FontAttributes="Bold" FontSize="16" />
+                                <!-- Populated dynamically by C# with modern Flat buttons -->
+                                <controls:WorkDeskCollapsibleSection x:Name="ActionsSection" Title="Workflow Steps" />
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <!-- Details & Attributes Card -->
+                        <Border BackgroundColor="White" StrokeThickness="1" Stroke="#EAEAEA" Padding="24" StrokeShape="RoundRectangle 12">
+                            <Border.Shadow>
+                                <Shadow Brush="Black" Opacity="0.03" Radius="6" Offset="0,2"/>
+                            </Border.Shadow>
+
+                            <VerticalStackLayout Spacing="16">
+                                <Label Text="Assignment &amp; Contacts" TextColor="{StaticResource SIPCoreDarkBlue}" FontAttributes="Bold" FontSize="16" />
+
+                                <controls:WorkDeskCollapsibleSection x:Name="InfoSection" Title="Task Information" />
+                                <controls:WorkDeskCollapsibleSection x:Name="AssigneesSection" Title="Assignees" />
+                                <controls:WorkDeskCollapsibleSection x:Name="CommunicationSection" Title="Team Communication" />
+                                <controls:WorkDeskCollapsibleSection x:Name="WatchersSection" Title="Watchers" />
+                            </VerticalStackLayout>
+                        </Border>
+
+                    </VerticalStackLayout>
+                </Grid>
+
+            </Grid>
         </ScrollView>
     </Grid>
 </ContentPage>

@@ -14,6 +14,7 @@
     </Shell.FlyoutContent>
 
     <ShellContent x:Name="LoginContent" Route="login" ContentTemplate="{DataTemplate views:LoginPage}" />
+    <ShellContent x:Name="DesktopHomeContent" Route="desktophome"  ContentTemplate="{DataTemplate views:MainShellPage}" />
     <ShellContent x:Name="HomeContent" Route="home" ContentTemplate="{DataTemplate views:HomePage}" />
     <ShellContent x:Name="DialPadContent" Route="dialpad" ContentTemplate="{DataTemplate views:DialPadPage}" />
     <ShellContent x:Name="IncomingCallContent" Route="incomingcall" ContentTemplate="{DataTemplate views:IncomingCallPage}" />

@@ -2,57 +2,133 @@
 <ContentPage x:Class="SipCoreMobile.Views.WorkDeskApprovalsPage"
              xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:api="clr-namespace:SipCoreMobile.Models.Api"
+             xmlns:controls="clr-namespace:SipCoreMobile.Controls"
              xmlns:vm="clr-namespace:SipCoreMobile.ViewModels"
              x:DataType="vm:WorkDeskViewModel"
-             BackgroundColor="{StaticResource SIPCoreDarkBlue}"
-             Shell.NavBarIsVisible="False">
+             BackgroundColor="#F3F5F9"
+             Shell.NavBarIsVisible="False"
+             NavigationPage.HasNavigationBar="False">
 
-    <Grid Padding="18" RowDefinitions="Auto,Auto,*">
+    <Grid RowDefinitions="Auto, *" Padding="24" RowSpacing="16" WidthRequest="1200" HorizontalOptions="CenterAndExpand">
 
-        <HorizontalStackLayout Grid.Row="0" Spacing="12">
-            <Border StrokeShape="RoundRectangle 21" BackgroundColor="#1AFFFFFF" WidthRequest="42" HeightRequest="42">
-                <Label Text="&#xF060;" FontFamily="MaterialIcons" TextColor="White" FontSize="18" HorizontalOptions="Center" VerticalOptions="Center" />
-                <Border.GestureRecognizers><TapGestureRecognizer Tapped="OnBackTapped" /></Border.GestureRecognizers>
-            </Border>
-            <VerticalStackLayout VerticalOptions="Center">
-                <Label Text="Approval Center" TextColor="White" FontSize="20" FontAttributes="Bold" />
-                <Label x:Name="SubtitleLabel" TextColor="#A6FFFFFF" FontSize="12" />
-            </VerticalStackLayout>
-        </HorizontalStackLayout>
+        <!-- ══════════ 1. HEADER BRAND CARD ══════════ -->
+        <Border Grid.Row="0" BackgroundColor="White" StrokeThickness="1" Stroke="#EAEAEA" Padding="24,20" StrokeShape="RoundRectangle 12">
+            <Border.Shadow>
+                <Shadow Brush="Black" Opacity="0.04" Radius="8" Offset="0,2"/>
+            </Border.Shadow>
 
-        <!-- Summary card -->
-        <Border Grid.Row="1" StrokeShape="RoundRectangle 26" BackgroundColor="#14FFFFFF" Padding="18" Margin="0,16,0,0">
-            <Grid ColumnDefinitions="*,*,*">
-                <VerticalStackLayout Grid.Column="0" HorizontalOptions="Center">
-                    <Label x:Name="PendingValue" TextColor="#F59E0B" FontSize="22" FontAttributes="Bold" HorizontalOptions="Center" />
-                    <Label Text="Pending" TextColor="#A8FFFFFF" FontSize="12" HorizontalOptions="Center" />
+            <Grid ColumnDefinitions="*, Auto" RowDefinitions="Auto, Auto" RowSpacing="12">
+                <VerticalStackLayout Grid.Column="0" Grid.Row="0" Spacing="4">
+                    <Label Text="SIPCORE WORKDESK" FontSize="11" FontAttributes="Bold" TextColor="{StaticResource SIPCorePrimary}" CharacterSpacing="1.5" />
+                    <HorizontalStackLayout Spacing="12">
+                        <Border StrokeShape="RoundRectangle 6" BackgroundColor="#F0F4FA" StrokeThickness="0" WidthRequest="32" HeightRequest="32" VerticalOptions="Center">
+                            <Label Text="&#xF060;" FontFamily="MaterialIcons" TextColor="{StaticResource SIPCorePrimary}" FontSize="14" HorizontalOptions="Center" VerticalOptions="Center" />
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnBackTapped" />
+                            </Border.GestureRecognizers>
+                        </Border>
+                        <Label Text="WorkDesk Approvals &amp; Audits" TextColor="{StaticResource SIPCoreDarkBlue}" FontSize="22" FontAttributes="Bold" VerticalOptions="Center" />
+                    </HorizontalStackLayout>
                 </VerticalStackLayout>
-                <VerticalStackLayout Grid.Column="1" HorizontalOptions="Center">
-                    <Label x:Name="ApprovedValue" TextColor="#22C55E" FontSize="22" FontAttributes="Bold" HorizontalOptions="Center" />
-                    <Label Text="Approved" TextColor="#A8FFFFFF" FontSize="12" HorizontalOptions="Center" />
-                </VerticalStackLayout>
-                <VerticalStackLayout Grid.Column="2" HorizontalOptions="Center">
-                    <Label x:Name="RejectedValue" TextColor="#EF4444" FontSize="22" FontAttributes="Bold" HorizontalOptions="Center" />
-                    <Label Text="Rejected" TextColor="#A8FFFFFF" FontSize="12" HorizontalOptions="Center" />
-                </VerticalStackLayout>
+
+                <HorizontalStackLayout Grid.Column="1" Grid.Row="0" Spacing="10" VerticalOptions="Center">
+                    <Border StrokeShape="RoundRectangle 6" StrokeThickness="1" Stroke="#D2D6DC" Padding="12,0" BackgroundColor="#FAFBFD" WidthRequest="220" HeightRequest="38">
+                        <Grid ColumnDefinitions="Auto, *">
+                            <Label Grid.Column="0" Text="🔍" FontSize="13" Opacity="0.5" VerticalOptions="Center" Margin="0,0,8,0" />
+                            <Entry x:Name="SearchBox" Placeholder="Search request..." TextColor="{StaticResource SIPCoreTextPrimary}" PlaceholderColor="{StaticResource SIPCoreTextSecondary}" BackgroundColor="Transparent" FontSize="13" VerticalOptions="Center" TextChanged="OnSearchTextChanged" />
+                        </Grid>
+                    </Border>
+                    <Button Text="Refresh Feed" Clicked="OnRefreshClicked" BackgroundColor="White" BorderColor="#D2D6DC" BorderWidth="1" TextColor="{StaticResource SIPCoreTextPrimary}" FontSize="12.5" FontAttributes="Bold" HeightRequest="38" Padding="16,0" CornerRadius="6" />
+                </HorizontalStackLayout>
+
+                <Label Grid.Row="1" Grid.ColumnSpan="2" x:Name="SubtitleLabel" TextColor="{StaticResource SIPCoreTextSecondary}" FontSize="13" />
             </Grid>
         </Border>
 
-        <Grid Grid.Row="2" Margin="0,16,0,0">
-            <ActivityIndicator x:Name="LoadingIndicator" IsRunning="False" IsVisible="False" Color="{StaticResource SIPCorePrimary}" />
+        <!-- ══════════ 2. MASTER-DETAIL APPROVALS LAYOUT ══════════ -->
+        <Grid Grid.Row="1" ColumnDefinitions="*, 400" ColumnSpacing="20">
 
-            <VerticalStackLayout x:Name="EmptyState" IsVisible="False" HorizontalOptions="Center" VerticalOptions="Center" Spacing="8" Padding="24">
-                <Label Text="&#xF058;" FontFamily="MaterialIcons" FontSize="34" TextColor="#B8FFFFFF" HorizontalOptions="Center" />
-                <Label x:Name="EmptyTitleLabel" TextColor="White" FontAttributes="Bold" HorizontalOptions="Center" />
-                <Label x:Name="EmptyMessageLabel" TextColor="#99FFFFFF" HorizontalTextAlignment="Center" />
-            </VerticalStackLayout>
+            <!-- LEFT MAIN PANEL -->
+            <Border Grid.Column="0" BackgroundColor="White" StrokeThickness="1" Stroke="#EAEAEA" Padding="24" StrokeShape="RoundRectangle 12">
+                <Grid RowDefinitions="Auto, *">
+                    <HorizontalStackLayout Grid.Row="0" Spacing="8" Margin="0,0,0,16">
+                        <Border StrokeShape="RoundRectangle 6" BackgroundColor="#E6EFFD" StrokeThickness="0" Padding="14,6">
+                            <Label Text="Awaiting Sign-off" TextColor="{StaticResource SIPCorePrimary}" FontAttributes="Bold" FontSize="12" />
+                        </Border>
+                    </HorizontalStackLayout>
 
-            <CollectionView x:Name="ApprovalsList">
-                <CollectionView.ItemsLayout>
-                    <LinearItemsLayout Orientation="Vertical" ItemSpacing="12" />
-                </CollectionView.ItemsLayout>
-            </CollectionView>
+                    <!-- Loader & Empty Views Content Layer -->
+                    <Grid Grid.Row="1">
+                        <ActivityIndicator x:Name="LoadingIndicator" IsRunning="False" IsVisible="False" Color="{StaticResource SIPCorePrimary}" HorizontalOptions="Center" VerticalOptions="Center" WidthRequest="32" HeightRequest="32" />
+
+                        <VerticalStackLayout x:Name="EmptyState" IsVisible="False" Spacing="10" HorizontalOptions="Center" VerticalOptions="Center" Padding="40">
+                            <Label Text="✓" FontSize="36" TextColor="#22C55E" HorizontalOptions="Center" FontAttributes="Bold" />
+                            <Label x:Name="EmptyTitleLabel" FontAttributes="Bold" FontSize="15" TextColor="{StaticResource SIPCoreDarkBlue}" HorizontalOptions="Center" />
+                            <Label x:Name="EmptyMessageLabel" FontSize="12" TextColor="{StaticResource SIPCoreTextSecondary}" HorizontalOptions="Center" />
+                        </VerticalStackLayout>
+
+                        <CollectionView x:Name="ApprovalsList" VerticalScrollBarVisibility="Never" SelectionMode="Single" SelectionChanged="OnApprovalSelectionChanged">
+                            <CollectionView.ItemsLayout>
+                                <LinearItemsLayout Orientation="Vertical" ItemSpacing="10" />
+                            </CollectionView.ItemsLayout>
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Border StrokeShape="RoundRectangle 6" StrokeThickness="1" Stroke="#EAEAEA" Padding="16,12" BackgroundColor="#FAFBFD">
+                                        <Grid ColumnDefinitions="*, Auto" RowDefinitions="Auto, Auto" RowSpacing="6">
+                                            <VerticalStackLayout Grid.Column="0" Grid.Row="0" Spacing="2">
+                                                <Label Text="{Binding Title}" FontAttributes="Bold" FontSize="14.5" TextColor="{StaticResource SIPCoreTextPrimary}" />
+                                                <Label Text="{Binding Status}" FontSize="12" TextColor="{StaticResource SIPCoreTextSecondary}" />
+                                            </VerticalStackLayout>
+                                            <Border Grid.Column="1" Grid.Row="0" StrokeShape="RoundRectangle 4" BackgroundColor="#FFF8E1" StrokeThickness="0" Padding="8,4" VerticalOptions="Start">
+                                                <Label Text="{Binding Priority}" FontSize="10" FontAttributes="Bold" TextColor="#FFB300" />
+                                            </Border>
+                                            <Label Grid.Row="1" Grid.ColumnSpan="2" Text="{Binding DueDate, StringFormat='Due: {0}'}" FontSize="11" TextColor="{StaticResource SIPCoreTextSecondary}" Opacity="0.8" />
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </Grid>
+                </Grid>
+            </Border>
+
+            <!-- RIGHT SIDEBAR PANEL -->
+            <Border Grid.Column="1" BackgroundColor="White" StrokeThickness="1" Stroke="#EAEAEA" Padding="24" StrokeShape="RoundRectangle 12">
+                <VerticalStackLayout x:Name="DetailContainer" Spacing="18" IsVisible="False">
+                    <VerticalStackLayout Spacing="2">
+                        <Label Text="APPROVAL WORKSPACE" FontSize="11" FontAttributes="Bold" TextColor="{StaticResource SIPCorePrimary}" CharacterSpacing="1.2" />
+                        <Label Text="Review Actions" FontSize="18" FontAttributes="Bold" TextColor="{StaticResource SIPCoreDarkBlue}" />
+                    </VerticalStackLayout>
+
+                    <BoxView HeightRequest="1" Color="#EDEDED" />
+
+                    <VerticalStackLayout Spacing="12">
+                        <VerticalStackLayout Spacing="2">
+                            <Label Text="TASK TITLE" FontSize="10.5" FontAttributes="Bold" TextColor="{StaticResource SIPCoreTextSecondary}" />
+                            <Label x:Name="DetailTitleLabel" FontAttributes="Bold" FontSize="14.5" TextColor="{StaticResource SIPCoreTextPrimary}" />
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Spacing="2">
+                            <Label Text="ASSIGNMENT CONTEXT" FontSize="10.5" FontAttributes="Bold" TextColor="{StaticResource SIPCoreTextSecondary}" />
+                            <Label x:Name="DetailSubmitterLabel" FontSize="13" TextColor="{StaticResource SIPCoreTextPrimary}" />
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Spacing="2">
+                            <Label Text="TASK INSTRUCTIONS" FontSize="10.5" FontAttributes="Bold" TextColor="{StaticResource SIPCoreTextSecondary}" />
+                            <Label x:Name="DetailNotesLabel" FontSize="13" TextColor="{StaticResource SIPCoreTextPrimary}" LineHeight="1.3" />
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+
+                    <BoxView HeightRequest="1" Color="#EDEDED" />
+
+                    <VerticalStackLayout Spacing="8">
+                        <Button x:Name="ApproveButton" Text="✓ Approve Completion" Clicked="OnApproveClicked" BackgroundColor="{StaticResource SIPCoreSuccess}" TextColor="White" HeightRequest="40" CornerRadius="4" FontSize="13" FontAttributes="Bold" />
+                        <Button x:Name="RejectButton" Text="✕ Reject &amp; Reopen" Clicked="OnRejectClicked" BackgroundColor="Transparent" BorderColor="#EF5350" BorderWidth="1" TextColor="#EF5350" HeightRequest="40" CornerRadius="4" FontSize="13" FontAttributes="Bold" />
+                        <Button Text="Open Full Discussion" Clicked="OnOpenDiscussionClicked" BackgroundColor="Transparent" BorderColor="{StaticResource SIPCoreBorder}" BorderWidth="1" TextColor="{StaticResource SIPCoreTextPrimary}" HeightRequest="40" CornerRadius="4" FontSize="13" FontAttributes="Bold" />
+                    </VerticalStackLayout>
+                </VerticalStackLayout>
+            </Border>
+
         </Grid>
     </Grid>
 </ContentPage>

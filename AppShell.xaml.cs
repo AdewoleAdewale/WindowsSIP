@@ -16,7 +16,6 @@ public partial class AppShell : Shell
     private static readonly Dictionary<Screen, string> Routes = new()
     {
         [Screen.Login] = "//login",
-        [Screen.Home] = "//home",
         [Screen.DialPad] = "//dialpad",
         [Screen.IncomingCall] = "//incomingcall",
         [Screen.ActiveCall] = "//activecall",
@@ -26,7 +25,8 @@ public partial class AppShell : Shell
         [Screen.Profile] = "//profile",
         [Screen.Groups] = "//groups",
         [Screen.Settings] = "//settings",
-        [Screen.MeetingHome] = "//meetinghome"
+        [Screen.MeetingHome] = "//meetinghome",
+        [Screen.Home] = "//desktophome"
 
     };
 

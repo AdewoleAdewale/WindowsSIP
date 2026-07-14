@@ -17,7 +17,7 @@ public partial class ChatPage : ContentPage
     private readonly AppStateViewModel _appState;
     private readonly ChatViewModel _chatViewModel;
     private ChatMessage? _replyingTo;
-
+    public void RefreshHeaderPublic() => RefreshHeader();
     public ChatPage(AppStateViewModel appState, ChatViewModel chatViewModel)
     {
         InitializeComponent();

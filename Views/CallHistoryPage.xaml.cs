@@ -1,4 +1,7 @@
+using System;
 using System.Collections.Specialized;
+using System.Linq;
+using Microsoft.Maui.Controls;
 using SipCoreMobile.Models;
 using SipCoreMobile.ViewModels;
 
@@ -20,69 +23,85 @@ public partial class CallHistoryPage : ContentPage
     protected override void OnAppearing()
     {
         base.OnAppearing();
-        Rebuild();
+
+        // Populate standard template labels
+        SubtitleLabel.Text = $"Extension {_viewModel.Extension} • Tracking active line logs";
+
+        ApplyFilters();
     }
 
-    private void OnCallLogsChanged(object? sender, NotifyCollectionChangedEventArgs e) => Rebuild();
+    private void OnCallLogsChanged(object? sender, NotifyCollectionChangedEventArgs e) => ApplyFilters();
 
-    /// <summary>Port of CallHistoryScreen's sortedLogs/groupedLogs derivation.</summary>
-    private void Rebuild()
+    private void OnSearchTextChanged(object? sender, TextChangedEventArgs e) => ApplyFilters();
+
+    /// <summary>
+    /// Processes filter selections and search text queries, then updates the desktop list frame.
+    /// </summary>
+    private void ApplyFilters()
     {
-        var logs = _viewModel.CallLogs.OrderByDescending(l => NormalizeTime(l.Time)).ToList();
+        var searchQuery = SearchBox.Text?.Trim() ?? "";
+        var filterSelection = FilterPicker.SelectedItem?.ToString() ?? "All calls";
 
-        ClearButton.IsVisible = logs.Count > 0;
-        EmptyState.IsVisible = logs.Count == 0;
-        HistoryList.IsVisible = logs.Count > 0;
+        var filteredLogs = _viewModel.CallLogs
+            .OrderByDescending(l => NormalizeTime(l.Time))
+            .Select(log => {
+                var ext = CallExtension(log.Number);
+                var name = CallDisplayName(log.Number, ext);
 
-        var rows = new List<CallHistoryRowItem>();
-        string? currentHeader = null;
+                // Generate initials safely for avatar circles
+                var initials = !string.IsNullOrEmpty(name) ? name[0].ToString().ToUpper() : "?";
 
-        foreach (var log in logs)
-        {
-            var header = FormatCallDate(log.Time);
-            if (header != currentHeader)
-            {
-                rows.Add(new CallHistoryRowItem { IsHeader = true, HeaderText = header });
-                currentHeader = header;
-            }
+                // Determine directional arrows
+                var glyph = log.IsIncoming ? "↙" : "↗";
 
-            var extension = CallExtension(log.Number);
-            var displayName = CallDisplayName(log.Number, extension);
+                var duration = log.DurationSeconds > 0
+                    ? $"{log.DurationSeconds / 60:D2}:{log.DurationSeconds % 60:D2}"
+                    : "00:00";
 
-            var statusText = log.IsMissed ? "Missed call" : log.IsIncoming ? "Incoming call" : "Outgoing call";
-            var (glyph, color, bg) = log.IsMissed
-                ? ("\uF082", (Color)Application.Current!.Resources["SIPCoreDanger"], Color.FromArgb("#FFEBEE"))
-                : log.IsIncoming
-                    ? ("\uF081", (Color)Application.Current!.Resources["SIPCoreSuccess"], Color.FromArgb("#E8F5E9"))
-                    : ("\uF081", (Color)Application.Current!.Resources["SIPCorePrimary"], Color.FromArgb("#E3F2FD"));
+                // Return a clean layout-ready presentation container object
+                return new
+                {
+                    RawLog = log,
+                    Extension = ext,
+                    DisplayName = name,
+                    AvatarInitials = initials,
+                    DirectionGlyph = glyph,
+                    TimestampText = FormatCallDate(log.Time) + " • " + GetTimeOnly(log.Time),
+                    DurationText = duration
+                };
+            })
+            .Where(wrapped => {
+                if (string.IsNullOrEmpty(searchQuery)) return true;
+                return wrapped.DisplayName.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+                       wrapped.Extension.Contains(searchQuery, StringComparison.OrdinalIgnoreCase);
+            })
+            .Where(wrapped => {
+                return filterSelection switch
+                {
+                    "Incoming" => wrapped.RawLog.IsIncoming && !wrapped.RawLog.IsMissed,
+                    "Outgoing" => !wrapped.RawLog.IsIncoming,
+                    "Missed" => wrapped.RawLog.IsMissed,
+                    _ => true
+                };
+            })
+            .ToList();
 
-            rows.Add(new CallHistoryRowItem
-            {
-                DisplayName = displayName,
-                Extension = extension,
-                StatusText = statusText,
-                Subtitle = BuildHistorySubtitle(log),
-                IsMissed = log.IsMissed,
-                IsIncoming = log.IsIncoming,
-                IconGlyph = glyph,
-                IconColor = color,
-                IconBackgroundColor = bg
-            });
-        }
+        // Fix context naming visibility controls safely
+        if (EmptyState != null) EmptyState.IsVisible = filteredLogs.Count == 0;
+        if (CallHistoryList != null) CallHistoryList.IsVisible = filteredLogs.Count > 0;
 
-        HistoryList.ItemsSource = rows;
+        CallHistoryList.ItemsSource = filteredLogs;
+
+        SubtitleLabel.Text = $"Extension {_viewModel.Extension} • Found {filteredLogs.Count} records matching filters";
     }
-
-    /// <summary>Port of CallHistoryScreen's callDisplayName().</summary>
     private string CallDisplayName(string number, string cleanNumber)
     {
         var contact = _viewModel.Contacts.FirstOrDefault(c => c.Extension == cleanNumber);
         return contact is not null && !string.IsNullOrEmpty(contact.DisplayName)
-            ? $"{contact.DisplayName} ({cleanNumber})"
+            ? contact.DisplayName
             : cleanNumber;
     }
 
-    /// <summary>Port of CallHistoryScreen's callExtension().</summary>
     private static string CallExtension(string number)
     {
         var openIdx = number.IndexOf('(');
@@ -93,7 +112,6 @@ public partial class CallHistoryPage : ContentPage
 
     private static long NormalizeTime(long raw) => raw <= 0 ? 0 : (raw < 10_000_000_000L ? raw * 1000 : raw);
 
-    /// <summary>Port of CallHistoryScreen's formatCallDate() (Today/Yesterday/EEE, dd MMM yyyy).</summary>
     private static string FormatCallDate(long time)
     {
         var safeTime = NormalizeTime(time);
@@ -105,46 +123,49 @@ public partial class CallHistoryPage : ContentPage
 
         if (date == today) return "Today";
         if (date == yesterday) return "Yesterday";
-        return date.ToString("ddd, dd MMM yyyy");
+        return date.ToString("dd MMM yyyy");
     }
 
-    /// <summary>Port of buildHistorySubtitle(): "dd MMM yyyy • hh:mm a" plus duration if present.</summary>
-    private static string BuildHistorySubtitle(CallLogUi log)
+    private static string GetTimeOnly(long time)
     {
-        var safeTime = NormalizeTime(log.Time);
-        var time = safeTime > 0
-            ? DateTimeOffset.FromUnixTimeMilliseconds(safeTime).ToLocalTime().ToString("dd MMM yyyy • hh:mm tt")
+        var safeTime = NormalizeTime(time);
+        return safeTime > 0
+            ? DateTimeOffset.FromUnixTimeMilliseconds(safeTime).ToLocalTime().ToString("hh:mm tt")
             : "";
-
-        var duration = log.DurationSeconds > 0
-            ? $" • {log.DurationSeconds / 60:D2}:{log.DurationSeconds % 60:D2}"
-            : "";
-
-        return time + duration;
     }
 
-    private void OnDrawerRequested(object? sender, EventArgs e)
+    private async void OnClearLogsClicked(object? sender, EventArgs e)
     {
-        Shell.Current.FlyoutIsPresented = true;
-    }
-
-    private async void OnClearHistoryClicked(object? sender, EventArgs e)
-    {
-        var confirmed = await DisplayAlert("Clear Call History", "This will remove all call history. Continue?", "Clear", "Cancel");
+        var confirmed = await DisplayAlert("Clear Call History", "This will remove all call history logs permanently. Continue?", "Clear", "Cancel");
         if (!confirmed) return;
 
         await _viewModel.ClearCallLogsAsync();
+        ApplyFilters();
     }
 
-    private async void OnCallBackClicked(object? sender, EventArgs e)
+    private async void OnQuickCallClicked(object? sender, EventArgs e)
     {
-        if (sender is ImageButton { CommandParameter: string extension } && !string.IsNullOrEmpty(extension))
+        if (sender is Button { CommandParameter: CallLogUi log } && !string.IsNullOrEmpty(log.Extension))
         {
-            await _viewModel.MakeOutgoingCallAsync(extension);
+            await _viewModel.MakeOutgoingCallAsync(log.Extension);
         }
     }
 
-    private void OnDialerTapped(object? sender, EventArgs e) => _viewModel.NavigateSafely(Screen.DialPad);
-    private void OnContactsTapped(object? sender, EventArgs e) => _viewModel.NavigateSafely(Screen.Contacts);
-    private void OnMessagesTapped(object? sender, EventArgs e) => _viewModel.NavigateSafely(Screen.Conversations);
+    private async void OnDeleteLogClicked(object? sender, EventArgs e)
+    {
+        if (sender is Button { CommandParameter: CallLogUi log })
+        {
+            // Optional local record deletion logic hook can go here
+            _viewModel.CallLogs.Remove(log);
+            ApplyFilters();
+        }
+    }
+
+    private async void OnOpenDialpadClicked(object? sender, EventArgs e)
+    {
+        // Smoothly bring the user straight back onto your call window workspace pane
+        await Navigation.PopAsync();
+    }
+
+    private async void OnBackTapped(object sender, EventArgs e) => await Navigation.PopAsync();
 }

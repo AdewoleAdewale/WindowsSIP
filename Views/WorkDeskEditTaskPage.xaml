@@ -5,105 +5,214 @@
              xmlns:controls="clr-namespace:SipCoreMobile.Controls"
              xmlns:vm="clr-namespace:SipCoreMobile.ViewModels"
              x:DataType="vm:WorkDeskViewModel"
-             BackgroundColor="{StaticResource SIPCoreDarkBlue}"
+             BackgroundColor="#F3F5F9"
              Shell.NavBarIsVisible="False">
 
-    <ScrollView>
-        <VerticalStackLayout Padding="18" Spacing="16">
+    <Grid RowDefinitions="Auto, *">
 
-            <!-- Header -->
-            <HorizontalStackLayout Spacing="12">
-                <Border StrokeShape="RoundRectangle 21" BackgroundColor="#1FFFFFFF" WidthRequest="42" HeightRequest="42">
-                    <Label Text="&#xF060;" FontFamily="MaterialIcons" TextColor="White" FontSize="18" HorizontalOptions="Center" VerticalOptions="Center" />
-                    <Border.GestureRecognizers><TapGestureRecognizer Tapped="OnBackTapped" /></Border.GestureRecognizers>
-                </Border>
-                <Label x:Name="HeaderLabel" Text="Edit Task" TextColor="White" FontSize="20" FontAttributes="Bold" VerticalOptions="Center" />
-            </HorizontalStackLayout>
+        <!-- ══════════ TOP BRAND HEADER CARD (Consistent with Create Page) ══════════ -->
+        <Border Grid.Row="0" 
+                BackgroundColor="White" 
+                StrokeThickness="1" 
+                Stroke="#EAEAEA" 
+                Margin="18,18,18,0" 
+                Padding="24,16" 
+                StrokeShape="RoundRectangle 12">
+            <Border.Shadow>
+                <Shadow Brush="Black" Opacity="0.04" Radius="8" Offset="0,2"/>
+            </Border.Shadow>
 
-            <!-- Templates -->
-            <VerticalStackLayout x:Name="TemplatesSection" IsVisible="False" Spacing="8">
-                <Label Text="Template" TextColor="White" FontAttributes="Bold" FontSize="15" />
-                <VerticalStackLayout x:Name="TemplatesList" Spacing="8" />
-            </VerticalStackLayout>
+            <Grid ColumnDefinitions="*, Auto">
+                <VerticalStackLayout Grid.Column="0" Spacing="4">
+                    <Label Text="SIPCORE WORKDESK" FontSize="11" FontAttributes="Bold" TextColor="{StaticResource SIPCorePrimary}" CharacterSpacing="1.5" />
+                    <HorizontalStackLayout Spacing="12" VerticalOptions="Center">
+                        <!-- Fluent back button -->
+                        <Border StrokeShape="RoundRectangle 6" BackgroundColor="#F0F4FA" StrokeThickness="0" WidthRequest="32" HeightRequest="32" VerticalOptions="Center">
+                            <Label Text="&#xF060;" FontFamily="MaterialIcons" TextColor="{StaticResource SIPCorePrimary}" FontSize="14" HorizontalOptions="Center" VerticalOptions="Center" />
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnBackTapped" />
+                            </Border.GestureRecognizers>
+                        </Border>
+                        <Label x:Name="HeaderLabel" Text="Edit Task" TextColor="{StaticResource SIPCoreDarkBlue}" FontSize="22" FontAttributes="Bold" VerticalOptions="Center" />
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
 
-            <!-- Task details -->
-            <VerticalStackLayout Spacing="8">
-                <Label Text="Task Details" TextColor="White" FontAttributes="Bold" FontSize="15" />
-                <Entry x:Name="TitleEntry" Placeholder="Task title" />
-                <Editor x:Name="DescriptionEditor" Placeholder="Describe the task" HeightRequest="90" />
-            </VerticalStackLayout>
+                <!-- Status panel -->
+                <HorizontalStackLayout Grid.Column="1" Spacing="12" VerticalOptions="Center">
+                    <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
+                        <BoxView WidthRequest="8" HeightRequest="8" CornerRadius="4" Color="#3B82F6" VerticalOptions="Center"/>
+                        <Label Text="Editing Mode" FontSize="12" TextColor="{StaticResource SIPCoreTextSecondary}"/>
+                    </HorizontalStackLayout>
+                </HorizontalStackLayout>
+            </Grid>
+        </Border>
 
-            <!-- Priority -->
-            <VerticalStackLayout Spacing="8">
-                <Label Text="Priority" TextColor="White" FontAttributes="Bold" FontSize="15" />
-                <Grid ColumnDefinitions="*,*,*" ColumnSpacing="10">
-                    <Button x:Name="NormalPriorityButton" Grid.Column="0" Text="Normal" Clicked="OnNormalPriorityClicked" CornerRadius="14" />
-                    <Button x:Name="MediumPriorityButton" Grid.Column="1" Text="Medium" Clicked="OnMediumPriorityClicked" CornerRadius="14" />
-                    <Button x:Name="HighPriorityButton" Grid.Column="2" Text="High" Clicked="OnHighPriorityClicked" CornerRadius="14" />
-                </Grid>
-            </VerticalStackLayout>
+        <!-- ══════════ BODY CONTENT: SPLIT DESKTOP VIEW ══════════ -->
+        <ScrollView Grid.Row="1" VerticalScrollBarVisibility="Never" Margin="18">
+            <Grid ColumnDefinitions="*, 380" ColumnSpacing="20" WidthRequest="1200" HorizontalOptions="CenterAndExpand">
 
-            <!-- Assignment -->
-            <VerticalStackLayout Spacing="8">
-                <Label Text="Assignment" TextColor="White" FontAttributes="Bold" FontSize="15" />
-                <controls:WorkDeskSelectableRow x:Name="AssignToSelfRow" Tapped="OnAssignToSelfTapped" />
-                <controls:WorkDeskSelectableRow x:Name="AssignOthersRow" Tapped="OnAssignOthersTapped" />
-                <Button x:Name="SelectAssigneesButton" Text="Select Assignees" Clicked="OnSelectAssigneesClicked"
-                        BackgroundColor="{StaticResource SIPCorePrimary}" TextColor="White" CornerRadius="14" IsVisible="False" />
-                <Border StrokeShape="RoundRectangle 14" BackgroundColor="#14FFFFFF" Padding="12">
-                    <VerticalStackLayout>
-                        <Label Text="Team Lead" TextColor="#99FFFFFF" FontSize="12" />
-                        <Label x:Name="TeamLeadLabel" TextColor="White" FontAttributes="Bold" />
+                <!-- LEFT COLUMN: Main Core Details (Title, Description, Checklist) -->
+                <VerticalStackLayout Grid.Column="0" Spacing="20">
+
+                    <!-- Core Information Card -->
+                    <Border BackgroundColor="White" StrokeThickness="1" Stroke="#EAEAEA" Padding="24" StrokeShape="RoundRectangle 12">
+                        <Border.Shadow>
+                            <Shadow Brush="Black" Opacity="0.03" Radius="6" Offset="0,2"/>
+                        </Border.Shadow>
+
+                        <VerticalStackLayout Spacing="16">
+                            <Label Text="Task Details" TextColor="{StaticResource SIPCoreDarkBlue}" FontAttributes="Bold" FontSize="16" />
+
+                            <VerticalStackLayout Spacing="6">
+                                <Label Text="TASK TITLE" FontSize="11" FontAttributes="Bold" TextColor="{StaticResource SIPCoreTextSecondary}" CharacterSpacing="1"/>
+                                <Border StrokeShape="RoundRectangle 6" StrokeThickness="1" Stroke="#D2D6DC" Padding="8,2" BackgroundColor="#FAFBFD">
+                                    <Entry x:Name="TitleEntry" Placeholder="Enter task title..." FontSize="14" TextColor="{StaticResource SIPCoreTextPrimary}" BackgroundColor="Transparent"/>
+                                </Border>
+                            </VerticalStackLayout>
+
+                            <VerticalStackLayout Spacing="6">
+                                <Label Text="DESCRIPTION" FontSize="11" FontAttributes="Bold" TextColor="{StaticResource SIPCoreTextSecondary}" CharacterSpacing="1"/>
+                                <Border StrokeShape="RoundRectangle 6" StrokeThickness="1" Stroke="#D2D6DC" Padding="8,4" BackgroundColor="#FAFBFD">
+                                    <Editor x:Name="DescriptionEditor" Placeholder="Describe the task..." HeightRequest="120" FontSize="14" TextColor="{StaticResource SIPCoreTextPrimary}" BackgroundColor="Transparent"/>
+                                </Border>
+                            </VerticalStackLayout>
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <!-- Checklist Card -->
+                    <Border BackgroundColor="White" StrokeThickness="1" Stroke="#EAEAEA" Padding="24" StrokeShape="RoundRectangle 12">
+                        <Border.Shadow>
+                            <Shadow Brush="Black" Opacity="0.03" Radius="6" Offset="0,2"/>
+                        </Border.Shadow>
+
+                        <VerticalStackLayout Spacing="16">
+                            <Label Text="Checklist Block" TextColor="{StaticResource SIPCoreDarkBlue}" FontAttributes="Bold" FontSize="16" />
+
+                            <Grid ColumnDefinitions="*, Auto" ColumnSpacing="10">
+                                <VerticalStackLayout Grid.Column="0" Spacing="10">
+                                    <Border StrokeShape="RoundRectangle 4" StrokeThickness="1" Stroke="#D2D6DC" Padding="8,2" BackgroundColor="#FAFBFD">
+                                        <Entry x:Name="ChecklistTitleEntry" Placeholder="Add a task checklist item..." FontSize="14" TextColor="{StaticResource SIPCoreTextPrimary}" BackgroundColor="Transparent"/>
+                                    </Border>
+                                    <Border StrokeShape="RoundRectangle 4" StrokeThickness="1" Stroke="#D2D6DC" Padding="8,2" BackgroundColor="#FAFBFD">
+                                        <Editor x:Name="ChecklistDescriptionEditor" Placeholder="Optional structural description details..." HeightRequest="50" FontSize="13" TextColor="{StaticResource SIPCoreTextPrimary}" BackgroundColor="Transparent"/>
+                                    </Border>
+                                </VerticalStackLayout>
+
+                                <Button Grid.Column="1" Text="+ Add" Clicked="OnAddChecklistItemClicked"
+                                        BackgroundColor="{StaticResource SIPCorePrimary}" TextColor="White" 
+                                        FontAttributes="Bold" WidthRequest="90" CornerRadius="4" VerticalOptions="FillAndExpand" />
+                            </Grid>
+
+                            <VerticalStackLayout x:Name="ChecklistItemsList" Spacing="4" />
+                            <Label x:Name="NoChecklistLabel" Text="No checklist items added." TextColor="{StaticResource SIPCoreTextSecondary}" FontSize="12" Opacity="0.7" />
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <!-- Templates Section (Hidden in Edit mode but retained for layout integrity) -->
+                    <VerticalStackLayout x:Name="TemplatesSection" IsVisible="False" Spacing="8">
+                        <Label Text="Template" TextColor="{StaticResource SIPCoreDarkBlue}" FontAttributes="Bold" FontSize="15" />
+                        <VerticalStackLayout x:Name="TemplatesList" Spacing="8" />
                     </VerticalStackLayout>
-                </Border>
-            </VerticalStackLayout>
 
-            <!-- Watchers -->
-            <VerticalStackLayout Spacing="8">
-                <Label Text="Watchers" TextColor="White" FontAttributes="Bold" FontSize="15" />
-                <Label Text="Watchers can follow task updates but cannot be assignees." TextColor="#A6FFFFFF" FontSize="12" />
-                <Button x:Name="SelectWatchersButton" Clicked="OnSelectWatchersClicked"
-                        BackgroundColor="{StaticResource SIPCorePrimary}" TextColor="White" CornerRadius="14" />
-            </VerticalStackLayout>
+                </VerticalStackLayout>
 
-            <!-- Checklist -->
-            <VerticalStackLayout Spacing="8">
-                <Label Text="Checklist" TextColor="White" FontAttributes="Bold" FontSize="15" />
-                <Entry x:Name="ChecklistTitleEntry" Placeholder="Checklist item" />
-                <Editor x:Name="ChecklistDescriptionEditor" Placeholder="Optional details" HeightRequest="60" />
-                <Button Text="Add Checklist Item" Clicked="OnAddChecklistItemClicked"
-                        BackgroundColor="{StaticResource SIPCorePrimary}" TextColor="White" CornerRadius="14" />
-                <VerticalStackLayout x:Name="ChecklistItemsList" Spacing="0" />
-                <Label x:Name="NoChecklistLabel" Text="No checklist items added." TextColor="#8CFFFFFF" FontSize="12" />
-            </VerticalStackLayout>
+                <!-- RIGHT COLUMN: Task Controls & Configurations (Priority, Assignment, Deadline) -->
+                <VerticalStackLayout Grid.Column="1" Spacing="20">
 
-            <!-- Approval -->
-            <Border StrokeShape="RoundRectangle 16" BackgroundColor="#14FFFFFF" Padding="14">
-                <Grid ColumnDefinitions="*,Auto">
-                    <VerticalStackLayout Grid.Column="0">
-                        <Label Text="Requires Approval" TextColor="White" FontAttributes="Bold" />
-                        <Label Text="Task creator must approve before completion." TextColor="#99FFFFFF" FontSize="12" />
+                    <!-- Settings Parameters Card -->
+                    <Border BackgroundColor="White" StrokeThickness="1" Stroke="#EAEAEA" Padding="24" StrokeShape="RoundRectangle 12">
+                        <Border.Shadow>
+                            <Shadow Brush="Black" Opacity="0.03" Radius="6" Offset="0,2"/>
+                        </Border.Shadow>
+
+                        <VerticalStackLayout Spacing="18">
+
+                            <!-- Priority Selector Segment -->
+                            <VerticalStackLayout Spacing="8">
+                                <Label Text="TASK PRIORITY" FontSize="11" FontAttributes="Bold" TextColor="{StaticResource SIPCoreTextSecondary}" CharacterSpacing="1"/>
+                                <Grid ColumnDefinitions="*,*,*" ColumnSpacing="6">
+                                    <Button x:Name="NormalPriorityButton" Grid.Column="0" Text="Normal" Clicked="OnNormalPriorityClicked" CornerRadius="4" HeightRequest="36" FontSize="12" FontAttributes="Bold" />
+                                    <Button x:Name="MediumPriorityButton" Grid.Column="1" Text="Medium" Clicked="OnMediumPriorityClicked" CornerRadius="4" HeightRequest="36" FontSize="12" FontAttributes="Bold" />
+                                    <Button x:Name="HighPriorityButton" Grid.Column="2" Text="High" Clicked="OnHighPriorityClicked" CornerRadius="4" HeightRequest="36" FontSize="12" FontAttributes="Bold" />
+                                </Grid>
+                            </VerticalStackLayout>
+
+                            <BoxView HeightRequest="1" Color="#EDEDED" />
+
+                            <!-- Dynamic Assignment Container (AssignToSelf is hidden inside edit code behind, only AssignOthers is used) -->
+                            <VerticalStackLayout Spacing="8">
+                                <Label Text="ASSIGNMENT" FontSize="11" FontAttributes="Bold" TextColor="{StaticResource SIPCoreTextSecondary}" CharacterSpacing="1"/>
+                                <controls:WorkDeskSelectableRow x:Name="AssignToSelfRow" Tapped="OnAssignToSelfTapped" IsVisible="False"/>
+                                <controls:WorkDeskSelectableRow x:Name="AssignOthersRow" Tapped="OnAssignOthersTapped" />
+                                <Button x:Name="SelectAssigneesButton" Text="Select Assignees" Clicked="OnSelectAssigneesClicked"
+                                        BackgroundColor="{StaticResource SIPCorePrimary}" TextColor="White" CornerRadius="4" IsVisible="False" Margin="0,4,0,0"/>
+
+                                <Border StrokeShape="RoundRectangle 4" BackgroundColor="#FAFBFD" StrokeThickness="1" Stroke="#D2D6DC" Padding="12" Margin="0,4,0,0">
+                                    <VerticalStackLayout Spacing="2">
+                                        <Label Text="Team Lead Designation" TextColor="{StaticResource SIPCoreTextSecondary}" FontSize="11" FontAttributes="Bold" />
+                                        <Label x:Name="TeamLeadLabel" TextColor="{StaticResource SIPCoreDarkBlue}" FontAttributes="Bold" FontSize="13" />
+                                    </VerticalStackLayout>
+                                </Border>
+                            </VerticalStackLayout>
+
+                            <BoxView HeightRequest="1" Color="#EDEDED" />
+
+                            <!-- Due Date Picker Segment -->
+                            <VerticalStackLayout Spacing="8">
+                                <Label Text="DUE DATE" FontSize="11" FontAttributes="Bold" TextColor="{StaticResource SIPCoreTextSecondary}" CharacterSpacing="1"/>
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                                    <Border Grid.Column="0" StrokeShape="RoundRectangle 4" StrokeThickness="1" Stroke="#D2D6DC" Padding="12,2" BackgroundColor="#FAFBFD" HeightRequest="40">
+                                        <DatePicker x:Name="DueDatePicker" DateSelected="OnDueDateSelected" FontSize="13" TextColor="{StaticResource SIPCoreTextPrimary}" VerticalOptions="Center"/>
+                                    </Border>
+                                    <Button Grid.Column="1" Text="Clear" Clicked="OnClearDueDateClicked" BackgroundColor="Transparent" TextColor="#EF4444" FontSize="13" FontAttributes="Bold"/>
+                                </Grid>
+                            </VerticalStackLayout>
+
+                            <BoxView HeightRequest="1" Color="#EDEDED" />
+
+                            <!-- Observers/Watchers Selector -->
+                            <VerticalStackLayout Spacing="8">
+                                <Label Text="WATCHERS" FontSize="11" FontAttributes="Bold" TextColor="{StaticResource SIPCoreTextSecondary}" CharacterSpacing="1" />
+                                <Button x:Name="SelectWatchersButton" Clicked="OnSelectWatchersClicked"
+                                        BackgroundColor="Transparent" BorderColor="{StaticResource SIPCoreBorder}" BorderWidth="1"
+                                        TextColor="{StaticResource SIPCorePrimary}" CornerRadius="4" HeightRequest="38" FontSize="13" FontAttributes="Bold" />
+                            </VerticalStackLayout>
+
+                            <BoxView HeightRequest="1" Color="#EDEDED" />
+
+                            <!-- Secure Approval System Configuration -->
+                            <Border StrokeShape="RoundRectangle 4" BackgroundColor="#FAFBFD" StrokeThickness="1" Stroke="#EAEAEA" Padding="12">
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <VerticalStackLayout Grid.Column="0" Spacing="2" VerticalOptions="Center">
+                                        <Label Text="Requires Creator Approval" TextColor="{StaticResource SIPCoreDarkBlue}" FontAttributes="Bold" FontSize="13" />
+                                        <Label Text="Verify outcome before closing" TextColor="{StaticResource SIPCoreTextSecondary}" FontSize="11" />
+                                    </VerticalStackLayout>
+                                    <Switch x:Name="RequiresApprovalSwitch" Grid.Column="1" VerticalOptions="Center" Scale="0.85" />
+                                </Grid>
+                            </Border>
+
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <!-- Error feedback messaging pipeline -->
+                    <VerticalStackLayout Spacing="4">
+                        <Label x:Name="WarningLabel" TextColor="#F59E0B" FontSize="13" FontAttributes="Bold" IsVisible="False" HorizontalOptions="Center" />
+                        <Label x:Name="ErrorLabel" TextColor="#EF4444" FontSize="13" FontAttributes="Bold" IsVisible="False" HorizontalOptions="Center" />
                     </VerticalStackLayout>
-                    <Switch x:Name="RequiresApprovalSwitch" Grid.Column="1" VerticalOptions="Center" />
-                </Grid>
-            </Border>
 
-            <!-- Due date -->
-            <VerticalStackLayout Spacing="8">
-                <Label Text="Due Date" TextColor="White" FontAttributes="Bold" FontSize="15" />
-                <Grid ColumnDefinitions="*,Auto">
-                    <DatePicker x:Name="DueDatePicker" Grid.Column="0" DateSelected="OnDueDateSelected" />
-                    <Button Grid.Column="1" Text="Clear" Clicked="OnClearDueDateClicked" BackgroundColor="Transparent" TextColor="White" />
-                </Grid>
-            </VerticalStackLayout>
+                    <!-- Execution Action Button -->
+                    <Button x:Name="SubmitButton" Text="Save Changes" Clicked="OnSubmitClicked"
+                            BackgroundColor="{StaticResource SIPCorePrimary}" TextColor="White"
+                            HeightRequest="48" CornerRadius="4" FontSize="15" FontAttributes="Bold">
+                        <Button.Shadow>
+                            <Shadow Brush="{StaticResource SIPCorePrimary}" Opacity="0.3" Radius="8" Offset="0,3"/>
+                        </Button.Shadow>
+                    </Button>
 
-            <Label x:Name="WarningLabel" TextColor="#F59E0B" FontSize="13" IsVisible="False" />
-            <Label x:Name="ErrorLabel" TextColor="#EF4444" FontSize="13" IsVisible="False" />
+                </VerticalStackLayout>
 
-            <Button x:Name="SubmitButton" Text="Save Changes" Clicked="OnSubmitClicked"
-                    BackgroundColor="{StaticResource SIPCorePrimary}" TextColor="White"
-                    HeightRequest="54" CornerRadius="18" FontAttributes="Bold" Margin="0,6,0,20" />
+            </Grid>
+        </ScrollView>
 
-        </VerticalStackLayout>
-    </ScrollView>
+    </Grid>
 </ContentPage>

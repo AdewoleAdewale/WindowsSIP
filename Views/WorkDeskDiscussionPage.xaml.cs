@@ -88,6 +88,20 @@ public partial class WorkDeskDiscussionPage : ContentPage
         }
     }
 
+    private static readonly Color[] SenderPalette =
+    {
+    Color.FromArgb("#E91E63"), Color.FromArgb("#7C3AED"), Color.FromArgb("#0E9F6E"),
+    Color.FromArgb("#D97706"), Color.FromArgb("#0284C7"), Color.FromArgb("#DC2626"),
+    Color.FromArgb("#0D9488"), Color.FromArgb("#9333EA"),
+};
+
+    private static Color SenderColor(string extension)
+    {
+        var hash = 0;
+        foreach (var ch in extension) hash = (hash * 31 + ch) & 0x7FFFFFFF;
+        return SenderPalette[hash % SenderPalette.Length];
+    }
+
     private void RenderComments(List<WorkTaskCommentDto> comments, List<ContactUi> contacts)
     {
         ThreadsList.Children.Clear();
@@ -97,63 +111,124 @@ public partial class WorkDeskDiscussionPage : ContentPage
 
         foreach (var comment in topLevel)
         {
-            ThreadsList.Children.Add(BuildBubble(comment, contacts, isReply: false));
+            ThreadsList.Children.Add(BuildBubble(comment, contacts, parent: null));
 
             foreach (var reply in comment.Replies)
-            {
-                var replyRow = new HorizontalStackLayout { Spacing = 8 };
-                replyRow.Add(new Label { Text = "\u21B3", TextColor = Color.FromArgb("#DC2626"), FontSize = 16, WidthRequest = 24 });
-                replyRow.Add(BuildBubble(reply, contacts, isReply: true));
-                ThreadsList.Children.Add(replyRow);
-            }
+                ThreadsList.Children.Add(BuildBubble(reply, contacts, parent: comment));
         }
 
         Dispatcher.Dispatch(async () => { await Task.Delay(100); await CommentsScroll.ScrollToAsync(0, CommentsList.Height, true); });
     }
 
-    private View BuildBubble(WorkTaskCommentDto comment, List<ContactUi> contacts, bool isReply)
+    private View BuildBubble(WorkTaskCommentDto comment, List<ContactUi> contacts, WorkTaskCommentDto? parent)
     {
         var senderExtension = string.IsNullOrEmpty(comment.ExtensionNumber) ? _appState.Extension : comment.ExtensionNumber;
         var isMine = string.Equals(senderExtension.Trim(), _appState.Extension.Trim(), StringComparison.OrdinalIgnoreCase);
+        var isReply = parent is not null;
         var companyLine = WorkDeskContactHelpers.CompanyLine(senderExtension, contacts);
 
         var bubble = new Border
         {
-            StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 16 },
-            BackgroundColor = isMine ? (Color)Application.Current!.Resources["SIPCorePrimary"] : Color.FromArgb("#1AFFFFFF"),
-            Padding = new Thickness(12),
-            MaximumWidthRequest = isReply ? 260 : 300,
-            HorizontalOptions = isMine ? LayoutOptions.End : LayoutOptions.Start
+            StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle
+            {
+                CornerRadius = isMine ? new CornerRadius(14, 14, 14, 3) : new CornerRadius(14, 14, 3, 14)
+            },
+            StrokeThickness = 0,
+            BackgroundColor = isMine ? Color.FromArgb("#D8E9FF") : Colors.White,
+            Padding = new Thickness(12, 9),
+            MaximumWidthRequest = 460,
+            HorizontalOptions = isMine ? LayoutOptions.End : LayoutOptions.Start,
+            Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.05f, Radius = 3, Offset = new Point(0, 1) }
         };
 
-        var stack = new VerticalStackLayout { Spacing = 4 };
-        stack.Add(new Label { Text = WorkDeskContactHelpers.DisplayName(senderExtension, contacts), TextColor = Color.FromArgb("#C7FFFFFF"), FontAttributes = FontAttributes.Bold, FontSize = 11 });
-        if (!string.IsNullOrEmpty(companyLine)) stack.Add(new Label { Text = companyLine, TextColor = Color.FromArgb("#85FFFFFF"), FontSize = 10 });
-        stack.Add(new Label { Text = string.IsNullOrWhiteSpace(comment.Body) ? "No comment text" : comment.Body, TextColor = Colors.White, FontSize = 14 });
-        if (!string.IsNullOrEmpty(comment.CreatedAt)) stack.Add(new Label { Text = comment.CreatedAt, TextColor = Color.FromArgb("#8CFFFFFF"), FontSize = 10 });
+        var stack = new VerticalStackLayout { Spacing = 3 };
 
-        if (!isReply)
+        // Sender line (others only — WhatsApp style)
+        if (!isMine)
         {
-            var replyLabel = new Label { Text = "\uF112  Tap to reply", TextColor = Color.FromArgb("#99FFFFFF"), FontSize = 10, Margin = new Thickness(0, 4, 0, 0) };
-            stack.Add(replyLabel);
+            stack.Add(new Label
+            {
+                Text = WorkDeskContactHelpers.DisplayName(senderExtension, contacts),
+                TextColor = SenderColor(senderExtension.Trim()),
+                FontAttributes = FontAttributes.Bold,
+                FontSize = 12
+            });
+            if (!string.IsNullOrEmpty(companyLine))
+                stack.Add(new Label { Text = companyLine, TextColor = Color.FromArgb("#98A2B3"), FontSize = 10 });
         }
+
+        // Embedded quote of the parent (WhatsApp reply block)
+        if (isReply)
+        {
+            var quoteGrid = new Grid
+            {
+                ColumnDefinitions = { new(new GridLength(3)), new(GridLength.Star) },
+                ColumnSpacing = 8
+            };
+            quoteGrid.Add(new BoxView { Color = (Color)Application.Current!.Resources["SIPCorePrimary"], WidthRequest = 3, CornerRadius = 1.5f });
+            var quoteStack = new VerticalStackLayout { Spacing = 0 };
+            quoteStack.Add(new Label
+            {
+                Text = WorkDeskContactHelpers.DisplayName(
+                    string.IsNullOrEmpty(parent!.ExtensionNumber) ? _appState.Extension : parent.ExtensionNumber, contacts),
+                TextColor = (Color)Application.Current!.Resources["SIPCorePrimary"],
+                FontSize = 10.5,
+                FontAttributes = FontAttributes.Bold
+            });
+            quoteStack.Add(new Label
+            {
+                Text = parent.Body,
+                FontSize = 11,
+                TextColor = Color.FromArgb("#667085"),
+                LineBreakMode = LineBreakMode.TailTruncation,
+                MaxLines = 2
+            });
+            quoteGrid.Add(quoteStack, 1);
+
+            stack.Add(new Border
+            {
+                StrokeThickness = 0,
+                BackgroundColor = Color.FromArgb("#0D000000"),
+                StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 6 },
+                Padding = new Thickness(8, 6),
+                Content = quoteGrid
+            });
+        }
+
+        stack.Add(new Label
+        {
+            Text = string.IsNullOrWhiteSpace(comment.Body) ? "No comment text" : comment.Body,
+            TextColor = Color.FromArgb("#101828"),
+            FontSize = 14,
+            LineHeight = 1.25
+        });
+
+        if (!string.IsNullOrEmpty(comment.CreatedAt))
+            stack.Add(new Label
+            {
+                Text = comment.CreatedAt,
+                TextColor = Color.FromArgb("#98A2B3"),
+                FontSize = 10,
+                HorizontalOptions = LayoutOptions.End
+            });
 
         bubble.Content = stack;
 
-        var tap = new TapGestureRecognizer();
-        tap.Tapped += (_, _) =>
+        if (!isReply)
         {
-            if (isReply) return;
-            _replyingTo = comment;
-            ReplyBarPreview.Text = comment.Body;
-            ReplyBar.IsVisible = true;
-            MessageEntry.Focus();
-        };
-        bubble.GestureRecognizers.Add(tap);
+            var tap = new TapGestureRecognizer();
+            tap.Tapped += (_, _) =>
+            {
+                _replyingTo = comment;
+                ReplyBarPreview.Text = comment.Body;
+                ReplyBar.IsVisible = true;
+                MessageEntry.Focus();
+            };
+            bubble.GestureRecognizers.Add(tap);
+        }
 
         return bubble;
     }
-
     private async void OnBackTapped(object? sender, TappedEventArgs e) => await Navigation.PopAsync();
 
     private void OnCancelReplyClicked(object? sender, EventArgs e)
@@ -180,6 +255,48 @@ public partial class WorkDeskDiscussionPage : ContentPage
     }
 
     private async void OnSendTapped(object? sender, TappedEventArgs e)
+    {
+        var text = MessageEntry.Text?.Trim() ?? "";
+        if (string.IsNullOrEmpty(text)) return;
+
+        MessageEntry.Text = "";
+
+        if (_replyingTo is not null)
+        {
+            await _viewModel.AddReplyAsync(_task, _replyingTo, text);
+            _replyingTo = null;
+            ReplyBar.IsVisible = false;
+        }
+        else
+        {
+            await _viewModel.AddCommentAsync(_task, text);
+        }
+
+        Render();
+    }
+
+    private async void TapGestureRecognizer_Tapped(object sender, TappedEventArgs e)
+    {
+        var text = MessageEntry.Text?.Trim() ?? "";
+        if (string.IsNullOrEmpty(text)) return;
+
+        MessageEntry.Text = "";
+
+        if (_replyingTo is not null)
+        {
+            await _viewModel.AddReplyAsync(_task, _replyingTo, text);
+            _replyingTo = null;
+            ReplyBar.IsVisible = false;
+        }
+        else
+        {
+            await _viewModel.AddCommentAsync(_task, text);
+        }
+
+        Render();
+    }
+
+    private async void MessageEntry_Completed(object sender, EventArgs e)
     {
         var text = MessageEntry.Text?.Trim() ?? "";
         if (string.IsNullOrEmpty(text)) return;

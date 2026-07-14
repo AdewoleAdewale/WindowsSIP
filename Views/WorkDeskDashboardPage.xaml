@@ -4,120 +4,264 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:SipCoreMobile.ViewModels"
              x:DataType="vm:WorkDeskViewModel"
-             BackgroundColor="{StaticResource SIPCoreDarkBlue}"
+             BackgroundColor="{StaticResource SIPCoreBackground}"
              Shell.NavBarIsVisible="False">
 
-    <Grid>
-        <ScrollView>
-            <VerticalStackLayout Padding="18" Spacing="16">
+    <ScrollView>
+        <VerticalStackLayout Padding="26,22,26,30" Spacing="16" MaximumWidthRequest="1180">
 
-                <!-- Top bar -->
-                <HorizontalStackLayout Spacing="12">
-                    <Border StrokeShape="RoundRectangle 21" BackgroundColor="#1FFFFFFF" WidthRequest="42" HeightRequest="42">
-                        <Label Text="&#xF060;" FontFamily="MaterialIcons" TextColor="White" FontSize="18"
-                               HorizontalOptions="Center" VerticalOptions="Center" />
+            <!-- ══ Top bar: identity strip ══ -->
+            <Border StrokeShape="RoundRectangle 14" StrokeThickness="1"
+                    Stroke="{StaticResource SIPCoreBorder}"
+                    BackgroundColor="{StaticResource SIPCoreCard}" Padding="20,14">
+                <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="14">
+                    <Border StrokeShape="RoundRectangle 10" StrokeThickness="0"
+                            BackgroundColor="#1FFFFFFF" WidthRequest="38" HeightRequest="38"
+                            VerticalOptions="Center" IsVisible="False" x:Name="BackButton">
                         <Border.GestureRecognizers>
                             <TapGestureRecognizer Tapped="OnBackTapped" />
                         </Border.GestureRecognizers>
+                        <Label Text="&#xF060;" FontFamily="MaterialIcons" FontSize="14"
+                               TextColor="{StaticResource SIPCoreTextSecondary}"
+                               HorizontalOptions="Center" VerticalOptions="Center" />
                     </Border>
-                    <VerticalStackLayout VerticalOptions="Center">
-                        <Label Text="SIPCore WorkDesk" TextColor="White" FontSize="20" FontAttributes="Bold" />
-                        <Label x:Name="SubtitleLabel" TextColor="#B8FFFFFF" FontSize="12" />
+
+                    <VerticalStackLayout Grid.Column="0" VerticalOptions="Center" Spacing="2">
+                        <Label x:Name="CompanyLabel" FontSize="16" FontAttributes="Bold"
+                               CharacterSpacing="0.5" TextColor="{StaticResource SIPCoreDarkBlue}" />
+                        <HorizontalStackLayout Spacing="6">
+                            <Label x:Name="GreetingLabel" FontSize="12"
+                                   TextColor="{StaticResource SIPCoreTextSecondary}" />
+                            <Label Text="•" FontSize="12" TextColor="{StaticResource SIPCoreTextSecondary}" />
+                            <Label x:Name="SubtitleLabel" FontSize="12"
+                                   TextColor="{StaticResource SIPCoreTextSecondary}" />
+                        </HorizontalStackLayout>
                     </VerticalStackLayout>
-                </HorizontalStackLayout>
 
-                <!-- Hero card -->
-                <Border StrokeShape="RoundRectangle 26" BackgroundColor="{StaticResource SIPCorePrimary}" Padding="20">
-                    <VerticalStackLayout Spacing="4">
-                        <Label x:Name="GreetingLabel" TextColor="White" FontSize="17" FontAttributes="Bold" />
-                        <Label x:Name="CompanyLabel" TextColor="#E6FFFFFF" FontSize="14" FontAttributes="Bold" />
-                        <Label Text="Your work command center" TextColor="#BFFFFFFF" FontSize="12" />
+                    <Border Grid.Column="2" StrokeShape="RoundRectangle 16" StrokeThickness="1"
+                            Stroke="{StaticResource SIPCoreBorder}"
+                            BackgroundColor="{StaticResource SIPCoreBackground}"
+                            Padding="12,6" VerticalOptions="Center">
+                        <HorizontalStackLayout Spacing="7">
+                            <Ellipse Fill="{StaticResource SIPCoreSuccess}" WidthRequest="8" HeightRequest="8"
+                                     VerticalOptions="Center" />
+                            <Label Text="Registered" FontSize="12"
+                                   TextColor="{StaticResource SIPCoreTextSecondary}" VerticalOptions="Center" />
+                        </HorizontalStackLayout>
+                    </Border>
+                </Grid>
+            </Border>
 
-                        <Grid ColumnDefinitions="*,*,*" Margin="0,20,0,0">
-                            <VerticalStackLayout Grid.Column="0" HorizontalOptions="Center">
-                                <Label x:Name="OpenTasksValue" TextColor="White" FontSize="22" FontAttributes="Bold" HorizontalOptions="Center" />
-                                <Label Text="Open" TextColor="#C7FFFFFF" FontSize="12" HorizontalOptions="Center" />
-                            </VerticalStackLayout>
-                            <VerticalStackLayout Grid.Column="1" HorizontalOptions="Center">
-                                <Label x:Name="ApprovalsValue" TextColor="White" FontSize="22" FontAttributes="Bold" HorizontalOptions="Center" />
-                                <Label Text="Approvals" TextColor="#C7FFFFFF" FontSize="12" HorizontalOptions="Center" />
-                            </VerticalStackLayout>
-                            <VerticalStackLayout Grid.Column="2" HorizontalOptions="Center">
-                                <Label x:Name="DueTodayValue" TextColor="White" FontSize="22" FontAttributes="Bold" HorizontalOptions="Center" />
-                                <Label Text="Due Today" TextColor="#C7FFFFFF" FontSize="12" HorizontalOptions="Center" />
-                            </VerticalStackLayout>
-                        </Grid>
+            <!-- ══ Hero: headline + primary action ══ -->
+            <Border StrokeShape="RoundRectangle 14" StrokeThickness="1"
+                    Stroke="{StaticResource SIPCoreBorder}"
+                    BackgroundColor="{StaticResource SIPCoreCard}" Padding="24,22">
+                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="20">
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="SIPCORE WORKDESK" FontSize="11" FontAttributes="Bold"
+                               CharacterSpacing="1.6" TextColor="{StaticResource SIPCorePrimary}" />
+                        <Label Text="Tasks, approvals and team execution"
+                               FontSize="26" FontAttributes="Bold"
+                               TextColor="{StaticResource SIPCoreDarkBlue}" />
+                        <Label Text="Plan work, collaborate with your team, track progress and approve completed tasks from one professional workspace."
+                               FontSize="13.5" TextColor="{StaticResource SIPCoreTextSecondary}"
+                               MaximumWidthRequest="520" HorizontalOptions="Start" LineHeight="1.35" />
+                    </VerticalStackLayout>
+
+                    <Border Grid.Column="1" StrokeShape="RoundRectangle 10" StrokeThickness="0"
+                            BackgroundColor="{StaticResource SIPCorePrimary}"
+                            Padding="18,12" VerticalOptions="Center">
+                        <Border.Shadow>
+                            <Shadow Brush="{StaticResource SIPCorePrimary}" Opacity="0.3" Radius="12" Offset="0,4" />
+                        </Border.Shadow>
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnCreateTaskTapped" />
+                        </Border.GestureRecognizers>
+                        <HorizontalStackLayout Spacing="8">
+                            <Label Text="+" TextColor="White" FontSize="16" FontAttributes="Bold" VerticalOptions="Center" />
+                            <Label Text="Create task" TextColor="White" FontSize="14" FontAttributes="Bold" VerticalOptions="Center" />
+                        </HorizontalStackLayout>
+                    </Border>
+                </Grid>
+            </Border>
+
+            <!-- ══ Stat cards ══ -->
+            <Grid ColumnDefinitions="*,*,*,*" ColumnSpacing="14">
+
+                <Border Grid.Column="0" StrokeShape="RoundRectangle 14" StrokeThickness="1"
+                        Stroke="{StaticResource SIPCoreBorder}" BackgroundColor="{StaticResource SIPCoreCard}" Padding="18,16">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnOpenTasksTapped" />
+                    </Border.GestureRecognizers>
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="14">
+                        <Border StrokeShape="RoundRectangle 12" StrokeThickness="0" WidthRequest="46" HeightRequest="46"
+                                BackgroundColor="{StaticResource SIPCorePrimaryLight}" VerticalOptions="Start">
+                            <Label Text="&#xF0AE;" FontFamily="MaterialIcons" FontSize="16"
+                                   TextColor="{StaticResource SIPCorePrimaryDark}"
+                                   HorizontalOptions="Center" VerticalOptions="Center" />
+                        </Border>
+                        <VerticalStackLayout Grid.Column="1" Spacing="2">
+                            <Label Text="Open tasks" FontSize="13" TextColor="{StaticResource SIPCoreTextSecondary}" />
+                            <Label x:Name="OpenTasksValue" FontSize="26" FontAttributes="Bold"
+                                   TextColor="{StaticResource SIPCoreDarkBlue}" />
+                            <Label Text="Everything assigned to you" FontSize="10.5"
+                                   TextColor="{StaticResource SIPCoreTextSecondary}" Opacity="0.8" />
+                        </VerticalStackLayout>
+                    </Grid>
+                </Border>
+
+                <Border Grid.Column="1" StrokeShape="RoundRectangle 14" StrokeThickness="1"
+                        Stroke="{StaticResource SIPCoreBorder}" BackgroundColor="{StaticResource SIPCoreCard}" Padding="18,16">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnOpenApprovalsTapped" />
+                    </Border.GestureRecognizers>
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="14">
+                        <Border StrokeShape="RoundRectangle 12" StrokeThickness="0" WidthRequest="46" HeightRequest="46"
+                                BackgroundColor="{StaticResource PriorityLowBackground}" VerticalOptions="Start">
+                            <Label Text="&#xF00C;" FontFamily="MaterialIcons" FontSize="16"
+                                   TextColor="{StaticResource PriorityLowText}"
+                                   HorizontalOptions="Center" VerticalOptions="Center" />
+                        </Border>
+                        <VerticalStackLayout Grid.Column="1" Spacing="2">
+                            <Label Text="Approvals" FontSize="13" TextColor="{StaticResource SIPCoreTextSecondary}" />
+                            <Label x:Name="ApprovalsValue" FontSize="26" FontAttributes="Bold"
+                                   TextColor="{StaticResource SIPCoreDarkBlue}" />
+                            <Label Text="Waiting for your decision" FontSize="10.5"
+                                   TextColor="{StaticResource SIPCoreTextSecondary}" Opacity="0.8" />
+                        </VerticalStackLayout>
+                    </Grid>
+                </Border>
+
+                <Border Grid.Column="2" StrokeShape="RoundRectangle 14" StrokeThickness="1"
+                        Stroke="{StaticResource SIPCoreBorder}" BackgroundColor="{StaticResource SIPCoreCard}" Padding="18,16">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnOpenTasksTapped" />
+                    </Border.GestureRecognizers>
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="14">
+                        <Border StrokeShape="RoundRectangle 12" StrokeThickness="0" WidthRequest="46" HeightRequest="46"
+                                BackgroundColor="{StaticResource PriorityCriticalBackground}" VerticalOptions="Start">
+                            <Label Text="&#xF12A;" FontFamily="MaterialIcons" FontSize="16"
+                                   TextColor="{StaticResource PriorityCriticalText}"
+                                   HorizontalOptions="Center" VerticalOptions="Center" />
+                        </Border>
+                        <VerticalStackLayout Grid.Column="1" Spacing="2">
+                            <Label Text="Due / overdue" FontSize="13" TextColor="{StaticResource SIPCoreTextSecondary}" />
+                            <Label x:Name="DueTodayValue" FontSize="26" FontAttributes="Bold"
+                                   TextColor="{StaticResource SIPCoreDarkBlue}" />
+                            <Label Text="Tasks requiring attention" FontSize="10.5"
+                                   TextColor="{StaticResource SIPCoreTextSecondary}" Opacity="0.8" />
+                        </VerticalStackLayout>
+                    </Grid>
+                </Border>
+
+                <Border Grid.Column="3" StrokeShape="RoundRectangle 14" StrokeThickness="1"
+                        Stroke="{StaticResource SIPCoreBorder}" BackgroundColor="{StaticResource SIPCoreCard}" Padding="18,16">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnOpenTeamTapped" />
+                    </Border.GestureRecognizers>
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="14">
+                        <Border StrokeShape="RoundRectangle 12" StrokeThickness="0" WidthRequest="46" HeightRequest="46"
+                                BackgroundColor="{StaticResource SIPCoreSignalDim}" VerticalOptions="Start">
+                            <Label Text="&#xF0C0;" FontFamily="MaterialIcons" FontSize="16"
+                                   TextColor="{StaticResource SIPCoreSignal}"
+                                   HorizontalOptions="Center" VerticalOptions="Center" />
+                        </Border>
+                        <VerticalStackLayout Grid.Column="1" Spacing="2">
+                            <Label Text="Team" FontSize="13" TextColor="{StaticResource SIPCoreTextSecondary}" />
+                            <Label x:Name="TeamOnlineLabel" FontSize="13" FontAttributes="Bold"
+                                   TextColor="{StaticResource SIPCoreDarkBlue}" LineBreakMode="WordWrap" />
+                            <Label Text="Call or message collaborators" FontSize="10.5"
+                                   TextColor="{StaticResource SIPCoreTextSecondary}" Opacity="0.8" />
+                        </VerticalStackLayout>
+                    </Grid>
+                </Border>
+            </Grid>
+
+            <!-- ══ Lower band: activity + quick actions ══ -->
+            <Grid ColumnDefinitions="1.6*,*" ColumnSpacing="14">
+
+                <!-- Recent activity -->
+                <Border Grid.Column="0" StrokeShape="RoundRectangle 14" StrokeThickness="1"
+                        Stroke="{StaticResource SIPCoreBorder}" BackgroundColor="{StaticResource SIPCoreCard}"
+                        Padding="22,18">
+                    <VerticalStackLayout Spacing="14">
+                        <VerticalStackLayout Spacing="3">
+                            <Label Text="RECENT ACTIVITY" FontSize="11" FontAttributes="Bold"
+                                   CharacterSpacing="1.6" TextColor="{StaticResource SIPCorePrimary}" />
+                            <Label Text="What your team has been doing" FontSize="19" FontAttributes="Bold"
+                                   TextColor="{StaticResource SIPCoreDarkBlue}" />
+                        </VerticalStackLayout>
+                        <BoxView HeightRequest="1" Color="{StaticResource SIPCoreBorder}" />
+                        <VerticalStackLayout x:Name="ActivityList" Spacing="12" />
                     </VerticalStackLayout>
                 </Border>
 
                 <!-- Quick actions -->
-                <VerticalStackLayout Spacing="10">
-                    <Label Text="Quick Actions" TextColor="White" FontAttributes="Bold" FontSize="16" />
-                    <Grid ColumnDefinitions="*,*" ColumnSpacing="12" RowDefinitions="Auto,Auto" RowSpacing="12">
-                        <Border Grid.Row="0" Grid.Column="0" StrokeShape="RoundRectangle 22" BackgroundColor="#17FFFFFF" HeightRequest="92">
-                            <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="8">
-                                <Label Text="&#xF0AE;" FontFamily="MaterialIcons" TextColor="{StaticResource SIPCorePrimary}" FontSize="26" HorizontalOptions="Center" />
-                                <Label Text="New Task" TextColor="White" FontAttributes="Bold" HorizontalOptions="Center" />
-                            </VerticalStackLayout>
-                            <Border.GestureRecognizers><TapGestureRecognizer Tapped="OnCreateTaskTapped" /></Border.GestureRecognizers>
-                        </Border>
-                        <Border Grid.Row="0" Grid.Column="1" StrokeShape="RoundRectangle 22" BackgroundColor="#17FFFFFF" HeightRequest="92">
-                            <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="8">
-                                <Label Text="&#xF0AE;" FontFamily="MaterialIcons" TextColor="{StaticResource SIPCorePrimary}" FontSize="26" HorizontalOptions="Center" />
-                                <Label Text="Tasks" TextColor="White" FontAttributes="Bold" HorizontalOptions="Center" />
-                            </VerticalStackLayout>
-                            <Border.GestureRecognizers><TapGestureRecognizer Tapped="OnOpenTasksTapped" /></Border.GestureRecognizers>
-                        </Border>
-                        <Border Grid.Row="1" Grid.Column="0" StrokeShape="RoundRectangle 22" BackgroundColor="#17FFFFFF" HeightRequest="92">
-                            <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="8">
-                                <Label Text="&#xF058;" FontFamily="MaterialIcons" TextColor="{StaticResource SIPCorePrimary}" FontSize="26" HorizontalOptions="Center" />
-                                <Label Text="Approvals" TextColor="White" FontAttributes="Bold" HorizontalOptions="Center" />
-                            </VerticalStackLayout>
-                            <Border.GestureRecognizers><TapGestureRecognizer Tapped="OnOpenApprovalsTapped" /></Border.GestureRecognizers>
-                        </Border>
-                        <Border Grid.Row="1" Grid.Column="1" StrokeShape="RoundRectangle 22" BackgroundColor="#17FFFFFF" HeightRequest="92">
-                            <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="8">
-                                <Label Text="&#xF0C0;" FontFamily="MaterialIcons" TextColor="{StaticResource SIPCorePrimary}" FontSize="26" HorizontalOptions="Center" />
-                                <Label Text="Team" TextColor="White" FontAttributes="Bold" HorizontalOptions="Center" />
-                            </VerticalStackLayout>
-                            <Border.GestureRecognizers><TapGestureRecognizer Tapped="OnOpenTeamTapped" /></Border.GestureRecognizers>
-                        </Border>
-                    </Grid>
-                </VerticalStackLayout>
-
-                <!-- Live team card -->
-                <Border StrokeShape="RoundRectangle 24" BackgroundColor="#14FFFFFF" Padding="18">
-                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="14">
-                        <Border Grid.Column="0" StrokeShape="RoundRectangle 22" BackgroundColor="#2E22C55E" WidthRequest="44" HeightRequest="44">
-                            <Label Text="&#xF012;" FontFamily="MaterialIcons" TextColor="{StaticResource SIPCoreSuccess}" HorizontalOptions="Center" VerticalOptions="Center" />
-                        </Border>
-                        <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
-                            <Label Text="Team Activity Live" TextColor="White" FontAttributes="Bold" />
-                            <Label x:Name="TeamOnlineLabel" TextColor="#AEFFFFFF" FontSize="12" />
+                <Border Grid.Column="1" StrokeShape="RoundRectangle 14" StrokeThickness="1"
+                        Stroke="{StaticResource SIPCoreBorder}" BackgroundColor="{StaticResource SIPCoreCard}"
+                        Padding="22,18">
+                    <VerticalStackLayout Spacing="14">
+                        <VerticalStackLayout Spacing="3">
+                            <Label Text="QUICK ACTIONS" FontSize="11" FontAttributes="Bold"
+                                   CharacterSpacing="1.6" TextColor="{StaticResource SIPCorePrimary}" />
+                            <Label Text="Move work forward" FontSize="19" FontAttributes="Bold"
+                                   TextColor="{StaticResource SIPCoreDarkBlue}" />
                         </VerticalStackLayout>
-                        <Label Grid.Column="2" Text="&#xF054;" FontFamily="MaterialIcons" TextColor="#B3FFFFFF" VerticalOptions="Center" />
-                    </Grid>
-                    <Border.GestureRecognizers><TapGestureRecognizer Tapped="OnOpenTeamTapped" /></Border.GestureRecognizers>
-                </Border>
 
-                <!-- Recent activity -->
-                <Border StrokeShape="RoundRectangle 24" BackgroundColor="#14FFFFFF" Padding="18">
-                    <VerticalStackLayout Spacing="10">
-                        <Label Text="Recent Activity" TextColor="White" FontAttributes="Bold" />
-                        <VerticalStackLayout x:Name="ActivityList" Spacing="8" />
+                        <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="10" RowSpacing="10">
+
+                            <Border Grid.Row="0" Grid.Column="0" StrokeShape="RoundRectangle 12" StrokeThickness="1"
+                                    Stroke="{StaticResource SIPCoreBorder}" BackgroundColor="{StaticResource SIPCoreBackground}" Padding="14,12">
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnCreateTaskTapped" />
+                                </Border.GestureRecognizers>
+                                <VerticalStackLayout Spacing="4">
+                                    <Label Text="+" FontSize="16" FontAttributes="Bold" TextColor="{StaticResource SIPCorePrimary}" />
+                                    <Label Text="Create task" FontSize="13.5" FontAttributes="Bold" TextColor="{StaticResource SIPCoreTextPrimary}" />
+                                    <Label Text="Assign work and add a checklist" FontSize="10.5" TextColor="{StaticResource SIPCoreTextSecondary}" />
+                                </VerticalStackLayout>
+                            </Border>
+
+                            <Border Grid.Row="0" Grid.Column="1" StrokeShape="RoundRectangle 12" StrokeThickness="1"
+                                    Stroke="{StaticResource SIPCoreBorder}" BackgroundColor="{StaticResource SIPCoreBackground}" Padding="14,12">
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnOpenApprovalsTapped" />
+                                </Border.GestureRecognizers>
+                                <VerticalStackLayout Spacing="4">
+                                    <Label Text="&#xF00C;" FontFamily="MaterialIcons" FontSize="13" TextColor="{StaticResource PriorityLowText}" />
+                                    <Label Text="Review approvals" FontSize="13.5" FontAttributes="Bold" TextColor="{StaticResource SIPCoreTextPrimary}" />
+                                    <Label Text="Decisions waiting on you" FontSize="10.5" TextColor="{StaticResource SIPCoreTextSecondary}" />
+                                </VerticalStackLayout>
+                            </Border>
+
+                            <Border Grid.Row="1" Grid.Column="0" StrokeShape="RoundRectangle 12" StrokeThickness="1"
+                                    Stroke="{StaticResource SIPCoreBorder}" BackgroundColor="{StaticResource SIPCoreBackground}" Padding="14,12">
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnOpenTeamTapped" />
+                                </Border.GestureRecognizers>
+                                <VerticalStackLayout Spacing="4">
+                                    <Label Text="&#xF0C0;" FontFamily="MaterialIcons" FontSize="13" TextColor="{StaticResource SIPCoreSignal}" />
+                                    <Label Text="View team" FontSize="13.5" FontAttributes="Bold" TextColor="{StaticResource SIPCoreTextPrimary}" />
+                                    <Label Text="Call or message collaborators" FontSize="10.5" TextColor="{StaticResource SIPCoreTextSecondary}" />
+                                </VerticalStackLayout>
+                            </Border>
+
+                            <Border Grid.Row="1" Grid.Column="1" StrokeShape="RoundRectangle 12" StrokeThickness="1"
+                                    Stroke="{StaticResource SIPCoreBorder}" BackgroundColor="{StaticResource SIPCoreBackground}" Padding="14,12">
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnOpenTasksTapped" />
+                                </Border.GestureRecognizers>
+                                <VerticalStackLayout Spacing="4">
+                                    <Label Text="&#xF0AE;" FontFamily="MaterialIcons" FontSize="13" TextColor="{StaticResource SIPCorePrimaryDark}" />
+                                    <Label Text="Browse tasks" FontSize="13.5" FontAttributes="Bold" TextColor="{StaticResource SIPCoreTextPrimary}" />
+                                    <Label Text="Search and filter work" FontSize="10.5" TextColor="{StaticResource SIPCoreTextSecondary}" />
+                                </VerticalStackLayout>
+                            </Border>
+                        </Grid>
                     </VerticalStackLayout>
                 </Border>
+            </Grid>
 
-                <BoxView HeightRequest="120" Color="Transparent" />
-            </VerticalStackLayout>
-        </ScrollView>
-
-        <Border StrokeShape="RoundRectangle 28" BackgroundColor="{StaticResource SIPCorePrimary}"
-                WidthRequest="56" HeightRequest="56" HorizontalOptions="End" VerticalOptions="End" Margin="0,0,22,22">
-            <Label Text="&#xF067;" FontFamily="MaterialIcons" TextColor="White" FontSize="22" HorizontalOptions="Center" VerticalOptions="Center" />
-            <Border.GestureRecognizers>
-                <TapGestureRecognizer Tapped="OnCreateTaskTapped" />
-            </Border.GestureRecognizers>
-        </Border>
-    </Grid>
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>

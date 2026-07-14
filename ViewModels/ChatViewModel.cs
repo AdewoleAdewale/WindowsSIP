@@ -340,4 +340,7 @@ public partial class ChatViewModel : ObservableObject
         ReplyPreview = e.ReplyPreview,
         Reaction = e.Reaction
     };
+
+
+
 }

@@ -4,7 +4,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
     <Border StrokeShape="RoundRectangle 16" StrokeThickness="1"
-            Stroke="#1FFFFFFF" BackgroundColor="#12FFFFFF" Padding="16,14">
+            BackgroundColor="White"  Stroke="#EAEAEA" Padding="16,14">
         <Border.GestureRecognizers>
             <TapGestureRecognizer Tapped="OnCardTapped" />
         </Border.GestureRecognizers>
@@ -20,10 +20,10 @@
                 </Border>
 
                 <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
-                    <Label x:Name="TitleLabel" TextColor="White" FontAttributes="Bold"
+                    <Label x:Name="TitleLabel" TextColor="ForestGreen" FontAttributes="Bold"
                            FontSize="15.5" LineBreakMode="TailTruncation" MaxLines="2" />
-                    <Label x:Name="CreatorLabel" TextColor="#99FFFFFF" FontSize="12" />
-                    <Label x:Name="CreatorCompanyLabel" TextColor="#6BFFFFFF" FontSize="11" IsVisible="False" />
+                    <Label x:Name="CreatorLabel" TextColor="Blue" FontSize="12" />
+                    <Label x:Name="CreatorCompanyLabel" TextColor="Orange" FontSize="11" IsVisible="False" />
                 </VerticalStackLayout>
 
                 <Border Grid.Column="2" StrokeShape="RoundRectangle 10" StrokeThickness="0"
@@ -50,19 +50,19 @@
 
             <ProgressBar x:Name="ProgressIndicator" HeightRequest="4" BackgroundColor="#1FFFFFFF" />
 
-            <BoxView HeightRequest="1" Color="#14FFFFFF" />
+            <BoxView HeightRequest="1" Color="Black" />
 
             <!-- Meta row -->
             <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="14">
                 <VerticalStackLayout Grid.Column="0" Spacing="1">
-                    <Label x:Name="TeamLeadLabel" FontSize="12" TextColor="#B8FFFFFF"
+                    <Label x:Name="TeamLeadLabel" FontSize="12" TextColor="Black"
                            LineBreakMode="TailTruncation" />
-                    <Label x:Name="TeamLeadCompanyLabel" FontSize="11" TextColor="#6BFFFFFF" IsVisible="False" />
+                    <Label x:Name="TeamLeadCompanyLabel" FontSize="11" TextColor="OrangeRed" IsVisible="False" />
                 </VerticalStackLayout>
                 <Label Grid.Column="1" x:Name="CommentsCountLabel" FontSize="12"
-                       TextColor="#99FFFFFF" VerticalOptions="Center" />
+                       TextColor="Red" VerticalOptions="Center" />
                 <Label Grid.Column="2" x:Name="AttachmentsCountLabel" FontSize="12"
-                       TextColor="#99FFFFFF" VerticalOptions="Center" />
+                       TextColor="Black" VerticalOptions="Center" />
             </Grid>
         </VerticalStackLayout>
     </Border>

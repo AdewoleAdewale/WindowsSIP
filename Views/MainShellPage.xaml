@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SipCoreMobile.Views.MainShellPage"
+            xmlns:models="clr-namespace:SipCoreMobile.Models"
+             xmlns:vm="clr-namespace:SipCoreMobile.ViewModels"
+             x:DataType="vm:AppStateViewModel"
+             BackgroundColor="{StaticResource SIPCoreDarkBlue}"
+             Shell.NavBarIsVisible="False"
+             Shell.FlyoutBehavior="Disabled">
+
+    <Grid x:Name="RootGrid" ColumnDefinitions="70,360,*">
+
+        <!-- ═══════ COLUMN 0 · Nav rail ═══════ -->
+        <Grid Grid.Column="0" RowDefinitions="Auto,*,Auto" BackgroundColor="#0A1830" Padding="0,14">
+
+            <Image Grid.Row="0" Source="sipcorelogo.png" WidthRequest="34" HeightRequest="34"    BackgroundColor="White"
+                   HorizontalOptions="Center" Margin="0,4,0,18" />
+
+            <VerticalStackLayout Grid.Row="1" Spacing="6">
+
+                <Border x:Name="NavDialer" StrokeShape="RoundRectangle 4" StrokeThickness="0"
+                        BackgroundColor="Transparent" WidthRequest="46" HeightRequest="46"
+                        HorizontalOptions="Center">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnNavDialerTapped" />
+                    </Border.GestureRecognizers>
+                    <Label Text="&#xF095;" FontFamily="MaterialIcons" FontSize="17"
+                           TextColor="#8FA8CC" HorizontalOptions="Center" VerticalOptions="Center" />
+                </Border>
+
+                <Border x:Name="NavChats" StrokeShape="RoundRectangle 4" StrokeThickness="0"
+                        BackgroundColor="#1F3D7BFF" WidthRequest="46" HeightRequest="46"
+                        HorizontalOptions="Center">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnNavChatsTapped" />
+                    </Border.GestureRecognizers>
+                    <Label Text="&#xF0E0;" FontFamily="MaterialIcons" FontSize="17"
+                           TextColor="White" HorizontalOptions="Center" VerticalOptions="Center" />
+                </Border>
+
+                <Border x:Name="NavHistory" StrokeShape="RoundRectangle 4" StrokeThickness="0"
+                        BackgroundColor="Transparent" WidthRequest="46" HeightRequest="46"
+                        HorizontalOptions="Center">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnNavHistoryTapped" />
+                    </Border.GestureRecognizers>
+                    <Label Text="&#xF1DA;" FontFamily="MaterialIcons" FontSize="17"
+                           TextColor="#8FA8CC" HorizontalOptions="Center" VerticalOptions="Center" />
+                </Border>
+
+                <Border x:Name="NavWorkDesk" StrokeShape="RoundRectangle 4" StrokeThickness="0"
+                        BackgroundColor="Transparent" WidthRequest="46" HeightRequest="46"
+                        HorizontalOptions="Center">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnNavWorkDeskTapped" />
+                    </Border.GestureRecognizers>
+                    <Label Text="&#xF0AE;" FontFamily="MaterialIcons" FontSize="17"
+                           TextColor="#8FA8CC" HorizontalOptions="Center" VerticalOptions="Center" />
+                </Border>
+
+            </VerticalStackLayout>
+
+            <VerticalStackLayout Grid.Row="2" Spacing="6">
+                <Border StrokeShape="RoundRectangle 4" StrokeThickness="0" BackgroundColor="Transparent"
+                        WidthRequest="46" HeightRequest="46" HorizontalOptions="Center">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnNavSettingsTapped" />
+                    </Border.GestureRecognizers>
+                    <Label Text="&#xF013;" FontFamily="MaterialIcons" FontSize="17"
+                           TextColor="#8FA8CC" HorizontalOptions="Center" VerticalOptions="Center" />
+                </Border>
+                <Border StrokeShape="RoundRectangle 23" StrokeThickness="0"
+                        BackgroundColor="{StaticResource SIPCorePrimary}"
+                        WidthRequest="38" HeightRequest="38" HorizontalOptions="Center">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnNavProfileTapped" />
+                    </Border.GestureRecognizers>
+                    <Label x:Name="ProfileInitial" Text="?" TextColor="White" FontAttributes="Bold"
+                           FontSize="15" HorizontalOptions="Center" VerticalOptions="Center" />
+                </Border>
+            </VerticalStackLayout>
+        </Grid>
+
+        <!-- ═══════ COLUMN 1 · Extension list ═══════ -->
+        <Grid x:Name="ListPane" Grid.Column="1" RowDefinitions="Auto,Auto,*"
+              BackgroundColor="#0E2140">
+
+            <Grid Grid.Row="0" Padding="18,16,18,6" ColumnDefinitions="*,Auto">
+                <Label Text="Extensions" TextColor="White" FontSize="19" FontAttributes="Bold" />
+                <Label Grid.Column="1" x:Name="OnlineCountLabel" FontSize="11.5"
+                       TextColor="{StaticResource SIPCoreSignal}" VerticalOptions="Center" />
+            </Grid>
+
+            <Border Grid.Row="1" StrokeShape="RoundRectangle 4" StrokeThickness="1"
+                    Stroke="#1FFFFFFF" BackgroundColor="#14FFFFFF"
+                    Margin="14,6,14,10" Padding="10,0">
+                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="6">
+                    <Label Text="🔍" FontSize="12" Opacity="0.5" VerticalOptions="Center" />
+                    <SearchBar Grid.Column="1" x:Name="SearchBox" Placeholder="Search extensions…"
+                               TextColor="White" PlaceholderColor="#73FFFFFF"
+                               BackgroundColor="Transparent" TextChanged="OnSearchTextChanged" />
+                </Grid>
+            </Border>
+
+            <CollectionView Grid.Row="2" x:Name="ExtensionList"
+                            SelectionMode="Single"
+                            SelectionChanged="OnExtensionSelected"
+                            Margin="10,0,10,10">
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Vertical" ItemSpacing="1" />
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:ContactUi">
+                        <Border StrokeShape="RoundRectangle 4" StrokeThickness="0"
+                                BackgroundColor="Transparent" Padding="10,9">
+                            <Grid ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="8">
+
+                                <Grid Grid.Column="0" WidthRequest="42" HeightRequest="42">
+                                    <Border StrokeShape="RoundRectangle 21" StrokeThickness="0"
+                                            BackgroundColor="#1F3D7BFF">
+                                        <Label Text="{Binding Extension, Converter={StaticResource LastTwoCharsConverter}}" TextColor="#9DBDF5" FontAttributes="Bold" FontSize="15" HorizontalOptions="Center" VerticalOptions="Center" />
+                                    </Border>
+                                    <Border StrokeShape="RoundRectangle 6" Stroke="#0E2140" StrokeThickness="2"
+                                            BackgroundColor="{StaticResource SIPCoreSuccess}"
+                                            WidthRequest="12" HeightRequest="12"
+                                            HorizontalOptions="End" VerticalOptions="End"
+                                            IsVisible="{Binding IsOnline}" />
+                                </Grid>
+
+                                <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="1">
+                                    <Label Text="{Binding DisplayName}" TextColor="White"
+                                           FontSize="14" FontAttributes="Bold" LineBreakMode="TailTruncation" />
+                                    <Label Text="{Binding Status}" FontSize="11.5" TextColor="#8FA8CC" LineBreakMode="TailTruncation" />
+                                </VerticalStackLayout>
+
+
+                                <Border Grid.Column="2" StrokeShape="RoundRectangle 4" StrokeThickness="0"
+                                     BackgroundColor="Transparent" WidthRequest="22" HeightRequest="22"  IsVisible="{Binding Contact.CanCall}" HorizontalOptions="Center">
+                                    <Label Text="&#xF095;" FontFamily="MaterialIcons" FontSize="17" TextColor="#8FA8CC" 
+                                     Padding="0" BackgroundColor="Transparent" HorizontalOptions="Center" VerticalOptions="Center" >
+                                        <Label.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" CommandParameter="{Binding .}" ></TapGestureRecognizer>
+                                        </Label.GestureRecognizers>
+                                    </Label>
+                                </Border>
+
+                                <Border Grid.Column="3" StrokeShape="RoundRectangle 4" StrokeThickness="0"    IsVisible="{Binding Contact.CanMessage}"
+              BackgroundColor="#1F3D7BFF" WidthRequest="22" HeightRequest="22"
+              HorizontalOptions="Center">
+                                    <Label Text="&#xF0E0;" FontFamily="MaterialIcons" FontSize="17"
+                 TextColor="White" HorizontalOptions="Center" VerticalOptions="Center" >
+                                        <Label.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped_1" CommandParameter="{Binding .}" ></TapGestureRecognizer>
+                                        </Label.GestureRecognizers>
+                                    </Label>
+                                </Border>
+
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </Grid>
+
+        <!-- ═══════ COLUMN 2 · Detail pane ═══════ -->
+        <Grid Grid.Column="2" BackgroundColor="{StaticResource SIPCoreDarkBlue}">
+            <ContentView x:Name="DetailHost" />
+        </Grid>
+
+    </Grid>
+</ContentPage>

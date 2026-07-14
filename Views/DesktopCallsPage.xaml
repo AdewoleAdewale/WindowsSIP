@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SipCoreMobile.Views.DesktopCallsPage"
+              xmlns:controls="clr-namespace:SipCoreMobile.Controls"
+             xmlns:vm="clr-namespace:SipCoreMobile.ViewModels"
+             x:DataType="vm:AppStateViewModel"
+             BackgroundColor="{StaticResource SIPCoreBackground}"
+             Shell.NavBarIsVisible="False">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="26,22,26,30" Spacing="16" MaximumWidthRequest="1180">
+
+            <!-- Hero -->
+            <Border StrokeShape="RoundRectangle 14" StrokeThickness="1"
+                    Stroke="{StaticResource SIPCoreBorder}" BackgroundColor="{StaticResource SIPCoreCard}"
+                    Padding="24,20">
+                <Grid ColumnDefinitions="*,Auto">
+                    <VerticalStackLayout Spacing="5">
+                        <Label Text="SIPCORE PHONE" FontSize="11" FontAttributes="Bold"
+                               CharacterSpacing="1.6" TextColor="{StaticResource SIPCorePrimary}" />
+                        <Label Text="Calls" FontSize="30" FontAttributes="Bold"
+                               TextColor="{StaticResource SIPCoreDarkBlue}" />
+                        <Label Text="Make and manage business calls from your desktop."
+                               FontSize="13.5" TextColor="{StaticResource SIPCoreTextSecondary}" />
+                    </VerticalStackLayout>
+                    <HorizontalStackLayout Grid.Column="1" Spacing="7" VerticalOptions="Start">
+                        <Ellipse Fill="{StaticResource SIPCoreSuccess}" WidthRequest="9" HeightRequest="9" VerticalOptions="Center" />
+                        <Label Text="Registered" FontSize="13" FontAttributes="Bold"
+                               TextColor="{StaticResource SIPCoreTextPrimary}" VerticalOptions="Center" />
+                    </HorizontalStackLayout>
+                </Grid>
+            </Border>
+
+            <!-- Three-column workspace -->
+            <Grid ColumnDefinitions="*,Auto,*" ColumnSpacing="14">
+
+                <!-- ── History ── -->
+                <Border Grid.Column="0" StrokeShape="RoundRectangle 14" StrokeThickness="1"
+                        Stroke="{StaticResource SIPCoreBorder}" BackgroundColor="{StaticResource SIPCoreCard}"
+                        Padding="18,16">
+                    <Grid RowDefinitions="Auto,Auto,*" RowSpacing="12">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <VerticalStackLayout Spacing="2">
+                                <Label Text="Call history" FontSize="19" FontAttributes="Bold"
+                                       TextColor="{StaticResource SIPCoreDarkBlue}" />
+                                <Label x:Name="HistoryCountLabel" FontSize="12"
+                                       TextColor="{StaticResource SIPCoreTextSecondary}" />
+                            </VerticalStackLayout>
+                        </Grid>
+
+                        <Border Grid.Row="1" StrokeShape="RoundRectangle 8" StrokeThickness="1.2"
+                                Stroke="{StaticResource SIPCoreBorder}" BackgroundColor="{StaticResource SIPCoreBackground}"
+                                Padding="10,0">
+                            <SearchBar x:Name="HistorySearchBox" Placeholder="Search calls or extensions…"
+                                       BackgroundColor="Transparent" TextChanged="OnHistorySearchChanged" />
+                        </Border>
+
+                        <VerticalStackLayout Grid.Row="2">
+                            <CollectionView x:Name="HistoryList" SelectionMode="None" HeightRequest="430">
+                                <CollectionView.ItemsLayout>
+                                    <LinearItemsLayout Orientation="Vertical" ItemSpacing="8" />
+                                </CollectionView.ItemsLayout>
+                                <!-- ItemTemplate is built in code-behind so it can adapt to the CallLog model -->
+                            </CollectionView>
+                            <VerticalStackLayout x:Name="HistoryEmpty" IsVisible="False" Spacing="6" Padding="12,30"
+                                                 HorizontalOptions="Center">
+                                <Label Text="🕘" FontSize="30" Opacity="0.35" HorizontalOptions="Center" />
+                                <Label Text="No calls yet" FontSize="14" FontAttributes="Bold"
+                                       TextColor="{StaticResource SIPCoreTextPrimary}" HorizontalOptions="Center" />
+                            </VerticalStackLayout>
+                        </VerticalStackLayout>
+                    </Grid>
+                </Border>
+
+                <!-- ── Dialpad ── -->
+                <Border Grid.Column="1" StrokeShape="RoundRectangle 14" StrokeThickness="1"
+                        Stroke="{StaticResource SIPCoreBorder}" BackgroundColor="{StaticResource SIPCoreCard}"
+                        Padding="20,18" WidthRequest="360">
+                    <VerticalStackLayout Spacing="14">
+                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                            <Border StrokeShape="RoundRectangle 8" StrokeThickness="1.2"
+                                    Stroke="{StaticResource SIPCoreBorder}" BackgroundColor="{StaticResource SIPCoreBackground}"
+                                    Padding="14,2">
+                                <Entry x:Name="NumberEntry" Placeholder="Enter number or extension"
+                                       Keyboard="Numeric" FontSize="15" HeightRequest="44"
+                                       BackgroundColor="Transparent"
+                                       TextColor="{StaticResource SIPCoreTextPrimary}"
+                                       PlaceholderColor="{StaticResource SIPCoreTextSecondary}"
+                                       ReturnType="Go" Completed="OnCallClicked" />
+                            </Border>
+                            <Border Grid.Column="1" StrokeShape="RoundRectangle 8" StrokeThickness="1.2"
+                                    Stroke="{StaticResource SIPCoreBorder}" BackgroundColor="{StaticResource SIPCoreBackground}"
+                                    WidthRequest="48" HeightRequest="48">
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnBackspaceTapped" />
+                                </Border.GestureRecognizers>
+                                <Label Text="⌫" FontSize="17" TextColor="{StaticResource SIPCoreTextSecondary}"
+                                       HorizontalOptions="Center" VerticalOptions="Center" />
+                            </Border>
+                        </Grid>
+
+                        <VerticalStackLayout Spacing="9">
+                            <Grid ColumnDefinitions="*,*,*" ColumnSpacing="9">
+                                <controls:DialpadKey Grid.Column="0" Digit="1" Letters="" Tapped="OnKeyTapped" LongPressed="OnKeyLongPressed" />
+                                <controls:DialpadKey Grid.Column="1" Digit="2" Letters="ABC" Tapped="OnKeyTapped" LongPressed="OnKeyLongPressed" />
+                                <controls:DialpadKey Grid.Column="2" Digit="3" Letters="DEF" Tapped="OnKeyTapped" LongPressed="OnKeyLongPressed" />
+                            </Grid>
+                            <Grid ColumnDefinitions="*,*,*" ColumnSpacing="9">
+                                <controls:DialpadKey Grid.Column="0" Digit="4" Letters="GHI" Tapped="OnKeyTapped" LongPressed="OnKeyLongPressed" />
+                                <controls:DialpadKey Grid.Column="1" Digit="5" Letters="JKL" Tapped="OnKeyTapped" LongPressed="OnKeyLongPressed" />
+                                <controls:DialpadKey Grid.Column="2" Digit="6" Letters="MNO" Tapped="OnKeyTapped" LongPressed="OnKeyLongPressed" />
+                            </Grid>
+                            <Grid ColumnDefinitions="*,*,*" ColumnSpacing="9">
+                                <controls:DialpadKey Grid.Column="0" Digit="7" Letters="PQRS" Tapped="OnKeyTapped" LongPressed="OnKeyLongPressed" />
+                                <controls:DialpadKey Grid.Column="1" Digit="8" Letters="TUV" Tapped="OnKeyTapped" LongPressed="OnKeyLongPressed" />
+                                <controls:DialpadKey Grid.Column="2" Digit="9" Letters="WXYZ" Tapped="OnKeyTapped" LongPressed="OnKeyLongPressed" />
+                            </Grid>
+                            <Grid ColumnDefinitions="*,*,*" ColumnSpacing="9">
+                                <controls:DialpadKey Grid.Column="0" Digit="*" Letters="" Tapped="OnKeyTapped" LongPressed="OnKeyLongPressed" />
+                                <controls:DialpadKey Grid.Column="1" Digit="0" Letters="+" Tapped="OnKeyTapped" LongPressed="OnKeyLongPressed" />
+                                <controls:DialpadKey Grid.Column="2" Digit="#" Letters="" Tapped="OnKeyTapped" LongPressed="OnKeyLongPressed" />
+                            </Grid>
+                        </VerticalStackLayout>
+
+                        <Button Text="📞  Call" Clicked="OnCallClicked"
+                                BackgroundColor="{StaticResource SIPCoreSuccess}" TextColor="White"
+                                FontSize="15" FontAttributes="Bold" HeightRequest="48" CornerRadius="10" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- ── Status panel ── -->
+                <Border Grid.Column="2" StrokeShape="RoundRectangle 14" StrokeThickness="1"
+                        Stroke="{StaticResource SIPCoreBorder}" BackgroundColor="{StaticResource SIPCoreCard}"
+                        Padding="22,20">
+                    <VerticalStackLayout Spacing="16" VerticalOptions="Center">
+                        <Border StrokeShape="RoundRectangle 42" StrokeThickness="0"
+                                BackgroundColor="{StaticResource SIPCorePrimaryLight}"
+                                WidthRequest="84" HeightRequest="84" HorizontalOptions="Center">
+                            <Label Text="☎" FontSize="32" TextColor="{StaticResource SIPCorePrimaryDark}"
+                                   HorizontalOptions="Center" VerticalOptions="Center" />
+                        </Border>
+
+                        <VerticalStackLayout Spacing="5">
+                            <Label x:Name="CallStateTitle" Text="No active call" FontSize="21" FontAttributes="Bold"
+                                   TextColor="{StaticResource SIPCoreDarkBlue}" HorizontalOptions="Center" />
+                            <Label Text="Select a previous caller or enter a number to begin."
+                                   FontSize="13" TextColor="{StaticResource SIPCoreTextSecondary}"
+                                   HorizontalTextAlignment="Center" MaximumWidthRequest="260" />
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Spacing="0" Margin="8,10,8,0">
+                            <controls:ProfileInfoRow x:Name="ExtensionRow" Label="Extension" />
+                            <controls:ProfileInfoRow x:Name="RegistrationRow" Label="Registration" />
+                            <controls:ProfileInfoRow x:Name="StatusRow" Label="Status" />
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+                </Border>
+            </Grid>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

@@ -2,52 +2,106 @@
 <ContentPage x:Class="SipCoreMobile.Views.WorkDeskDiscussionPage"
              xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             BackgroundColor="{StaticResource SIPCoreDarkBlue}"
+             BackgroundColor="#EDF1F7"
              Shell.NavBarIsVisible="False">
 
     <Grid RowDefinitions="Auto,*,Auto,Auto">
 
-        <!-- Header -->
-        <HorizontalStackLayout Grid.Row="0" Padding="18,14" Spacing="12">
-            <Border StrokeShape="RoundRectangle 21" BackgroundColor="#1AFFFFFF" WidthRequest="42" HeightRequest="42">
-                <Label Text="&#xF060;" FontFamily="MaterialIcons" TextColor="White" FontSize="18" HorizontalOptions="Center" VerticalOptions="Center" />
-                <Border.GestureRecognizers><TapGestureRecognizer Tapped="OnBackTapped" /></Border.GestureRecognizers>
-            </Border>
-            <VerticalStackLayout VerticalOptions="Center">
-                <Label x:Name="TitleLabel" TextColor="White" FontSize="18" FontAttributes="Bold" LineBreakMode="TailTruncation" />
-                <Label Text="Discussion" TextColor="#A6FFFFFF" FontSize="12" />
-            </VerticalStackLayout>
-        </HorizontalStackLayout>
+        <!-- ══ Header: WhatsApp group bar ══ -->
+        <Border Grid.Row="0" StrokeThickness="0" BackgroundColor="{StaticResource SIPCoreCard}" Padding="16,10">
+            <Border.Shadow>
+                <Shadow Brush="Black" Opacity="0.05" Radius="4" Offset="0,2" />
+            </Border.Shadow>
+            <Grid ColumnDefinitions="Auto,Auto,*" ColumnSpacing="12">
+                <Border StrokeShape="RoundRectangle 8" StrokeThickness="0" BackgroundColor="Transparent"
+                        WidthRequest="36" HeightRequest="36" VerticalOptions="Center">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnBackTapped" />
+                    </Border.GestureRecognizers>
+                    <Label Text="←" FontSize="18" TextColor="{StaticResource SIPCoreTextSecondary}"
+                           HorizontalOptions="Center" VerticalOptions="Center" />
+                </Border>
 
-        <!-- Comments -->
+                <Border Grid.Column="1" StrokeShape="RoundRectangle 21" StrokeThickness="0"
+                        BackgroundColor="{StaticResource SIPCorePrimaryLight}"
+                        WidthRequest="42" HeightRequest="42" VerticalOptions="Center">
+                    <Label Text="🗂" FontSize="17" HorizontalOptions="Center" VerticalOptions="Center" />
+                </Border>
+
+                <VerticalStackLayout Grid.Column="2" VerticalOptions="Center" Spacing="1">
+                    <Label x:Name="TitleLabel" FontSize="15.5" FontAttributes="Bold"
+                           TextColor="{StaticResource SIPCoreTextPrimary}" LineBreakMode="TailTruncation" />
+                    <Label Text="Task discussion · tap a message to reply"
+                           FontSize="11.5" TextColor="{StaticResource SIPCoreTextSecondary}" />
+                </VerticalStackLayout>
+            </Grid>
+        </Border>
+
+        <!-- ══ Chat stream ══ -->
         <ScrollView Grid.Row="1" x:Name="CommentsScroll">
-            <VerticalStackLayout x:Name="CommentsList" Padding="16" Spacing="14">
-                <!-- Attachments section, prepended above comments -->
+            <VerticalStackLayout x:Name="CommentsList" Padding="18,14" Spacing="10" MaximumWidthRequest="820">
+
                 <VerticalStackLayout x:Name="AttachmentsSection" Spacing="8" />
-                <Label x:Name="EmptyCommentsLabel" Text="No comments yet." TextColor="#99FFFFFF" IsVisible="False" />
-                <VerticalStackLayout x:Name="ThreadsList" Spacing="14" />
+
+                <Border StrokeShape="RoundRectangle 10" StrokeThickness="0" BackgroundColor="#DCE6F5"
+                        Padding="12,7" HorizontalOptions="Center" x:Name="EmptyCommentsLabel" IsVisible="False">
+                    <Label Text="No comments yet — start the discussion"
+                           FontSize="12" TextColor="#40567A" />
+                </Border>
+
+                <VerticalStackLayout x:Name="ThreadsList" Spacing="10" />
             </VerticalStackLayout>
         </ScrollView>
 
-        <!-- Reply bar -->
-        <Grid x:Name="ReplyBar" Grid.Row="2" BackgroundColor="#1AFFFFFF" Padding="14,8" IsVisible="False" ColumnDefinitions="4,*,Auto">
-            <BoxView Grid.Column="0" Color="{StaticResource SIPCorePrimary}" WidthRequest="4" HeightRequest="36" />
-            <VerticalStackLayout Grid.Column="1" Margin="10,0,0,0">
-                <Label Text="Replying to" TextColor="{StaticResource SIPCorePrimary}" FontAttributes="Bold" FontSize="11" />
-                <Label x:Name="ReplyBarPreview" TextColor="#C2FFFFFF" FontSize="12" LineBreakMode="TailTruncation" />
-            </VerticalStackLayout>
-            <ImageButton Grid.Column="2" Source="close_icon.png" WidthRequest="18" HeightRequest="18" BackgroundColor="Transparent" Clicked="OnCancelReplyClicked" />
-        </Grid>
+        <!-- ══ Reply context bar ══ -->
+        <Border x:Name="ReplyBar" Grid.Row="2" StrokeThickness="0"
+                BackgroundColor="{StaticResource SIPCoreCard}" Padding="18,8" IsVisible="False">
+            <Grid ColumnDefinitions="3,*,Auto" ColumnSpacing="10">
+                <BoxView Color="{StaticResource SIPCorePrimary}" WidthRequest="3" CornerRadius="1.5" />
+                <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="1">
+                    <Label Text="Replying to" FontSize="10.5" FontAttributes="Bold"
+                           TextColor="{StaticResource SIPCorePrimary}" />
+                    <Label x:Name="ReplyBarPreview" FontSize="12.5"
+                           TextColor="{StaticResource SIPCoreTextSecondary}" LineBreakMode="TailTruncation" />
+                </VerticalStackLayout>
+                <ImageButton Grid.Column="2" Source="close_icon.png" WidthRequest="16" HeightRequest="16"
+                             BackgroundColor="Transparent" Clicked="OnCancelReplyClicked" VerticalOptions="Center" />
+            </Grid>
+        </Border>
 
-        <!-- Input bar -->
-        <Grid Grid.Row="3" BackgroundColor="#14FFFFFF" Padding="14" ColumnDefinitions="Auto,*,Auto" ColumnSpacing="8">
-            <ImageButton Grid.Column="0" Source="attach_icon.png" WidthRequest="24" HeightRequest="24" BackgroundColor="Transparent" Clicked="OnAttachClicked" />
-            <Entry x:Name="MessageEntry" Grid.Column="1" Placeholder="Write a comment" TextColor="White" PlaceholderColor="#99FFFFFF" />
-            <Border Grid.Column="2" StrokeShape="RoundRectangle 20" BackgroundColor="{StaticResource SIPCorePrimary}" WidthRequest="40" HeightRequest="40">
-                <Label Text="&#xF040;" FontFamily="MaterialIcons" TextColor="White" FontSize="16" HorizontalOptions="Center" VerticalOptions="Center" />
-                <Border.GestureRecognizers><TapGestureRecognizer Tapped="OnSendTapped" /></Border.GestureRecognizers>
-            </Border>
-        </Grid>
+        <!-- ══ Input tray ══ -->
+        <Border Grid.Row="3" StrokeThickness="0" BackgroundColor="{StaticResource SIPCoreCard}" Padding="14,10">
+            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
+                <Border StrokeShape="RoundRectangle 20" StrokeThickness="0" BackgroundColor="{StaticResource SIPCoreBackground}"
+                        WidthRequest="40" HeightRequest="40" VerticalOptions="Center">
+                    <ImageButton Source="addlink.png" WidthRequest="17" HeightRequest="17" Padding="0"
+                                 BackgroundColor="Transparent" HorizontalOptions="Center" VerticalOptions="Center"
+                                 Clicked="OnAttachClicked" SemanticProperties.Description="Attach file" />
+                </Border>
 
+                <Border Grid.Column="1" StrokeShape="RoundRectangle 20" StrokeThickness="1"
+                        Stroke="{StaticResource SIPCoreBorder}" BackgroundColor="{StaticResource SIPCoreBackground}"
+                        Padding="16,2" HeightRequest="42">
+                    <Entry x:Name="MessageEntry" Placeholder="Write a comment…" FontSize="14"
+                           TextColor="{StaticResource SIPCoreTextPrimary}"
+                           PlaceholderColor="{StaticResource SIPCoreTextSecondary}"
+                           BackgroundColor="Transparent" VerticalOptions="Center"
+                           ReturnType="Send" Completed="MessageEntry_Completed" />
+                </Border>
+
+                <Border Grid.Column="2" StrokeShape="RoundRectangle 21" StrokeThickness="0"
+                        BackgroundColor="{StaticResource SIPCorePrimary}"
+                        WidthRequest="42" HeightRequest="42" VerticalOptions="Center">
+                    <Border.Shadow>
+                        <Shadow Brush="{StaticResource SIPCorePrimary}" Opacity="0.3" Radius="8" Offset="0,3" />
+                    </Border.Shadow>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
+                    </Border.GestureRecognizers>
+                    <Label Text="➤" TextColor="White" FontSize="16"
+                           HorizontalOptions="Center" VerticalOptions="Center" />
+                </Border>
+            </Grid>
+        </Border>
     </Grid>
 </ContentPage>

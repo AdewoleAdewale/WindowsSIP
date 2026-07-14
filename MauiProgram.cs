@@ -97,7 +97,8 @@ public static class MauiProgram
         builder.Services.AddTransient<WorkDeskCreateTaskPage>();
         builder.Services.AddTransient<WorkDeskApprovalsPage>();
         builder.Services.AddTransient<WorkDeskTeamPage>();
-
+        builder.Services.AddTransient<MainShellPage>();
+        builder.Services.AddTransient<DesktopCallsPage>();
         // ---------------------------------------------------------------
         // Shell
         // ---------------------------------------------------------------

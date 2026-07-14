@@ -7,4 +7,5 @@ public class CallLogUi
     public bool IsIncoming { get; init; }
     public bool IsMissed { get; init; }
     public int DurationSeconds { get; init; }
+    public string? Extension { get; internal set; }
 }

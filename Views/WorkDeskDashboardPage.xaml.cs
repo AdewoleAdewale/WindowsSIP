@@ -26,6 +26,13 @@ public partial class WorkDeskDashboardPage : ContentPage
         BindingContext = viewModel;
     }
 
+    /// <summary>Explicit init for when this page's content is hosted inside MainShellPage.</summary>
+    public async Task InitializeHostedAsync()
+    {
+        await _viewModel.OpenWorkDeskHomeAsync();
+        Refresh();
+    }
+
     protected override async void OnAppearing()
     {
         base.OnAppearing();
@@ -101,10 +108,10 @@ public partial class WorkDeskDashboardPage : ContentPage
         });
 
         var textStack = new VerticalStackLayout();
-        textStack.Add(new Label { Text = text, TextColor = Color.FromArgb("#C2FFFFFF"), FontSize = 13 });
+        textStack.Add(new Label { Text = text, TextColor = Color.FromArgb("#101828"), FontSize = 13 });
         if (!string.IsNullOrEmpty(subText))
         {
-            textStack.Add(new Label { Text = subText, TextColor = Color.FromArgb("#73FFFFFF"), FontSize = 11 });
+            textStack.Add(new Label { Text = subText, TextColor = Color.FromArgb("#667085"), FontSize = 11 });
         }
 
         stack.Add(textStack);
