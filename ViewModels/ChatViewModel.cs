@@ -141,6 +141,7 @@ public partial class ChatViewModel : ObservableObject
 
     public async Task SendTextMessageAsync(string to, string text)
     {
+
         var cleanTo = to.Trim();
         var cleanText = text.Trim();
         var cleanFrom = _appState.Extension.Trim();
@@ -258,6 +259,7 @@ public partial class ChatViewModel : ObservableObject
                 ReplyToId = remote.ReplyToId,
                 ReplyPreview = remote.ReplyPreview
             });
+            Controls.InAppNotifier.Show("New message", $"From {sender}", Controls.SnackKind.Message, onTap: () => { /* open that conversation */ });
         }
 
         var latest = remoteMessages

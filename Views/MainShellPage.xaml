@@ -4,6 +4,7 @@
              x:Class="SipCoreMobile.Views.MainShellPage"
             xmlns:models="clr-namespace:SipCoreMobile.Models"
              xmlns:vm="clr-namespace:SipCoreMobile.ViewModels"
+             xmlns:controls="clr-namespace:SipCoreMobile.Controls"
              x:DataType="vm:AppStateViewModel"
              BackgroundColor="{StaticResource SIPCoreDarkBlue}"
              Shell.NavBarIsVisible="False"
@@ -83,7 +84,7 @@
         </Grid>
 
         <!-- ═══════ COLUMN 1 · Extension list ═══════ -->
-        <Grid x:Name="ListPane" Grid.Column="1" RowDefinitions="Auto,Auto,*"
+        <Grid x:Name="ListPane" Grid.Column="1" RowDefinitions="Auto,Auto,*,Auto"
               BackgroundColor="#0E2140">
 
             <Grid Grid.Row="0" Padding="18,16,18,6" ColumnDefinitions="*,Auto">
@@ -161,6 +162,16 @@
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
+            
+            <Border Grid.Row="3" x:Name="ShowAllRow" StrokeShape="RoundRectangle 8" StrokeThickness="0"
+        BackgroundColor="#14FFFFFF" Margin="14,6,14,12" Padding="0,9">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnShowAllTapped" />
+                </Border.GestureRecognizers>
+                <Label x:Name="ShowAllLabel" Text="Show all extensions"
+           FontSize="12.5" FontAttributes="Bold" TextColor="#9DBDF5"
+           HorizontalOptions="Center" />
+            </Border>
         </Grid>
 
         <!-- ═══════ COLUMN 2 · Detail pane ═══════ -->
@@ -168,5 +179,6 @@
             <ContentView x:Name="DetailHost" />
         </Grid>
 
+        <controls:AppSnackbar x:Name="Snackbar" Grid.ColumnSpan="3" />
     </Grid>
 </ContentPage>

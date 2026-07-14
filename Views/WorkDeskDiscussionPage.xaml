@@ -64,7 +64,7 @@
                     <Label x:Name="ReplyBarPreview" FontSize="12.5"
                            TextColor="{StaticResource SIPCoreTextSecondary}" LineBreakMode="TailTruncation" />
                 </VerticalStackLayout>
-                <ImageButton Grid.Column="2" Source="close_icon.png" WidthRequest="16" HeightRequest="16"
+                <ImageButton Grid.Column="2" Source="back.png" WidthRequest="16" HeightRequest="16"
                              BackgroundColor="Transparent" Clicked="OnCancelReplyClicked" VerticalOptions="Center" />
             </Grid>
         </Border>

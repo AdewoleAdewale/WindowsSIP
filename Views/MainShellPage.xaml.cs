@@ -1,7 +1,8 @@
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
+using CommunityToolkit.Maui.Alerts;
 using SipCoreMobile.Models;
 using SipCoreMobile.ViewModels;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 
 namespace SipCoreMobile.Views;
 
@@ -12,7 +13,7 @@ public partial class MainShellPage : ContentPage
     private readonly AppStateViewModel _appState;
     private readonly IServiceProvider _services;
     private readonly ObservableCollection<ContactUi> _filtered = new();
-
+    private bool _showAllExtensions;
     private ContentPage? _hostedPage;      // page whose Content the detail pane is showing
     private string? _selectedExtension;
     public MainShellPage(AppStateViewModel appState, IServiceProvider services)
@@ -21,7 +22,7 @@ public partial class MainShellPage : ContentPage
         _appState = appState;
         _services = services;
         BindingContext = appState;
-
+        Controls.InAppNotifier.Host = Snackbar;
         ExtensionList.ItemsSource = _filtered;
         _appState.Contacts.CollectionChanged += OnContactsChanged;
 
@@ -113,26 +114,46 @@ public partial class MainShellPage : ContentPage
 
     private void OnContactsChanged(object? sender, NotifyCollectionChangedEventArgs e) =>
         MainThread.BeginInvokeOnMainThread(RefreshList);
-
+    private void OnShowAllTapped(object? sender, EventArgs e)
+    {
+        _showAllExtensions = !_showAllExtensions;
+        RefreshList();
+    }
     private void RefreshList()
     {
         var q = SearchBox.Text?.Trim() ?? "";
+        var searching = !string.IsNullOrEmpty(q);
+
         var items = _appState.Contacts.Where(c =>
-            string.IsNullOrEmpty(q) ||
+            !searching ||
             c.DisplayName.Contains(q, StringComparison.OrdinalIgnoreCase) ||
             c.Extension.Contains(q, StringComparison.OrdinalIgnoreCase));
 
+        // Default view: online only. Searching or "show all" reveals everyone.
+        var hiddenOffline = 0;
+        if (!searching && !_showAllExtensions)
+        {
+            hiddenOffline = items.Count(c => !c.IsOnline);
+            items = items.Where(c => c.IsOnline);
+        }
+
         _filtered.Clear();
-        foreach (var c in items) _filtered.Add(c);
+        foreach (var c in items.OrderByDescending(c => c.IsOnline).ThenBy(c => c.DisplayName))
+            _filtered.Add(c);
 
         OnlineCountLabel.Text = $"{_appState.Contacts.Count(c => c.IsOnline)} online";
+
+        ShowAllRow.IsVisible = !searching;
+        ShowAllLabel.Text = _showAllExtensions
+            ? "Show active only"
+            : hiddenOffline > 0 ? $"Show all extensions ({hiddenOffline} offline)" : "Show all extensions";
     }
 
     // ------------------------------------------------------------------
     // Nav rail  (mirrors BottomNavBar/drawer targets)
     // ------------------------------------------------------------------
 
-   
+
     private void OnNavChatsTapped(object? s, EventArgs e) => ShowDashboardIfNoChat();
     private void OnNavHistoryTapped(object? s, EventArgs e) => _appState.CurrentScreen = Models.Screen.CallHistory;
     private void OnNavWorkDeskTapped(object? s, EventArgs e) => ShowDashboard();

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView x:Class="SipCoreMobile.Controls.AppSnackbar"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             IsVisible="False"
+             InputTransparent="False"
+             HorizontalOptions="End" VerticalOptions="Start"
+             Margin="0,16,18,0">
+
+    <Border x:Name="Card" StrokeShape="RoundRectangle 12" StrokeThickness="1"
+            Stroke="{StaticResource SIPCoreBorder}" BackgroundColor="White"
+            Padding="14,12" WidthRequest="340" Opacity="0" TranslationY="-12">
+        <Border.Shadow>
+            <Shadow Brush="Black" Opacity="0.18" Radius="18" Offset="0,6" />
+        </Border.Shadow>
+        <Border.GestureRecognizers>
+            <TapGestureRecognizer Tapped="OnTapped" />
+        </Border.GestureRecognizers>
+
+        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+            <Border x:Name="IconTile" StrokeShape="RoundRectangle 10" StrokeThickness="0"
+                    BackgroundColor="{StaticResource SIPCorePrimaryLight}"
+                    WidthRequest="38" HeightRequest="38" VerticalOptions="Center">
+                <Label x:Name="IconLabel" Text="ℹ" FontSize="16"
+                       TextColor="{StaticResource SIPCorePrimaryDark}"
+                       HorizontalOptions="Center" VerticalOptions="Center" />
+            </Border>
+
+            <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="1">
+                <Label x:Name="TitleLabel" FontSize="13.5" FontAttributes="Bold"
+                       TextColor="{StaticResource SIPCoreTextPrimary}" LineBreakMode="TailTruncation" />
+                <Label x:Name="MessageLabel" FontSize="12"
+                       TextColor="{StaticResource SIPCoreTextSecondary}"
+                       LineBreakMode="TailTruncation" MaxLines="2" />
+            </VerticalStackLayout>
+
+            <Label Grid.Column="2" Text="✕" FontSize="11" TextColor="#98A2B3"
+                   VerticalOptions="Start" Padding="4">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnDismissTapped" />
+                </Label.GestureRecognizers>
+            </Label>
+        </Grid>
+    </Border>
+</ContentView>

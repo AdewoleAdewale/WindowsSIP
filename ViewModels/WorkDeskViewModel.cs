@@ -93,25 +93,28 @@ public partial class WorkDeskViewModel : ObservableObject
     {
         WorkDeskLoading = true;
         WorkDeskError = "";
-
+        Controls.InAppNotifier.Show("Syncing workspace…", "Fetching your tasks and approvals", Controls.SnackKind.Loading, durationMs: 2000);
         try
         {
             var tasks = await _api.GetMyWorkTasksAsync(_appState.CompanyId, _appState.Extension);
             Tasks.Clear();
             foreach (var t in tasks) Tasks.Add(t);
 
+        
             TaskDetailsById.Clear();
-            foreach (var task in tasks)
+            var detailResults = await Task.WhenAll(tasks.Select(async task =>
             {
                 try
                 {
-                    TaskDetailsById[task.TaskId] = await _api.GetWorkTaskAsync(_appState.CompanyId, task.TaskId);
+                    var detail = await _api.GetWorkTaskAsync(_appState.CompanyId, task.TaskId);
+                    return (task.TaskId, Detail: detail);
                 }
                 catch
                 {
-                    // best-effort, mirrors original (skips tasks whose detail fetch fails)
+
+                    return (task.TaskId, Detail: (WorkTaskDetailResponse?)null);
                 }
-            }
+            }));
         }
         catch (Exception ex)
         {

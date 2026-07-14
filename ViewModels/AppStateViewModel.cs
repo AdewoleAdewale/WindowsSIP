@@ -339,6 +339,7 @@ public partial class AppStateViewModel : ObservableObject, ISipEvents
 
     public async Task MakeOutgoingCallAsync(string number)
     {
+        Controls.InAppNotifier.Show("Making call", $"From {number}", Controls.SnackKind.Call, durationMs: 8000);
         var cleanNumber = number.Trim();
         if (string.IsNullOrEmpty(cleanNumber)) return;
 
@@ -371,6 +372,7 @@ public partial class AppStateViewModel : ObservableObject, ISipEvents
     public void OnRegistered() =>
         MainThread.BeginInvokeOnMainThread(() =>
         {
+            Controls.InAppNotifier.Show("Connected", $"Registered as extension {Extension}", Controls.SnackKind.Success);
             var wasAlreadyRegistered = Registered;
             var shouldNavigateHome = !wasAlreadyRegistered && CurrentScreen == Screen.Login;
 
@@ -684,7 +686,7 @@ public partial class AppStateViewModel : ObservableObject, ISipEvents
         _presenceHeartbeatCts?.Cancel();
         _presenceHeartbeatCts = new CancellationTokenSource();
         var token = _presenceHeartbeatCts.Token;
-
+        Controls.InAppNotifier.Show("You Can Now Recieve Message From Sipcore", $"From Info@sipcore.org", Controls.SnackKind.Call, durationMs: 8000);
         _ = Task.Run(async () =>
         {
             try

@@ -68,6 +68,9 @@
 
 
 	<ItemGroup>
+	  <MauiXaml Update="Controls\AppSnackbar.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Controls\BottomNavBar.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

@@ -5,24 +5,16 @@ using SipCoreMobile.ViewModels;
 
 namespace SipCoreMobile.Views;
 
-/// <summary>
-/// Port of WorkDeskTaskDiscussionView() -- the core comment/reply/attachment flow. Deliberately
-/// scoped down from the 1,592-line original (same treatment as ChatPage in Batch 6):
-/// - Tap-to-reply instead of long-press (matches the simpler interaction pattern used
-///   elsewhere in this port rather than Compose's combinedClickable long-press menu)
-/// - No comment options dialog (copy/share/delete) -- original's
-///   WorkDeskDiscussionCommentOptionsDialog isn't ported
-/// - No attachment options dialog (share/open) -- attachments open directly on tap instead
-/// - No @mention autocomplete picker (WorkDeskMentionPicker) -- plain text entry only
-/// - No URL linkification in comment text (WorkDeskLinkifiedDiscussionText) -- plain text
-/// All of the above are candidates for a future polish pass if you need them.
-/// </summary>
+
 public partial class WorkDeskDiscussionPage : ContentPage
 {
     private readonly AppStateViewModel _appState;
     private readonly WorkDeskViewModel _viewModel;
     private WorkTaskDto _task;
     private WorkTaskCommentDto? _replyingTo;
+    private const int ThreadPageSize = 15;
+    private int _visibleThreads = ThreadPageSize;
+    private bool _scrollToBottomOnRender = true;
 
     public WorkDeskDiscussionPage(AppStateViewModel appState, WorkDeskViewModel viewModel, WorkTaskDto task)
     {
@@ -65,7 +57,7 @@ public partial class WorkDeskDiscussionPage : ContentPage
             var row = new Border
             {
                 StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 14 },
-                BackgroundColor = Color.FromArgb("#14FFFFFF"),
+                BackgroundColor = Colors.Black,
                 Padding = new Thickness(12)
             };
 
@@ -74,7 +66,7 @@ public partial class WorkDeskDiscussionPage : ContentPage
 
             var textStack = new VerticalStackLayout();
             textStack.Add(new Label { Text = string.IsNullOrWhiteSpace(attachment.FileName) ? "Attachment" : attachment.FileName, TextColor = Colors.White, FontAttributes = FontAttributes.Bold, FontSize = 13 });
-            textStack.Add(new Label { Text = $"Shared by {WorkDeskContactHelpers.DisplayName(attachment.UploadedByExtension, contacts)}", TextColor = Color.FromArgb("#8CFFFFFF"), FontSize = 11 });
+            textStack.Add(new Label { Text = $"Shared by {WorkDeskContactHelpers.DisplayName(attachment.UploadedByExtension, contacts)}", TextColor = Colors.White, FontSize = 11 });
             grid.Add(textStack, 1);
 
             row.Content = grid;
@@ -109,7 +101,42 @@ public partial class WorkDeskDiscussionPage : ContentPage
         var topLevel = comments.Where(c => string.IsNullOrEmpty(c.ParentCommentId)).ToList();
         EmptyCommentsLabel.IsVisible = topLevel.Count == 0;
 
-        foreach (var comment in topLevel)
+        // Show only the most recent N threads; older ones sit behind "Read earlier"
+        var hiddenCount = Math.Max(0, topLevel.Count - _visibleThreads);
+
+        if (hiddenCount > 0)
+        {
+            var pillLabel = new Label
+            {
+                Text = $"↑  Read earlier messages ({hiddenCount} more)",
+                FontSize = 12.5,
+                FontAttributes = FontAttributes.Bold,
+                TextColor = (Color)Application.Current!.Resources["SIPCorePrimary"],
+                HorizontalOptions = LayoutOptions.Center,
+                VerticalOptions = LayoutOptions.Center
+            };
+            var pill = new Border
+            {
+                StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 16 },
+                StrokeThickness = 1,
+                Stroke = Color.FromArgb("#C9DCFB"),
+                BackgroundColor = Color.FromArgb("#EAF1FF"),
+                Padding = new Thickness(16, 8),
+                HorizontalOptions = LayoutOptions.Center,
+                Content = pillLabel
+            };
+            var tap = new TapGestureRecognizer();
+            tap.Tapped += (_, _) =>
+            {
+                _visibleThreads += 25;
+                _scrollToBottomOnRender = false;   // keep reading position, don't yank to bottom
+                Render();
+            };
+            pill.GestureRecognizers.Add(tap);
+            ThreadsList.Children.Add(pill);
+        }
+
+        foreach (var comment in topLevel.Skip(hiddenCount))
         {
             ThreadsList.Children.Add(BuildBubble(comment, contacts, parent: null));
 
@@ -117,7 +144,15 @@ public partial class WorkDeskDiscussionPage : ContentPage
                 ThreadsList.Children.Add(BuildBubble(reply, contacts, parent: comment));
         }
 
-        Dispatcher.Dispatch(async () => { await Task.Delay(100); await CommentsScroll.ScrollToAsync(0, CommentsList.Height, true); });
+        if (_scrollToBottomOnRender)
+        {
+            Dispatcher.Dispatch(async () =>
+            {
+                await Task.Delay(100);
+                await CommentsScroll.ScrollToAsync(0, CommentsList.Height, true);
+            });
+        }
+        _scrollToBottomOnRender = true;   // default restored for the next render (e.g. after sending)
     }
 
     private View BuildBubble(WorkTaskCommentDto comment, List<ContactUi> contacts, WorkTaskCommentDto? parent)
